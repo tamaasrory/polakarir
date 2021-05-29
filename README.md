@@ -1,4 +1,4 @@
-##Tutorial
+##Development
 
 ### Front-end Project setup
 ```
@@ -10,12 +10,12 @@ npm install
 cd api/
 composer install
 ```
-### Run Back-end
+### Run Back-end for development
 ```
 cd api/
 composer serve
 ```
-### Run Front-end 
+### Run Front-end for development 
 ```
 npm run dev
 
@@ -23,7 +23,8 @@ npm run dev
 
 npm run serve
 ```
-
+---------
+## Production
 ### Compiles and minifies for production
 ```
 npm run build
