@@ -1,12 +1,26 @@
-# Front-end Development
+##Tutorial
 
-## Project setup
+### Front-end Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Back-end Project setup
 ```
+cd api/
+composer install
+```
+### Run Back-end
+```
+cd api/
+composer serve
+```
+### Run Front-end 
+```
+npm run dev
+
+- OR- 
+
 npm run serve
 ```
 
