@@ -39,18 +39,9 @@
         <v-col
           cols="12"
           md="4"
-          class="mx-md-auto elevation-2"
+          class="mx-md-auto elevation-2 mt-md-3 mt-2"
           style="border-radius: 10px"
         >
-          <div class="d-flex justify-center mt-2">
-            <v-icon
-              size="150"
-              color="info"
-              class="float-left"
-            >
-              mdi-flask-round-bottom
-            </v-icon>
-          </div>
           <v-col
             cols="12"
             md="6"
@@ -94,7 +85,7 @@ import { mapActions } from 'vuex'
 
 export default {
   props: {
-    id: { type: String, required: true }
+    id: { type: [String, Number], required: true }
   },
   data () {
     return {

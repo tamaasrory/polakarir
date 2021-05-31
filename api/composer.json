@@ -65,7 +65,7 @@
             "@php artisan jwt:secret"
         ],
         "serve": [
-            "@php -S tajriyapi.localhost:9000 -t public"
+            "@php -S localhost:7000 -t public"
         ]
     }
 }

@@ -96,7 +96,6 @@
             </template>
             <span>Hapus</span>
           </v-tooltip>
-          <!--
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -112,7 +111,6 @@
             </template>
             <span>Detail</span>
           </v-tooltip>
-          -->
         </template>
       </v-data-table>
       <div

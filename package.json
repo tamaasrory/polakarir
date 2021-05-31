@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "HOST=tajriy.localhost vue-cli-service serve",
+    "dev": "HOST=localhost vue-cli-service serve --port 9000",
     "vueui": "vue ui"
   },
   "dependencies": {
