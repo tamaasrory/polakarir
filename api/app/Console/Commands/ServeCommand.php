@@ -130,7 +130,7 @@ class ServeCommand extends Command
      */
     protected function host()
     {
-        return $this->input->getOption('host');
+        return $this->input->getOption('host')?:'localhost';
     }
 
     /**
@@ -140,7 +140,7 @@ class ServeCommand extends Command
      */
     protected function port()
     {
-        $port = $this->input->getOption('port') ?: 8000;
+        $port = $this->input->getOption('port') ?: 7000;
 
         return $port + $this->portOffset;
     }

@@ -2,48 +2,29 @@
 /**
  * Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
- */
-
-/**
- * --------------------------------------------------------------------------
- *  Application Routes
- * --------------------------------------------------------------------------
  *
- *  Here is where you can register all of the routes for an application.
- *  It is a breeze. Simply tell Lumen the URIs it should respond to
- *  and give it the Closure to call when that URI is requested.
- *
- * @var \Illuminate\Support\Facades\Route $router
+ * @var Illuminate\Support\Facades\Route $router
  */
 
 $router->get('/', function () {
     return response()->json(['value' => auth()], 200);
 });
 
-$router->get('/tes', function () {
-    return view('index');
-});
-
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
-    /** @see \App\Http\Controllers\AuthController::authenticate() */
-    $router->post('auth/login', 'AuthController@authenticate');
+    /** @see \App\Http\Controllers\ExtAuthController::authenticate() */
+    $router->post('auth/login', 'ExtAuthController@authenticate');
 
     $router->get('/', function () {
         return response()->json(['value' => 'oke'], 200);
     });
 
     $router->group(['prefix' => 'user'], function () use ($router) {
-
         /** @see \App\Http\Controllers\UserController::forgotPassword() */
         $router->post('forgot-password', 'UserController@forgotPassword');
-
-        /** @see \App\Http\Controllers\UserController::insert() */
-        $router->post('baru', 'UserController@insert');
-
     });
 
-    $router->group(['middleware' => ['auth']], function () use ($router) {
+    $router->group(['middleware' => ['extauth']], function () use ($router) {
 
         $router->group(['prefix' => 'user'], function () use ($router) {
             $router->get('all', 'UserController@index');

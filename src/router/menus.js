@@ -4,7 +4,12 @@
  */
 import user from '@/router/menus/user'
 import roles from '@/router/menus/roles'
-import material from '@/router/menus/material'
+import SuratMasuk from '@/router/menus/surat-masuk'
+import SuratKeluar from '@/router/menus/surat-keluar'
+import Agenda from '@/router/menus/agenda'
+import TemplateSurat from '@/router/menus/template-surat'
+import ArsipSurat from '@/router/menus/arsip-surat'
+import Pengaturan from '@/router/menus/pengaturan'
 
 const menus = [
   {
@@ -12,10 +17,10 @@ const menus = [
     name: 'home',
     component: () => import(/* webpackChunkName: "about.chunk" */ '@/views/Home'),
     meta: {
-      title: 'Dashboard',
-      icon: 'mdi-view-dashboard-outline',
+      title: 'Home',
+      icon: 'mdi-home',
       requiresAuth: true,
-      allowRole: ['admin', 'leader', 'officer']
+      allowRole: ['Super Admin', 'Administrator', 'Staff']
     }
   },
   {
@@ -45,13 +50,17 @@ const about = [
       icon: 'mdi-help-circle',
       subheader: 'Lainnya',
       requiresAuth: true,
-      allowRole: ['admin', 'leader', 'officer']
+      allowRole: ['Super Admin', 'Administrator']
     }
   }
 ]
 export default menus.concat(
   user,
   roles,
-  material,
-  about
+  SuratMasuk,
+  SuratKeluar,
+  Agenda,
+  TemplateSurat,
+  ArsipSurat,
+  Pengaturan
 )

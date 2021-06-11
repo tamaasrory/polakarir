@@ -6,14 +6,17 @@
 <template>
   <div class="material">
     <v-app-bar
-      color="#0288D1"
+      color="white"
       elevation="0"
       fixed
-      dark
+      app
+      light
     >
-      <v-app-bar-nav-icon @click="$emit('toggle-drawer')" />
-      <v-toolbar-title>Material</v-toolbar-title>
-
+      <v-icon
+        color="primary"
+        @click="$emit('toggle-drawer')"
+        v-text="'mdi-menu'"
+      />
       <v-spacer />
       <v-btn
         title="Tambah Material"
@@ -37,6 +40,9 @@
       </v-btn>
     </v-app-bar>
     <v-container fluid>
+      <h1 class="my-2">
+        Material
+      </h1>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"

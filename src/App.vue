@@ -5,46 +5,72 @@
 
 <template>
   <v-app>
-    <v-app-bar
-      v-if="isAuth"
-      color="#0288D1"
-      fixed
-      dark
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>{{ toolbarTitle }}</v-toolbar-title>
-      <v-spacer />
-
-      <v-btn
-        icon
-        @click="showDialogLogout = true"
-      >
-        <v-icon>mdi-logout</v-icon>
-      </v-btn>
-    </v-app-bar>
-
     <v-navigation-drawer
       v-if="isAuth"
       v-model="drawer"
+      color="#2D62ED"
       fixed
+      app
       left
-      temporary
+      dark
     >
+      <v-list-item>
+        <v-list-item-action>
+          <img
+            :src="require('@/assets/ic-nav-vertical.svg')"
+            alt="W"
+            height="30"
+            width="40"
+            style="cursor: pointer"
+            @click="$emit('toggle-drawer')"
+          >
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            E-Office
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">
             {{ user ? user.name : '' }}
           </v-list-item-title>
           <v-list-item-subtitle>
-            {{ user ? user.email : '' }}
+            {{ user ? user.role[0] : '' }}
           </v-list-item-subtitle>
         </v-list-item-content>
-        <v-btn
-          icon
-          @click.stop="drawer = !drawer"
+        <v-menu
+          bottom
+          left
         >
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              dark
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item>
+              <v-list-item-title style="cursor: pointer">
+                Profile
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title
+                style="cursor: pointer"
+                @click="showDialogLogout = true"
+              >
+                Logout
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-list-item>
 
       <v-divider />
@@ -70,21 +96,9 @@
             </v-list-item-content>
           </v-list-item>
         </template>
-        <v-list-item
-          link
-          @click="showDialogLogout = true"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-logout</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main :style="isAuth ? 'margin-top:50pt;margin-bottom:50pt' : ''">
+    <v-main :style="isAuth ? /*'margin-top:50pt;margin-bottom:50pt'*/'' : ''">
       <router-view @toggle-drawer="toggleDrawer" />
       <dialog-logout
         :show-dialog="showDialogLogout"
@@ -94,19 +108,6 @@
         :message="'Apakah anda yakin akan keluar dari sistem?'"
       />
     </v-main>
-    <v-footer
-      v-if="!isAuth"
-      absolute
-      class="font-weight-medium"
-    >
-      <v-col
-        class="text-center"
-        cols="12"
-      >
-        {{ new Date().getFullYear() }} —
-        <strong>Tajriy App</strong>
-      </v-col>
-    </v-footer>
   </v-app>
 </template>
 
@@ -121,9 +122,9 @@ export default {
     'dialog-logout': Dialog
   },
   data: () => ({
-    drawer: false,
+    drawer: true,
     showDialogLogout: false,
-    toolbarTitle: 'Dashboard',
+    toolbarTitle: 'E-Office',
     items: []
   }),
   computed: {
@@ -170,6 +171,7 @@ export default {
     }
   },
   created () {
+    console.log(JSON.stringify(this.user))
   },
   methods: {
     ...mapActions(['logout']),
@@ -187,7 +189,9 @@ export default {
       this.showDialogLogout = false
     },
     toggleDrawer () {
-      this.drawer = !this.drawer
+      if (this.isAuth) {
+        this.drawer = !this.drawer
+      }
     }
   }
 }

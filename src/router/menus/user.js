@@ -6,9 +6,9 @@ export default [
     meta: {
       title: 'User',
       icon: 'mdi-account-circle',
-      subheader: 'Data Master',
+      // subheader: 'Data Master',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   },
   {
@@ -18,7 +18,7 @@ export default [
     meta: {
       title: 'Tambah User',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   },
   {
@@ -29,7 +29,7 @@ export default [
     meta: {
       title: 'Detail User',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   },
   {
@@ -40,7 +40,7 @@ export default [
     meta: {
       title: 'Edit User',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   }
 ]

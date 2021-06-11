@@ -1,0 +1,37 @@
+### test page
+GET http://localhost:7000/test-page
+
+### uji coba login
+
+POST http://localhost:7000/api/test/auth
+Content-Type: application/json
+
+{
+    "username": "198508032009021007",
+    "password": "salim"
+}
+
+### uji coba login
+
+POST http://localhost:7000/api/test/auth
+Content-Type: application/json
+
+{
+    "username": "admin@tajriy.com",
+    "password": "123456"
+}
+
+### uji coba akses menggunakan token
+
+GET http://localhost:7000/api/test/dump-test
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiI1MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjIzMzcwNDQ4fQ.HhcGl4WYJhFmT51uTEWahmC8Hw9fAXjd9HmBKUbAQow
+
+### uji coba akses menggunakan token
+
+GET http://localhost:7000/api/test/dump-test
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTg1MDgwMzIwMDkwMjEwMDciLCJrZGoiOiIwMS4wMS4wNC4wMi4ifSwiaWF0IjoxNjIzMzY4NDExfQ.ylBVvOJsnV1yQRMGsnbLuvA4IBa5njGvRqakZUk_5Zg
+
+###
+

@@ -7,9 +7,8 @@ export default [
     meta: {
       title: 'Roles',
       icon: 'mdi-key',
-      subheader: 'Data Master',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   },
   {
@@ -19,7 +18,7 @@ export default [
     meta: {
       title: 'Tambah Roles',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   },
   {
@@ -30,7 +29,7 @@ export default [
     meta: {
       title: 'Detail Roles',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   },
   {
@@ -41,7 +40,7 @@ export default [
     meta: {
       title: 'Edit Roles',
       requiresAuth: true,
-      allowRole: ['admin']
+      allowRole: ['Super Admin']
     }
   }
   // END roles

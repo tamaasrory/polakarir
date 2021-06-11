@@ -1,9 +1,10 @@
 <?php
 
+use App\KeyGen;
+use App\Role;
 use App\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class CreateAdminUserSeeder extends Seeder
 {
@@ -14,20 +15,81 @@ class CreateAdminUserSeeder extends Seeder
      */
     public function run()
     {
+        /**
+         * BUAT ROLE SUPER ADMIN
+         */
         $create_user = User::create([
-            'name' => 'Tama Asrory',
-            'email' => 'admin@tajriy.com',
+            'id' => KeyGen::randomKey(),
+            'name' => 'Super Admin',
+            'email' => 'superadmin@bpp.pekanbaru.go.id',
+            'password' => password_hash('bpp1442', PASSWORD_BCRYPT)
+        ]);
+
+        /** @var User $user */
+        $user = User::where('email', 'superadmin@bpp.pekanbaru.go.id')->first();
+
+        /** @var Role $role */
+        $role = Role::create(['name' => 'Super Admin', 'label' => []]);
+        // atur permission yang akan diberikan
+        $permissions = Permission::pluck('id', 'id')->all();
+        // sinkronisasi role + permission
+        $role->syncPermissions($permissions);
+        // berikan akses ke user
+        $user->assignRole([$role->id]);
+
+        /**
+         * BUAT ROLE ADMINISTRATOR
+         */
+        $create_user = User::create([
+            'id' => KeyGen::randomKey(),
+            'name' => 'Administrator',
+            'email' => 'administrator@bpp.pekanbaru.go.id',
             'password' => password_hash('123456', PASSWORD_BCRYPT)
         ]);
 
         /** @var User $user */
-        $user = User::where('email','admin@tajriy.com')->first();
+        $user = User::where('email', 'administrator@bpp.pekanbaru.go.id')->first();
 
         /** @var Role $role */
-        $role = Role::create(['name' => 'admin']);
-        $permissions = Permission::pluck('id', 'id')->all();
+        $role = Role::create(['name' => 'Administrator', 'label' => ['01.01.04.02.']]);
+        // atur permission yang akan diberikan
+        $permissions = Permission::whereIn('name', [
+            'user-list',
+            'user-create',
+            'user-edit',
+            'user-delete',
+        ])->pluck('id', 'id')->all();
+        // sinkronisasi role + permission
         $role->syncPermissions($permissions);
+        // berikan akses ke user
+        $user->assignRole([$role->id]);
 
+        /**
+         * BUAT ROLE STAFF
+         */
+        $create_user = User::create([
+            'id' => KeyGen::randomKey(),
+            'name' => 'Staff',
+            'email' => 'staff-only@bpp.pekanbaru.go.id',
+            'password' => password_hash('123456', PASSWORD_BCRYPT)
+        ]);
+
+        /** @var User $user */
+        $user = User::where('email', 'staff-only@bpp.pekanbaru.go.id')->first();
+
+        /** @var Role $role */
+        $role = Role::create(['name' => 'Staff', 'label' => []]);
+
+        // atur permission yang akan diberikan
+        $permissions = Permission::whereIn('name', [
+            'user-list',
+            'user-create',
+            'user-edit',
+            'user-delete',
+        ])->pluck('id', 'id')->all();
+        // sinkronisasi role + permission
+        $role->syncPermissions($permissions);
+        // berikan akses ke user
         $user->assignRole([$role->id]);
     }
 }

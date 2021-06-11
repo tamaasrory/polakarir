@@ -1,6 +1,8 @@
 <html>
-<head></head>
+<head>
+    <title>Test Page</title>
+</head>
 <body>
-its work
+it's worked
 </body>
 </html>

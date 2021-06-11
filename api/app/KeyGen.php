@@ -16,18 +16,33 @@ class KeyGen
      * @param string $suffix
      * @return string
      */
-    public static function randomKey($prefix = '', $suffix = '', $length = 5)
+    public static function randomKey($prefix = '', $suffix = '', $intOnly = true, $length = 5)
     {
-        $collection = collect([
-            1, 2, 3, 4, 5, 6, 7, 8, 9,
-            'A', 'B', 'C', 'D', 'E', 'F',
-            'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z',
-            1, 2, 3, 4, 5, 6, 7, 8, 9,
-        ]);
+        $collection = '';
+        if ($intOnly) {
+            $collection = collect([
+                1, 2, 3, 4, 5, 6, 7, 8, 9,
+                9, 8, 7, 6, 5, 4, 3, 2, 1,
+                1, 2, 3, 4, 5, 6, 7, 8, 9,
+                9, 8, 7, 6, 5, 4, 3, 2, 1,
+                1, 2, 3, 4, 5, 6, 7, 8, 9,
+                9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ]);
+        } else {
+            $collection = collect([
+                1, 2, 3, 4, 5, 6, 7, 8, 9,
+                'A', 'B', 'C', 'D', 'E', 'F',
+                'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                'U', 'V', 'W', 'X', 'Y', 'Z',
+                1, 2, 3, 4, 5, 6, 7, 8, 9,
+            ]);
+        }
 
         $randomKey = implode('', $collection->random($length)->all());
+        if (!$prefix) {
+            $prefix = date('ymdHis');
+        }
         return $prefix . $randomKey . $suffix;
     }
 }

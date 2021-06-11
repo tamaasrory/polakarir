@@ -6,12 +6,18 @@
 <template>
   <div class="roles">
     <v-app-bar
-      color="#0288D1"
+      color="white"
       elevation="0"
       fixed
-      dark
+      app
+      light
     >
-      <v-app-bar-nav-icon @click="$emit('toggle-drawer')" />
+      <v-icon
+        color="primary"
+        class="mr-5"
+        @click="$emit('toggle-drawer')"
+        v-text="'mdi-menu'"
+      />
       <v-toolbar-title>Roles</v-toolbar-title>
 
       <v-spacer />
@@ -57,10 +63,10 @@
         @page-count="config.table.pageCount = $event"
         @pagination="pagination=$event"
       >
-        <template v-slot:item.updated_at="{item}">
+        <template #item.updated_at="{item}">
           {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
         </template>
-        <template v-slot:item.permission="{item}">
+        <template #item.permission="{item}">
           <div style="padding: 5px">
             <span
               v-for="(izin,i) in item.permission"
@@ -76,9 +82,9 @@
             </span>
           </div>
         </template>
-        <template v-slot:item.aksi="{item}">
+        <template #item.aksi="{item}">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 v-bind="attrs"
@@ -98,7 +104,7 @@
             v-if="canEdit(['admin'])"
             bottom
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -308,11 +314,11 @@ export default {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus roles`
+        this.dcMessages = 'Sedang menghapus roles'
         this.deleteRoles(this.deleteId).then(res => {
           this._loadData(true)
           this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Roles`
+          this.dcMessages = 'Berhasil Menghapus Roles'
           setTimeout(() => {
             this.deleteId = ''
             this.showDC = false

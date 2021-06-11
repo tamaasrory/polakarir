@@ -20,7 +20,8 @@
         "spatie/laravel-permission": "^4.0",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "yajra/laravel-datatables": "^1.5",
-      "ext-imagick": "*"
+        "ext-imagick": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
@@ -65,7 +66,7 @@
             "@php artisan jwt:secret"
         ],
         "serve": [
-            "@php -S localhost:7000 -t public"
+            "@php artisan serve"
         ]
     }
 }

@@ -1,0 +1,38 @@
+### uji coba akses langsung ke server sinergi, untuk login
+POST http://localhost:7000/api/test/login
+Content-Type: application/json
+
+{
+    "username": "198508032009021007",
+    "password": "salim"
+}
+
+### uji coba akses langsung ke server sinergi, untuk get seluruh daftar opd
+POST http://localhost:7000/api/test/opd
+Content-Type: application/json
+
+### uji coba akses langsung ke server sinergi, untuk get detail opd by id_opd
+POST http://localhost:7000/api/test/opd-by-id
+Content-Type: application/json
+
+{
+    "id_opd": "1"
+}
+
+### uji coba akses langsung ke server sinergi, untuk get seluruh pegawai by id_opd
+POST http://localhost:7000/api/test/pegawai-by-opd
+Content-Type: application/json
+
+{
+    "id_opd": "1"
+}
+
+### uji coba akses langsung ke server sinergi, untuk get detail pegawai by nip
+POST http://localhost:7000/api/test/pegawai-by-nip
+Content-Type: application/json
+
+{
+    "nip": "198508032009021007"
+}
+
+###

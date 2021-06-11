@@ -19,7 +19,7 @@ export default {
               commit('SET_TOKEN', data.token)
               commit('SET_USER', data.value)
 
-              localStorage.setItem('token', data.token)
+              // localStorage.setItem('token', data.token)
             } else {
               commit('SET_ERRORS', { message: data.msg })
             }

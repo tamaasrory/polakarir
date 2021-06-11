@@ -83,6 +83,7 @@ $app->middleware([
 $app->routeMiddleware([
 //    'auth' => App\Http\Middleware\Authenticate::class,
     'auth' => App\Http\Middleware\JwtMiddleware::class,
+    'extauth' => App\Http\Middleware\ExtJwt::class,
     'role' => App\Http\Middleware\RoleMiddleware::class,
     'permission' => App\Http\Middleware\PermissionMiddleware::class,
     'role_or_permission' => App\Http\Middleware\RoleOrPermissionMiddleware::class,
@@ -124,7 +125,8 @@ $app->register(Yajra\DataTables\DataTablesServiceProvider::class);
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__ . '/../routes/web.php';
+    require __DIR__ . '/../routes/base.php';
+    require __DIR__ . '/../routes/test.php';
 });
 
 return $app;

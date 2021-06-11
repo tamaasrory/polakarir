@@ -6,13 +6,17 @@
 <template>
   <div class="user">
     <v-app-bar
-      color="#0288D1"
+      color="white"
       elevation="0"
       fixed
-      dark
+      app
+      light
     >
-      <v-app-bar-nav-icon @click="$emit('toggle-drawer')" />
-      <v-toolbar-title>Pengguna</v-toolbar-title>
+      <v-icon
+        color="primary"
+        @click="$emit('toggle-drawer')"
+        v-text="'mdi-menu'"
+      />
 
       <v-spacer />
       <v-btn
@@ -37,6 +41,9 @@
       </v-btn>
     </v-app-bar>
     <v-container fluid>
+      <h1 class="mb-3 mt-1">
+        Pengguna
+      </h1>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
@@ -57,10 +64,10 @@
         @page-count="config.table.pageCount = $event"
         @pagination="pagination=$event"
       >
-        <template v-slot:item.updated_at="{item}">
+        <template #item.updated_at="{item}">
           {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
         </template>
-        <template v-slot:item.role="{item}">
+        <template #item.role="{item}">
           <span
             v-for="(role,i) in item.role"
             :key="i"
@@ -74,9 +81,9 @@
             />
           </span>
         </template>
-        <template v-slot:item.aksi="{item}">
+        <template #item.aksi="{item}">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 v-bind="attrs"
@@ -93,7 +100,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -108,7 +115,7 @@
             <span>Hapus</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -270,7 +277,7 @@ export default {
           value: 'id'
         },
         { text: 'Nama', value: 'name' },
-        { text: 'Email', value: 'email' },
+        // { text: 'Email', value: 'email' },
         { text: 'Roles', value: 'role' },
         { text: 'Updated', value: 'updated_at' },
         { text: '', value: 'aksi' }
@@ -301,11 +308,11 @@ export default {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus user`
+        this.dcMessages = 'Sedang menghapus user'
         this.deleteUser(this.deleteId).then(res => {
           this._loadData(true)
           this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus User`
+          this.dcMessages = 'Berhasil Menghapus User'
           setTimeout(() => {
             this.deleteId = ''
             this.showDC = false

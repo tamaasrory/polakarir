@@ -7,11 +7,11 @@ import store from '../store'
 var { role, detail } = store.state.user
 
 export const isLeader = () => {
-  return role.includes('leader')
+  return role.includes('Administrator')
 }
 
 export const isAdmin = () => {
-  return role.includes('admin')
+  return role.includes('Super Admin')
 }
 
 export const isOfficer = () => {

@@ -9,13 +9,15 @@ import material from '@/router/apis/material'
 import roles from '@/router/apis/roles'
 import user from '@/router/apis/user'
 import app from '@/router/apis/app'
+import SuratMasuk from '@/router/apis/surat-masuk'
 
 const $api = {
   ...auth,
   ...material,
   ...roles,
   ...user,
-  ...app
+  ...app,
+  ...SuratMasuk
 }
 
 export default $api

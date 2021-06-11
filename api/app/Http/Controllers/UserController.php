@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\KeyGen;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -87,10 +88,11 @@ class UserController extends Controller
 
         /** @var User $user */
         $user = new User();
+        $user->id = KeyGen::randomKey();
         $user->fill($input);
 
         if ($user->save()) {
-            $user = User::where('email',$request->input('email'))->first();
+            $user = User::where('email', $request->input('email'))->first();
             $user->assignRole($request->input('roles'));
             return [
                 'value' => $user,
