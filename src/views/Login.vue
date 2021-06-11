@@ -5,7 +5,7 @@
 
 <template>
   <div
-    style="background-size: 100% 100%;height: 100%;width: 100%"
+    style="background-size: cover;height: 100%;width: 100%"
     :style="`background-image: url(${require('../assets/bg-login.svg')});`"
   >
     <v-container
