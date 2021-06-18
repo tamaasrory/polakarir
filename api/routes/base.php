@@ -56,5 +56,15 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
             $router->delete('delete/{id}', 'RoleController@destroy');
 
         });
+
+        $router->group(['prefix' => 'suratkeluar'], function () use ($router) {
+
+            $router->get('all', 'SuratKeluarController@index');
+            $router->get('detail/{id}', 'SuratKeluarController@show');
+            $router->post('baru', 'SuratKeluarController@store');
+            $router->put('update/{id}', 'SuratKeluarController@update');
+            $router->delete('delete/{id}', 'SuratKeluarController@destroy');
+
+        });
     });
 });

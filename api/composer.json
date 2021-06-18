@@ -21,7 +21,8 @@
         "staudenmeir/eloquent-json-relations": "^1.1",
         "yajra/laravel-datatables": "^1.5",
         "ext-imagick": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "phpoffice/phpword": "v0.13.*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
