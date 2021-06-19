@@ -4,7 +4,7 @@
   -->
 
 <template>
-  <div class="material">
+  <div class="home">
     <v-app-bar
       color="white"
       elevation="0"
@@ -14,333 +14,270 @@
     >
       <v-icon
         color="primary"
+        class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
+      <v-app-bar-title>Dashboard</v-app-bar-title>
       <v-spacer />
-      <v-btn
-        title="Tambah Material"
-        icon
-        @click="_add()"
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click="toggleFp = !toggleFp"
-      >
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <v-btn
-        title="Perbarui Data"
-        icon
-        @click="_loadData(true)"
-      >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
     </v-app-bar>
-    <v-container fluid>
+    <v-container>
       <h1 class="my-2">
-        Material
+        Agenda
       </h1>
-      <v-data-table
-        :loading="isLoading"
-        :headers="headerData"
-        :search="searchQuery"
-        :items="datas"
-        :sort-by.sync="config.table.sortBy"
-        :sort-desc.sync="config.table.sortDesc"
-        :items-per-page="config.table.itemsPerPage"
-        :page.sync="config.table.page"
-        :server-items-length="serverLength"
-        :options.sync="options"
-        height="350pt"
-        item-key="id"
-        class="elevation-2"
-        multi-sort
-        hide-default-footer
-        fixed-header
-        @page-count="config.table.pageCount = $event"
-        @pagination="pagination=$event"
+      <v-card
+        color="#fff"
+        elevation="2"
+        class="px-3 pa-3"
+        style=""
       >
-        <template v-slot:item.updated_at="{item}">
-          {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
-        </template>
-        <template v-slot:item.aksi="{item}">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                @click="_edit(item)"
-                v-on="on"
+        <v-row>
+          <v-col>
+          <h3>Agenda / Informasi Dinas</h3>
+          </v-col>
+          <v-col lg="8" align="right">
+            <v-btn
+              class="mx-2"
+              fab
+              small
+              outlined
+              style="border-width: 5px"
+              color="cyan"
+            >
+              <v-icon dark large>
+                mdi-plus
+              </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      <template>
+        <v-row class="fill-height">
+          <v-col>
+            <v-sheet height="64">
+              <v-toolbar
+                flat
               >
-                <v-icon
-                  color="blue"
+                <v-btn
+                  outlined
+                  class="mr-4"
+                  color="grey darken-2"
+                  @click="setToday"
                 >
-                  mdi-circle-edit-outline
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Ubah</span>
-          </v-tooltip>
-          <v-tooltip
-            v-if="canEdit(['admin'])"
-            bottom
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                icon
-                @click="_delete(item)"
-                v-on="on"
+                  Today
+                </v-btn>
+                <v-btn
+                  fab
+                  text
+                  small
+                  color="grey darken-2"
+                  @click="prev"
+                >
+                  <v-icon small>
+                    mdi-chevron-left
+                  </v-icon>
+                </v-btn>
+                <v-btn
+                  fab
+                  text
+                  small
+                  color="grey darken-2"
+                  @click="next"
+                >
+                  <v-icon small>
+                    mdi-chevron-right
+                  </v-icon>
+                </v-btn>
+                <v-toolbar-title v-if="$refs.calendar">
+                  {{ $refs.calendar.title }}
+                </v-toolbar-title>
+                <v-spacer />
+                <v-menu
+                  bottom
+                  right
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      outlined
+                      color="grey darken-2"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <span>{{ typeToLabel[type] }}</span>
+                      <v-icon right>
+                        mdi-menu-down
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item @click="type = 'day'">
+                      <v-list-item-title>Day</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="type = 'week'">
+                      <v-list-item-title>Week</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="type = 'month'">
+                      <v-list-item-title>Month</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="type = '4day'">
+                      <v-list-item-title>4 days</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-toolbar>
+            </v-sheet>
+            <v-sheet height="600">
+              <v-calendar
+                ref="calendar"
+                v-model="focus"
+                color="primary"
+                :events="events"
+                :event-color="getEventColor"
+                :type="type"
+                @click:event="showEvent"
+                @click:more="viewDay"
+                @click:date="viewDay"
+                @change="updateRange"
+              />
+              <v-menu
+                v-model="selectedOpen"
+                :close-on-content-click="false"
+                :activator="selectedElement"
+                offset-x
               >
-                <v-icon color="pink">
-                  mdi-delete
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Hapus</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                icon
-                @click="_detail(item)"
-                v-on="on"
-              >
-                <v-icon color="green">
-                  mdi-file-find
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Detail</span>
-          </v-tooltip>
-        </template>
-      </v-data-table>
-      <div
-        class="row align-center pb-3"
-      >
-        <div class="col-md-6 col-12 order-md-0 order-1 pt-0 pt-md-4">
-          <v-data-footer
-            class="float-left"
-            :pagination="pagination"
-            :prev-icon="null"
-            :next-icon="null"
-            :first-icon="null"
-            :last-icon="null"
-            :items-per-page-options="[10,15,50,100,-1]"
-            :options.sync="options"
-          />
-        </div>
-        <div class="col-md-6 col-12 order-md-1 order-0 mt-4 pb-0 pb-md-4">
-          <v-pagination
-            v-model="config.table.page"
-            :length="config.table.pageCount"
-            total-visible="7"
-            circle
-          />
-        </div>
-      </div>
+                <v-card
+                  color="grey lighten-4"
+                  min-width="350px"
+                  flat
+                >
+                  <v-toolbar
+                    :color="selectedEvent.color"
+                    dark
+                  >
+                    <v-btn icon>
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-toolbar-title v-html="selectedEvent.name" />
+                    <v-spacer />
+                    <v-btn icon>
+                      <v-icon>mdi-heart</v-icon>
+                    </v-btn>
+                    <v-btn icon>
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </v-toolbar>
+                  <v-card-text>
+                    <span v-html="selectedEvent.details" />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      text
+                      color="secondary"
+                      @click="selectedOpen = false"
+                    >
+                      Cancel
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
+            </v-sheet>
+          </v-col>
+        </v-row>
+      </template>
+      </v-card>
     </v-container>
-    <delete-dialog-confirm
-      :show-dialog="showDC"
-      :negative-button="dcNegativeBtn"
-      :positive-button="dcPositiveBtn"
-      :disabled-negative-btn="dcdisabledNegativeBtn"
-      :disabled-positive-btn="dcdisabledPositiveBtn"
-      :progress="dcProgress"
-      :title="'Hapus'"
-      :message="dcMessages"
-    />
-    <v-navigation-drawer
-      v-model="toggleFp"
-      fixed
-      width="350"
-      temporary
-      right
-    >
-      <v-list-item class="grey lighten-4">
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-icon>mdi-filter-outline</v-icon> Filter
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-icon>
-          <v-btn
-            icon
-            @click="toggleFp=!toggleFp"
-          >
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-row class="px-4 py-4">
-        <v-col
-          cols="12"
-        >
-          <v-text-field
-            v-model="searchQuery"
-            placeholder="ketikkan sesuatu untuk mencari"
-            label="Pencarian"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />
-        </v-col>
-      </v-row>
-      <div
-        class="text-right px-4 py-4"
-        style="position: absolute;bottom: 0;right: 0"
-      >
-        <v-btn
-          v-show="searchQuery"
-          text
-          color="primary"
-          @click="_clearFilter()"
-        >
-          Bersihkan filter
-        </v-btn>
-        <v-btn
-          color="success"
-          @click="_loadData(true)"
-        >
-          Terapkan
-        </v-btn>
-      </div>
-    </v-navigation-drawer>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
-
 export default {
-  name: 'Material',
-  components: {
-    'delete-dialog-confirm': Dialog
-  },
-  data () {
-    return {
-      searchQuery: '',
-      toggleFp: false,
-      isLoading: true,
-      datas: [],
-
-      options: {},
-      pagination: {},
-      serverLength: 0,
-      config: {
-        table: {
-          page: 1,
-          pageCount: 0,
-          sortBy: ['id'],
-          sortDesc: [true],
-          itemsPerPage: 10,
-          itemKey: 'id'
-        }
-      },
-
-      showDC: false,
-      deleteId: '',
-      dcMessages: '',
-      dcProgress: false,
-      dcdisabledNegativeBtn: false,
-      dcdisabledPositiveBtn: false,
-      dcNegativeBtn: () => { this.showDC = false },
-      dcPositiveBtn: () => this._delete(true)
-    }
-  },
-  computed: {
-    headerData () {
-      return [
-        {
-          text: 'ID',
-          align: 'left',
-          value: 'id'
-        },
-        { text: 'Nama', value: 'nama' },
-        { text: 'Satuan', value: 'satuan' },
-        { text: 'Updated', value: 'updated_at' },
-        { text: '', value: 'aksi' }
-      ]
-    }
-  },
-  watch: {
-    options (a, b) {
-      this._loadData(true)
-    }
-  },
+  name: 'Home',
+  data: () => ({
+    focus: '',
+    type: 'month',
+    typeToLabel: {
+      month: 'Month',
+      week: 'Week',
+      day: 'Day',
+      '4day': '4 Days'
+    },
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
+    events: [],
+    colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
+    names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
+  }),
   mounted () {
-    this._loadData(false) // loading data form server
+    this.$refs.calendar.checkChange()
   },
   methods: {
-    ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
-    _detail (value) {
-      this.$router.push({ name: 'material_view', params: { id: value.id } })
+    viewDay ({ date }) {
+      this.focus = date
+      this.type = 'day'
     },
-    _add () {
-      this.$router.push({ name: 'material_add' })
+    getEventColor (event) {
+      return event.color
     },
-    _edit (value) {
-      this.$router.push({ name: 'material_edit', params: { id: value.id } })
+    setToday () {
+      this.focus = ''
     },
-    _delete (value) {
-      if (value === true) {
-        this.dcProgress = true
-        this.dcdisabledNegativeBtn = true
-        this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus material`
-        this.deleteMaterial(this.deleteId).then(res => {
-          this._loadData(true)
-          this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Material`
-          setTimeout(() => {
-            this.deleteId = ''
-            this.showDC = false
-            this.dcdisabledNegativeBtn = false
-            this.dcdisabledPositiveBtn = false
-          }, 1500)
-        }).catch(err => {
-          console.log(err)
-          this.dcdisabledNegativeBtn = false
-          this.dcdisabledPositiveBtn = false
+    prev () {
+      this.$refs.calendar.prev()
+    },
+    next () {
+      this.$refs.calendar.next()
+    },
+    showEvent ({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+      }
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        requestAnimationFrame(() => requestAnimationFrame(() => open()))
+      } else {
+        open()
+      }
+
+      nativeEvent.stopPropagation()
+    },
+    updateRange ({ start, end }) {
+      const events = []
+
+      const min = new Date(`${start.date}T00:00:00`)
+      const max = new Date(`${end.date}T23:59:59`)
+      const days = (max.getTime() - min.getTime()) / 86400000
+      const eventCount = this.rnd(days, days + 20)
+
+      for (let i = 0; i < eventCount; i++) {
+        const allDay = this.rnd(0, 3) === 0
+        const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+        const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+        const second = new Date(first.getTime() + secondTimestamp)
+
+        events.push({
+          name: this.names[this.rnd(0, this.names.length - 1)],
+          start: first,
+          end: second,
+          color: this.colors[this.rnd(0, this.colors.length - 1)],
+          timed: !allDay
         })
-      } else {
-        this.deleteId = value.id
-        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
-        this.showDC = true
       }
+
+      this.events = events
     },
-    _clearFilter () {
-      this.searchQuery = null
-      this._loadData(true)
-    },
-    _loadData (abort) {
-      if (this.datas.length === 0 || abort) {
-        this.isLoading = true
-        this.getMaterial({ search: this.searchQuery, ...this.options })
-          .then((data) => {
-            this.datas = data.items || []
-            this.serverLength = data.total || 0
-            this.isLoading = false
-          })
-      } else {
-        this.isLoading = false
-      }
+    rnd (a, b) {
+      return Math.floor((b - a + 1) * Math.random()) + a
     }
   }
 }
 </script>
-<style>
-.v-data-footer__icons-before,.v-data-footer__icons-after{
-  display: none !important;
+<style scoped>
+.lead {
+  font-size: 12pt !important;
+  color: #6c6b6b;
 }
 </style>
