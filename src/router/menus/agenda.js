@@ -13,18 +13,6 @@ export default [
     }
   },
   {
-    path: '/agenda/buat_agenda',
-    name: 'buat_agenda',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/BuatAgenda'),
-    meta: {
-      /*title: 'Buat Agenda',
-      icon: 'mdi-calendar-month-outline',*/
-      // subheader: 'Data Master',
-      requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
-    }
-  },
-  {
     path: '/agenda/baru',
     name: 'agenda_add',
     component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/Add'),
