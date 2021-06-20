@@ -14,23 +14,23 @@ $router->get('/test-page', function () {
 
 $router->group(['prefix' => 'api/test'], function () use ($router) {
 
-    /** @see \App\Http\Controllers\ExtAuthController::authenticate() */
-    $router->post('auth', 'ExtAuthController@authenticate');
+    /** @see \App\Http\Controllers\Base\ExtAuthController::authenticate() */
+    $router->post('auth', 'Base\ExtAuthController@authenticate');
 
-    /** @see \App\Http\Controllers\TestController::login() */
-    $router->post('login', 'TestController@login');
+    /** @see \App\Http\Controllers\Base\TestController::login() */
+    $router->post('login', 'Base\TestController@login');
 
-    /** @see \App\Http\Controllers\TestController::listOpd() */
-    $router->post('opd', 'TestController@listOpd');
+    /** @see \App\Http\Controllers\Base\TestController::listOpd() */
+    $router->post('opd', 'Base\TestController@listOpd');
 
-    /** @see \App\Http\Controllers\TestController::getOpdById() */
-    $router->post('opd-by-id', 'TestController@getOpdById');
+    /** @see \App\Http\Controllers\Base\TestController::getOpdById() */
+    $router->post('opd-by-id', 'Base\TestController@getOpdById');
 
-    /** @see \App\Http\Controllers\TestController::listPegawaiByOpd() */
-    $router->post('pegawai-by-opd', 'TestController@listPegawaiByOpd');
+    /** @see \App\Http\Controllers\Base\TestController::listPegawaiByOpd() */
+    $router->post('pegawai-by-opd', 'Base\TestController@listPegawaiByOpd');
 
-    /** @see \App\Http\Controllers\TestController::getPegawaiByNip() */
-    $router->post('pegawai-by-nip', 'TestController@getPegawaiByNip');
+    /** @see \App\Http\Controllers\Base\TestController::getPegawaiByNip() */
+    $router->post('pegawai-by-nip', 'Base\TestController@getPegawaiByNip');
 
     // test penerapan TOKEN JWT
     $router->group(['middleware' => ['extauth']], function () use ($router) {

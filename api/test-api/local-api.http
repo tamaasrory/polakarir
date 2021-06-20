@@ -32,6 +32,3 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd
 GET http://localhost:7000/api/test/dump-test
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTg1MDgwMzIwMDkwMjEwMDciLCJrZGoiOiIwMS4wMS4wNC4wMi4ifSwiaWF0IjoxNjIzMzY4NDExfQ.ylBVvOJsnV1yQRMGsnbLuvA4IBa5njGvRqakZUk_5Zg
-
-###
-

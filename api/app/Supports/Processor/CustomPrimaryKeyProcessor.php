@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers\Processor;
+namespace App\Supports\Processor;
 
 use Illuminate\Database\DatabaseManager;
 use Krlove\CodeGenerator\Model\DocBlockModel;

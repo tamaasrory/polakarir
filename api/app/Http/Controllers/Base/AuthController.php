@@ -4,9 +4,9 @@
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Base;
 
-use App\User;
+use App\Models\Base\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

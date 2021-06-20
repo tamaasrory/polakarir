@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
+use App\Console\Commands\GenerateModelCommand;
 use Illuminate\Support\ServiceProvider;
-use Krlove\EloquentModelGenerator\Command\GenerateModelCommand;
 use Krlove\EloquentModelGenerator\EloquentModelBuilder;
-use App\Providers\Processor\CustomPrimaryKeyProcessor;
-use App\Providers\Processor\CustomPropertyProcessor;
-use App\Providers\Processor\ExistenceCheckerProcessor;
-use App\Providers\Processor\FieldProcessor;
-use App\Providers\Processor\NamespaceProcessor;
-use App\Providers\Processor\RelationProcessor;
-use App\Providers\Processor\TableNameProcessor;
+use App\Supports\Processor\CustomPrimaryKeyProcessor;
+use App\Supports\Processor\CustomPropertyProcessor;
+use App\Supports\Processor\ExistenceCheckerProcessor;
+use App\Supports\Processor\FieldProcessor;
+use App\Supports\Processor\NamespaceProcessor;
+use App\Supports\Processor\RelationProcessor;
+use App\Supports\Processor\TableNameProcessor;
 
 /**
  * Class GeneratorServiceProvider

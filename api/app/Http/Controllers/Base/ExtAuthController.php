@@ -4,11 +4,11 @@
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Base;
 
-use App\Role;
+use App\Models\Base\Role;
 use App\Supports\ExtApi;
-use App\User;
+use App\Models\Base\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -54,6 +54,15 @@ class ExtAuthController extends BaseController
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
+    }
+
+    public function refresh()
+    {
+        $auth = $this->request->auth;
+        if ($auth) {
+            return ['value' => $auth->perm];
+        }
+        return ['value' => null];
     }
 
     /**
@@ -130,7 +139,7 @@ class ExtAuthController extends BaseController
 
             if (!$user) { // bila user tidak juga ditemukan di tabel user
                 return response()->json([
-                    'msg' => 'User Belum Terdaftar',
+                    'msg' => 'Username atau Password Salah',
                     'token' => null,
                     'value' => null,
                 ], 200);

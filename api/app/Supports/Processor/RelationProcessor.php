@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers\Processor;
+namespace App\Supports\Processor;
 
 use Doctrine\DBAL\Schema\Table;
 use Illuminate\Database\DatabaseManager;

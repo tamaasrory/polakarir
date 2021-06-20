@@ -4,7 +4,7 @@
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
 
-namespace App;
+namespace App\Models\Base;
 
 use App\Traits\Searchable;
 use Illuminate\Auth\Authenticatable;
@@ -73,7 +73,7 @@ class User extends SelfModel implements AuthenticatableContract, AuthorizableCon
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'roles'
+        'password', 'remember_token', 'roles','permissions'
     ];
 
     protected $casts = [
@@ -84,11 +84,17 @@ class User extends SelfModel implements AuthenticatableContract, AuthorizableCon
     ];
 
     public $appends = [
-        'role'
+        'role',
+        'perm',
     ];
 
     public function getRoleAttribute()
     {
         return $this->getRoleNames()->toArray();
+    }
+
+    public function getPermAttribute()
+    {
+        return $this->getPermissionsViaRoles()->pluck('name');
     }
 }

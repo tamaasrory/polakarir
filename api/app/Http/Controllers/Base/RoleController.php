@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Base;
 
-use App\Role;
+use App\Models\Base\Role;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 

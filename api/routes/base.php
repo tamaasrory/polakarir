@@ -7,54 +7,52 @@
  */
 
 $router->get('/', function () {
-    return response()->json(['value' => auth()], 200);
+    header('Location:bpp.pekanbaru.go.id');
 });
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
-    /** @see \App\Http\Controllers\ExtAuthController::authenticate() */
-    $router->post('auth/login', 'ExtAuthController@authenticate');
+    /** @see \App\Http\Controllers\Base\ExtAuthController::authenticate() */
+    $router->post('auth/login', 'Base\ExtAuthController@authenticate');
 
     $router->get('/', function () {
-        return response()->json(['value' => 'oke'], 200);
+        header('Location:bpp.pekanbaru.go.id');
     });
 
     $router->group(['prefix' => 'user'], function () use ($router) {
-        /** @see \App\Http\Controllers\UserController::forgotPassword() */
-        $router->post('forgot-password', 'UserController@forgotPassword');
+        /** @see \App\Http\Controllers\Base\UserController::forgotPassword() */
+        $router->post('forgot-password', 'Base\UserController@forgotPassword');
     });
 
     $router->group(['middleware' => ['extauth']], function () use ($router) {
 
         $router->group(['prefix' => 'user'], function () use ($router) {
-            $router->get('all', 'UserController@index');
-            $router->get('detail/{id}', 'UserController@show');
-            $router->get('edit/{id}', 'UserController@edit');
-            $router->get('create', 'UserController@create');
-            $router->post('baru', 'UserController@store');
-            $router->put('update/{id}', 'UserController@update');
-            $router->delete('delete/{id}', 'UserController@destroy');
-        });
+            $ctrlName = 'Base\UserController';
 
-        $router->group(['prefix' => 'material'], function () use ($router) {
-
-            $router->get('all', 'MaterialController@index');
-            $router->get('detail/{id}', 'MaterialController@show');
-            $router->post('baru', 'MaterialController@store');
-            $router->put('update/{id}', 'MaterialController@update');
-            $router->delete('delete/{id}', 'MaterialController@destroy');
-
+            $router->get('all', $ctrlName . '@index');
+            $router->get('detail/{id}', $ctrlName . '@show');
+            $router->get('edit/{id}', $ctrlName . '@edit');
+            $router->get('create', $ctrlName . '@create');
+            $router->post('baru', $ctrlName . '@store');
+            $router->put('update/{id}', $ctrlName . '@update');
+            $router->delete('delete/{id}', $ctrlName . '@destroy');
         });
 
         $router->group(['prefix' => 'roles'], function () use ($router) {
+            $ctrlName = 'Base\RoleController';
 
-            $router->get('all', 'RoleController@index');
-            $router->get('permissions', 'RoleController@permissions');
-            $router->get('detail/{id}', 'RoleController@show');
-            $router->post('baru', 'RoleController@store');
-            $router->put('update/{id}', 'RoleController@update');
-            $router->delete('delete/{id}', 'RoleController@destroy');
+            $router->get('all', $ctrlName . '@index');
+            $router->get('permissions', $ctrlName . '@permissions');
+            $router->get('detail/{id}', $ctrlName . '@show');
+            $router->post('baru', $ctrlName . '@store');
+            $router->put('update/{id}', $ctrlName . '@update');
+            $router->delete('delete/{id}', $ctrlName . '@destroy');
 
         });
+
+        /** @see \App\Http\Controllers\Base\ExtAuthController::refresh() */
+        $router->get('auth/refresh', 'Base\ExtAuthController@refresh');
+
+        include "fitures.php";
     });
 });

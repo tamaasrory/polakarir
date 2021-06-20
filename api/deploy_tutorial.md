@@ -1,12 +1,12 @@
 **Binding a Node.js App to Port 80 with Apache**
 
-<pre>
-< VirtualHost *:80>
+```apacheconf
+<VirtualHost *:80>
     ServerName your_host
     ProxyPreserveHost on
     ProxyPass / http://localhost:[YOUR PORT HERE]/
-< / VirtualHost >
-</pre>
+</VirtualHost>
+```
 
 **Binding a Node.js App to Port 80 with Nginx**
 
@@ -19,20 +19,26 @@ The main benefit of Nginx is the fact that it takes care of transport optimizati
 Installing Nginx,
 Easy as pie.
 
-`sudo apt install nginx`
+```shell
+sudo apt install nginx
+```
 
 **Configuring Nginx**
 
 Next, we'll need to configure Nginx so that it forwards traffic to our app. Let's start off by removing the default configuration file:
 
-`sudo rm /etc/nginx/sites-enabled/default`
+```shell
+sudo rm /etc/nginx/sites-enabled/default
+```
 
 Next, create a new file in /etc/nginx/sites-available/ called node and open it with nano:
 
-`sudo nano /etc/nginx/sites-available/node`
+```shell
+sudo nano /etc/nginx/sites-available/node
+```
 
 Paste the following code in the file and make sure to change example.com to your domain (or IP), and 1337 to your Node.js application port:
-<pre>
+```apacheconf
 server {
     listen 80;
     server_name example.com;
@@ -42,7 +48,8 @@ server {
         proxy_pass         "http://127.0.0.1:[YOUR PORT HERE]";
     }
 }
-</pre>
+```
+
 The proxy_pass declaration configures Nginx to act as a reverse proxy by forwarding all incoming requests on port 80 to your Node.js app on port 1337, on behalf of the client.
 
 Next, we need to symlink our configuration to sites-enabled for it to be used by Nginx, since it's currently in sites-available:
@@ -53,6 +60,8 @@ Next, we need to symlink our configuration to sites-enabled for it to be used by
 
 Let's restart Nginx so that it loads our configuration:
 
-`sudo service nginx restart`
+```shell
+sudo service nginx restart
+```
 
 All set! Nginx will now forward all incoming requests to your app and even survive a server crash, since it automatically starts up with your machine.

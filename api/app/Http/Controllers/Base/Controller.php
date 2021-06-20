@@ -4,7 +4,7 @@
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Base;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 

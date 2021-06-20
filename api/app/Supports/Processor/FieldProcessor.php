@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Providers\Processor;
+namespace App\Supports\Processor;
 
 use Illuminate\Database\DatabaseManager;
 use Krlove\CodeGenerator\Model\DocBlockModel;
-use Krlove\CodeGenerator\Model\PropertyModel;
 use Krlove\CodeGenerator\Model\VirtualPropertyModel;
 use Krlove\EloquentModelGenerator\Config;
 use Krlove\EloquentModelGenerator\Model\EloquentModel;
@@ -43,18 +42,33 @@ class FieldProcessor implements ProcessorInterface
      */
     public function process(EloquentModel $model, Config $config)
     {
-        $schemaManager = $this->databaseManager->connection($config->get('connection'))->getDoctrineSchemaManager();
-        $prefix        = $this->databaseManager->connection($config->get('connection'))->getTablePrefix();
+        $schemaManager = $this->databaseManager
+            ->connection($config->get('connection'))->getDoctrineSchemaManager();
+        $prefix = $this->databaseManager
+            ->connection($config->get('connection'))->getTablePrefix();
 
-        $tableDetails       = $schemaManager->listTableDetails($prefix . $model->getTableName());
-        $primaryColumnNames = $tableDetails->getPrimaryKey() ? $tableDetails->getPrimaryKey()->getColumns() : [];
+        $tableDetails = $schemaManager->listTableDetails($prefix . $model->getTableName());
+        $primaryColumnNames = $tableDetails->getPrimaryKey() ?
+            $tableDetails->getPrimaryKey()->getColumns() : [];
 
         $columnNames = [];
+        $_type = [
+            'json' => 'array'
+        ];
+
+        $casting = [];
+
         foreach ($tableDetails->getColumns() as $column) {
-            $model->addProperty(new VirtualPropertyModel(
-                $column->getName(),
-                $this->typeRegistry->resolveType($column->getType()->getName())
-            ));
+            $detail = json_decode($column->getComment());
+            $typeData = '';
+            if (isset($detail->type) && isset($_type[$detail->type])) {
+                $typeData = $_type[$detail->type];
+                $casting[$column->getName()] = $detail->type;
+            } else {
+                $typeData = $this->typeRegistry->resolveType($column->getType()->getName());
+            }
+
+            $model->addProperty(new VirtualPropertyModel($column->getName(), $typeData));
 
             if (!in_array($column->getName(), $primaryColumnNames)) {
                 $columnNames[] = $column->getName();
@@ -64,13 +78,29 @@ class FieldProcessor implements ProcessorInterface
         $fillableProperty = new PropertyModel('fillable');
         $fillableProperty->setAccess('protected')
             ->setValue($columnNames)
-            ->setDocBlock(new DocBlockModel('The attributes that are mass assignable.','','@var array'));
+            ->setDocBlock(new DocBlockModel(
+                'The attributes that are mass assignable.', '', '@var array'
+            ));
+
         $model->addProperty($fillableProperty);
+
+        if (count($casting)) {
+            $castsProperty = new PropertyModel('casts');
+            $castsProperty->setAccess('protected')
+                ->setValue($casting)
+                ->setDocBlock(new DocBlockModel(
+                    'The attributes that should be cast.', '', '@var array'
+                ));
+
+            $model->addProperty($castsProperty);
+        }
 
         $searchableProperty = new PropertyModel('searchable');
         $searchableProperty->setAccess('public')
             ->setValue($columnNames)
-            ->setDocBlock(new DocBlockModel('The attributes that are searchable.','','@var array'));
+            ->setDocBlock(new DocBlockModel(
+                'The attributes that are searchable.', '', '@var array'
+            ));
         $model->addProperty($searchableProperty);
 
         return $this;

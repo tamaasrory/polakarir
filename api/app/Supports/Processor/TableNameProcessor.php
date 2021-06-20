@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers\Processor;
+namespace App\Supports\Processor;
 
 use Krlove\CodeGenerator\Model\ClassNameModel;
 use Krlove\CodeGenerator\Model\DocBlockModel;

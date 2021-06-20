@@ -7,7 +7,7 @@
 namespace App\Http\Middleware;
 
 use App\Supports\ExtApi;
-use App\User;
+use App\Models\Base\User;
 use Closure;
 use Exception;
 use Firebase\JWT\ExpiredException;
@@ -36,7 +36,7 @@ class ExtJwt
         }
 
         $sub = $credentials->sub;
-        if ($sub->kdj != '-') { // bukan pegawai
+        if ($sub->kdj != '-') { // hanya pegawai yang terdaftar di sinergi
             // tambahkan paramater baru yaitu nip ke request
             $request->request->add(['nip' => $sub->id]);
             // get data user yang memiliki token ini, dari sinergi

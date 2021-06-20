@@ -1,8 +1,8 @@
 <?php
 
-use App\KeyGen;
-use App\Role;
-use App\User;
+use App\Models\Base\KeyGen;
+use App\Models\Base\Role;
+use App\Models\Base\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -44,14 +44,14 @@ class CreateAdminUserSeeder extends Seeder
             'id' => KeyGen::randomKey(),
             'name' => 'Administrator',
             'email' => 'administrator@bpp.pekanbaru.go.id',
-            'password' => password_hash('123456', PASSWORD_BCRYPT)
+            'password' => password_hash('bpp1442', PASSWORD_BCRYPT)
         ]);
 
         /** @var User $user */
         $user = User::where('email', 'administrator@bpp.pekanbaru.go.id')->first();
 
         /** @var Role $role */
-        $role = Role::create(['name' => 'Administrator', 'label' => ['01.01.04.02.']]);
+        $role = Role::create(['name' => 'Administrator', 'label' => []]);
         // atur permission yang akan diberikan
         $permissions = Permission::whereIn('name', [
             'user-list',
@@ -71,7 +71,7 @@ class CreateAdminUserSeeder extends Seeder
             'id' => KeyGen::randomKey(),
             'name' => 'Staff',
             'email' => 'staff-only@bpp.pekanbaru.go.id',
-            'password' => password_hash('123456', PASSWORD_BCRYPT)
+            'password' => password_hash('bpp1442', PASSWORD_BCRYPT)
         ]);
 
         /** @var User $user */

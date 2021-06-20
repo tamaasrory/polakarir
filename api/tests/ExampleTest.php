@@ -16,7 +16,7 @@ class ExampleTest extends TestCase
      */
     public function testExample()
     {
-        $this->get('/api/v1/');
-        $this->seeJson();
+        $this->json('GET', '/api/v1/')
+            ->seeJson();
     }
 }

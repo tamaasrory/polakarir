@@ -64,6 +64,7 @@ $app->singleton(
 $app->configure('auth');
 $app->configure('datatables');
 $app->configure('permission');
+$app->configure('eloquent_model_generator');
 
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +111,7 @@ $app->register(Intervention\Image\ImageServiceProvider::class);
 $app->register(Illuminate\Database\Eloquent\LegacyFactoryServiceProvider::class);
 $app->register(Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
 $app->register(Yajra\DataTables\DataTablesServiceProvider::class);
+$app->register(\App\Providers\GeneratorServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

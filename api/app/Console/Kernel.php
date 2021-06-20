@@ -17,11 +17,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\KeyGenerateCommand',
-        'App\Console\Commands\JwtSecretGenerateCommand',
-        'App\Console\Commands\ControllerMakeCommand',
-        'App\Console\Commands\ServeCommand',
-        'App\Console\Commands\VendorPublishCommand',
+        \App\Console\Commands\KeyGenerateCommand::class,
+        \App\Console\Commands\JwtSecretGenerateCommand::class,
+        \App\Console\Commands\ControllerMakeCommand::class,
+        \App\Console\Commands\ServeCommand::class,
+        \App\Console\Commands\VendorPublishCommand::class,
     ];
 
     /**
