@@ -134,6 +134,7 @@
           <v-col>
             <v-btn
               elevation="2"
+              @click="_addTujuan()"
               class="cyan accent-3 text-capitalize white--text rounded-xl"
             >Pilih tujuan</v-btn>
           </v-col>
@@ -290,6 +291,9 @@ export default {
     canEdit,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
+    },
+    _addTujuan() {
+      this.$router.push({name: 'tujuan_add'})
     },
     _add () {
       this.$router.push({ name: 'material_add' })

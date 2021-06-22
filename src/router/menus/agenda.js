@@ -23,6 +23,16 @@ export default [
     }
   },
   {
+    path: '/agenda/tujuan',
+    name: 'tujuan_add',
+    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/AddTujuan'),
+    meta: {
+      title: 'Tambah Tujuan',
+      requiresAuth: true,
+      allowRole: ['Super Admin', 'Administrator']
+    }
+  },
+  {
     path: '/agenda/view/:id',
     name: 'agenda_view',
     component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/View'),

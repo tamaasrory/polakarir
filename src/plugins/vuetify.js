@@ -1,11 +1,20 @@
-/*
- * Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
- * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
- */
+// src/plugins/vuetify.js
 
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 
 Vue.use(Vuetify)
 
-export default new Vuetify({})
+const vuetify = new Vuetify({
+  theme: {
+    themes: {
+      light: {
+        primary: '#2d62ed',
+        secondary: '#b0bec5',
+        anchor: '#8c9eff',
+      },
+    },
+  },
+})
+
+export default vuetify
