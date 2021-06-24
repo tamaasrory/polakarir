@@ -27,6 +27,16 @@ const Agenda = [
     }
   },
   {
+    path: '/agenda/buat_agenda',
+    name: 'buat_agenda',
+    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/BuatAgenda'),
+    meta: {
+      title: 'Buat Agenda',
+      requiresAuth: true,
+      requirePermission: permission + 'create'
+    }
+  },
+  {
     path: path + '/view/:id',
     name: routeName + '_view',
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),

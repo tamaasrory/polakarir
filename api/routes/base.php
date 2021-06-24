@@ -50,6 +50,29 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
         });
 
+        $router->group(['prefix' => 'suratkeluar'], function () use ($router) {
+
+            $router->get('all', 'SuratKeluarController@index');
+            $router->post('ttd', 'SuratKeluarController@ttd');
+            $router->get('detail/{id}', 'SuratKeluarController@show');
+            $router->post('baru', 'SuratKeluarController@store');
+            $router->put('update/{id}', 'SuratKeluarController@update');
+            $router->delete('delete/{id}', 'SuratKeluarController@destroy');
+
+
+        });
+
+        $router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {
+
+            $router->get('all', 'NomorSuratTerakhirController@index');
+            $router->get('all/{id_opd}', 'NomorSuratTerakhirController@indexByOPD');
+            $router->get('getnomor/{id_opd}/{id_jenis_surat}', 'NomorSuratTerakhirController@getNomorTerakhir');
+            $router->post('baru', 'NomorSuratTerakhirController@store');
+            $router->put('edit', 'NomorSuratTerakhirController@edit');
+            $router->delete('delete/{id_nomor_surat_terakhir}', 'NomorSuratTerakhirController@destroy');
+
+        });
+
         /** @see \App\Http\Controllers\Base\ExtAuthController::refresh() */
         $router->get('auth/refresh', 'Base\ExtAuthController@refresh');
 
