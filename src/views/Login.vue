@@ -14,7 +14,7 @@
     >
       <v-app-bar
         color="transparent"
-        :elevation="0"
+        elevation="0"
         fixed
         dark
       >

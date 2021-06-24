@@ -1,0 +1,4 @@
+### tambah jenis-surat
+GET http://localhost:7000/api/v1/surat-keluar/create
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8

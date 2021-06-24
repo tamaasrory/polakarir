@@ -1,19 +1,19 @@
 import $axios from '@/router/server'
 
-export default {
-  // START Roles API
-  getRoles ({ commit }, payload) {
+const SuratKeluar = {
+  // START SuratKeluar API
+  getSuratKeluar ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      const { page, itemsPerPage, sortBy, sortDesc, search } = payload
+      const { page, itemsPerPage, sortBy, sortDesc } = payload
       let query = {
-        search: search || '',
         page: page || 1,
         per_page: itemsPerPage || 5,
         sortBy: sortBy.length ? JSON.stringify(sortBy) : '',
-        sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : ''
+        sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : '',
+        ...payload.add
       }
       query = new URLSearchParams(query).toString()
-      $axios.get(`/roles/all?${query}`)
+      $axios.get(`/surat-keluar/all?${query}`)
         .then((response) => {
           if (response.status === 200) {
             const items = response.data.value.data
@@ -29,41 +29,9 @@ export default {
         })
     })
   },
-  getRolesById ({ commit }, payload) {
+  getSuratKeluarById ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/roles/detail/${payload.id}`)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve({})
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
-  getPermissions ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.get('/roles/permissions')
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve([])
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
-  deleteRoles ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.delete(`/roles/delete/${payload}`)
+      $axios.get(`/surat-keluar/detail/${payload.id}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -77,9 +45,9 @@ export default {
         })
     })
   },
-  addRoles ({ commit }, payload) {
+  deleteSuratKeluar ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post('/roles/baru', payload)
+      $axios.delete(`/surat-keluar/delete/${payload}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -93,9 +61,41 @@ export default {
         })
     })
   },
-  updateRoles ({ commit }, payload) {
+  createSuratKeluar ({ commit }) {
     return new Promise((resolve, reject) => {
-      $axios.put(`/roles/update/${payload.id}`, payload)
+      $axios.get('/surat-keluar/create')
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve([])
+        })
+    })
+  },
+  addSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.post('/surat-keluar/baru', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve([])
+        })
+    })
+  },
+  updateSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.put(`/surat-keluar/update/${payload.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)
@@ -110,5 +110,7 @@ export default {
         })
     })
   }
-  // END Roles API
+  // END SuratKeluar API
 }
+
+export default SuratKeluar

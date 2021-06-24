@@ -9,14 +9,13 @@
       fixed
       dark
       color="primary"
-      elevation="0"
-    >
+          >
       <v-btn
         icon
         dark
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title>Material Baru</v-toolbar-title>
     </v-app-bar>

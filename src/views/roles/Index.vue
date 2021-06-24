@@ -7,7 +7,6 @@
   <div class="roles">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
@@ -101,7 +100,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['admin'])"
             bottom
           >
             <template #activator="{ on, attrs }">
@@ -119,7 +118,7 @@
             <span>Hapus</span>
           </v-tooltip>
           <!--          <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['admin'])"
             bottom
           >
             <template v-slot:activator="{ on, attrs }">
@@ -236,7 +235,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can } from '@/plugins/supports'
 
 export default {
   name: 'Roles',
@@ -299,7 +298,7 @@ export default {
   },
   methods: {
     ...mapActions(['getRoles', 'deleteRoles']),
-    canEdit,
+    can,
     _detail (value) {
       this.$router.push({ name: 'roles_view', params: { id: value.id } })
     },

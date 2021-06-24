@@ -7,16 +7,16 @@
   <div>
     <v-app-bar
       fixed
-      dark
-      color="primary"
-      elevation="0"
+      light
+      color="white"
+      app
     >
       <v-btn
         icon
-        dark
+        light
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
         Detail User
@@ -70,7 +70,7 @@
                 >
                   Email
                 </label>
-                <div v-text="user.email" />
+                <div v-text="user.email || `-`" />
               </v-col>
               <v-col
                 cols="12"
@@ -111,7 +111,7 @@
                 </label>
                 <div>
                   <span v-if="!user.detail">-</span>
-                  <span v-else>{{ user.detail.no_hp }} </span>
+                  <span v-else>{{ user.detail.no_hp || '-' }} </span>
                 </div>
               </v-col>
               <v-col

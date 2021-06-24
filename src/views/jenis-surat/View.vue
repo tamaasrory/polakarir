@@ -9,22 +9,23 @@
       fixed
       dark
       color="primary"
-      elevation="0"
     >
       <v-btn
         icon
         dark
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">
+          mdi-arrow-left
+        </v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
-        Detail Material
+        Detail Jenis Surat
         <div
           v-if="!loadingData"
           style="font-size: 11pt"
         >
-          {{ material.id }}
+          {{ jenis_surat.id }}
         </div>
         <v-skeleton-loader
           v-else
@@ -56,9 +57,9 @@
                   class="v-label v-label--active theme--light"
                   style="font-size: 9pt !important;"
                 >
-                  Nama Material
+                  Nama Jenis Surat
                 </label>
-                <div v-text="material.nama" />
+                <div v-text="jenis_surat.nama" />
               </v-col>
               <v-col
                 cols="12"
@@ -70,7 +71,7 @@
                 >
                   Satuan
                 </label>
-                <div v-text="material.satuan" />
+                <div v-text="jenis_surat.satuan" />
               </v-col>
             </v-row>
           </v-col>
@@ -90,24 +91,24 @@ export default {
   data () {
     return {
       loadingData: true,
-      material: {}
+      jenis_surat: {}
     }
   },
   created () {
-    this.getMaterialById({ id: this.id })
+    this.getJenisSuratById({ id: this.id })
       .then(data => {
-        this.material = data || {}
+        this.jenis_surat = data || {}
         this.loadingData = false
       })
       .catch((error) => {
-        this.material = {}
+        this.jenis_surat = {}
         console.log('Error : ' + error)
       })
   },
   methods: {
-    ...mapActions(['getMaterialById']),
+    ...mapActions(['getJenisSuratById']),
     backButton () {
-      this.$router.push({ name: 'material' })
+      this.$router.push({ name: 'jenis_surat' })
     }
   }
 }

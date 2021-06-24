@@ -19,7 +19,7 @@ $axios.interceptors.request.use(
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
-      console.log('token on request = ' + token)
+      // console.log('token on request = ' + token)
     }
 
     return config

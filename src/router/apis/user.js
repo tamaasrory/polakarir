@@ -4,7 +4,7 @@ export default {
   // START USER API
   getUser ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      let { page, itemsPerPage, sortBy, sortDesc, search } = payload
+      const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {
         search: search || '',
         page: page || 1,
@@ -16,7 +16,7 @@ export default {
       $axios.get(`/user/all?${query}`)
         .then((response) => {
           if (response.status === 200) {
-            let items = response.data.value.data
+            const items = response.data.value.data
             const total = response.data.value.total
             resolve({ items, total })
           } else {
@@ -47,7 +47,7 @@ export default {
   },
   getUserCreate ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/user/create`)
+      $axios.get('/user/create')
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -95,7 +95,7 @@ export default {
   },
   addUser ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post(`/user/baru`, payload)
+      $axios.post('/user/baru', payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)

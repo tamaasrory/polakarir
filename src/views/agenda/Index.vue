@@ -7,7 +7,6 @@
   <div class="material">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
@@ -63,12 +62,12 @@
         @page-count="config.table.pageCount = $event"
         @pagination="pagination=$event"
       >
-        <template v-slot:item.updated_at="{item}">
+        <template #item.updated_at="{item}">
           {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
         </template>
-        <template v-slot:item.aksi="{item}">
+        <template #item.aksi="{item}">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 v-bind="attrs"
@@ -85,10 +84,10 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['admin'])"
             bottom
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -103,7 +102,7 @@
             <span>Hapus</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -219,7 +218,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can } from '@/plugins/supports'
 
 export default {
   name: 'Material',
@@ -282,7 +281,7 @@ export default {
   },
   methods: {
     ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
+    can,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },
@@ -297,11 +296,11 @@ export default {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus material`
+        this.dcMessages = 'Sedang menghapus material'
         this.deleteMaterial(this.deleteId).then(res => {
           this._loadData(true)
           this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Material`
+          this.dcMessages = 'Berhasil Menghapus Material'
           setTimeout(() => {
             this.deleteId = ''
             this.showDC = false

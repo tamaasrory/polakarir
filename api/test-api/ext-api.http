@@ -16,7 +16,7 @@ POST http://localhost:7000/api/test/opd-by-id
 Content-Type: application/json
 
 {
-    "id_opd": "1"
+    "id_opd": "5"
 }
 
 ### uji coba akses langsung ke server sinergi, untuk get seluruh pegawai by id_opd
@@ -24,7 +24,7 @@ POST http://localhost:7000/api/test/pegawai-by-opd
 Content-Type: application/json
 
 {
-    "id_opd": "1"
+    "id_opd": "5"
 }
 
 ### uji coba akses langsung ke server sinergi, untuk get detail pegawai by nip

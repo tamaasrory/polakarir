@@ -4,30 +4,34 @@
   -->
 
 <template>
-  <div class="material">
+  <div class="jenis_surat">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
     >
       <v-icon
         color="primary"
+        class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
+      <v-toolbar-title class="text-capitalize">
+        jenis surat
+      </v-toolbar-title>
       <v-spacer />
       <v-btn
-        title="Tambah Material"
+        title="Tambah jenis surat"
         icon
         @click="_add()"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-btn
+        title="pencarian"
         icon
-        @click="toggleFp = !toggleFp"
+        @click="booltmp.fp = !booltmp.fp"
       >
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
@@ -40,13 +44,9 @@
       </v-btn>
     </v-app-bar>
     <v-container fluid>
-      <h1 class="my-2">
-        Material
-      </h1>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
-        :search="searchQuery"
         :items="datas"
         :sort-by.sync="config.table.sortBy"
         :sort-desc.sync="config.table.sortDesc"
@@ -63,12 +63,12 @@
         @page-count="config.table.pageCount = $event"
         @pagination="pagination=$event"
       >
-        <template v-slot:item.updated_at="{item}">
+        <template #item.updated_at="{item}">
           {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
         </template>
-        <template v-slot:item.aksi="{item}">
+        <template #item.aksi="{item}">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 v-bind="attrs"
@@ -85,10 +85,10 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['admin'])"
             bottom
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -102,8 +102,8 @@
             </template>
             <span>Hapus</span>
           </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+          <!--          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -116,7 +116,7 @@
               </v-btn>
             </template>
             <span>Detail</span>
-          </v-tooltip>
+          </v-tooltip>-->
         </template>
       </v-data-table>
       <div
@@ -155,7 +155,7 @@
       :message="dcMessages"
     />
     <v-navigation-drawer
-      v-model="toggleFp"
+      v-model="booltmp.fp"
       fixed
       width="350"
       temporary
@@ -164,13 +164,13 @@
       <v-list-item class="grey lighten-4">
         <v-list-item-content>
           <v-list-item-title>
-            <v-icon>mdi-filter-outline</v-icon> Filter
+            <v-icon>mdi-magnify</v-icon> Pencarian Surat
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-icon>
           <v-btn
             icon
-            @click="toggleFp=!toggleFp"
+            @click="booltmp.fp=!booltmp.fp"
           >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
@@ -182,9 +182,29 @@
           cols="12"
         >
           <v-text-field
-            v-model="searchQuery"
-            placeholder="ketikkan sesuatu untuk mencari"
+            v-model="filterTask.search"
+            placeholder="ketikkan sesuatu"
             label="Pencarian"
+            light
+            clearable
+            hide-details
+            outlined
+            class="mb-4"
+          />
+          <v-text-field
+            v-model="filterTask.nomor_surat"
+            placeholder="ketikkan kode surat"
+            label="Kode Surat"
+            light
+            clearable
+            hide-details
+            outlined
+            class="mb-4"
+          />
+          <v-text-field
+            v-model="filterTask.nama_jenis_surat"
+            placeholder="ketikkan nama jenis surat"
+            label="Nama Jenis Surat"
             light
             clearable
             hide-details
@@ -198,7 +218,7 @@
         style="position: absolute;bottom: 0;right: 0"
       >
         <v-btn
-          v-show="searchQuery"
+          v-show="isClearSearch"
           text
           color="primary"
           @click="_clearFilter()"
@@ -219,17 +239,24 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can, isEmpty } from '@/plugins/supports'
 
 export default {
-  name: 'Material',
+  name: 'JenisSurat',
   components: {
     'delete-dialog-confirm': Dialog
   },
   data () {
     return {
-      searchQuery: '',
-      toggleFp: false,
+      filterTask: {
+        search: null,
+        kode_surat: null,
+        nama_jenis_surat: null
+      },
+      booltmp: {
+        fp: false,
+        ft: false
+      },
       isLoading: true,
       datas: [],
 
@@ -265,11 +292,20 @@ export default {
           align: 'left',
           value: 'id'
         },
-        { text: 'Nama', value: 'nama' },
-        { text: 'Satuan', value: 'satuan' },
-        { text: 'Updated', value: 'updated_at' },
+        { text: 'Kode Surat', value: 'kode_surat' },
+        { text: 'Nama Jenis Surat', value: 'nama_jenis_surat' },
+        { text: 'Dibuat', value: 'created_at' },
+        { text: 'Diperbarui', value: 'updated_at' },
         { text: '', value: 'aksi' }
       ]
+    },
+    isClearSearch () {
+      for (const filterTaskKey in this.filterTask) {
+        if (!isEmpty(this.filterTask[filterTaskKey])) {
+          return true
+        }
+      }
+      return false
     }
   },
   watch: {
@@ -281,27 +317,27 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
+    ...mapActions(['getJenisSurat', 'deleteJenisSurat']),
+    can,
     _detail (value) {
-      this.$router.push({ name: 'material_view', params: { id: value.id } })
+      this.$router.push({ name: 'jenis_surat_view', params: { id: value.id } })
     },
     _add () {
-      this.$router.push({ name: 'material_add' })
+      this.$router.push({ name: 'jenis_surat_add' })
     },
     _edit (value) {
-      this.$router.push({ name: 'material_edit', params: { id: value.id } })
+      this.$router.push({ name: 'jenis_surat_edit', params: { id: value.id } })
     },
     _delete (value) {
       if (value === true) {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus material`
-        this.deleteMaterial(this.deleteId).then(res => {
+        this.dcMessages = 'Sedang menghapus jenis surat'
+        this.deleteJenisSurat(this.deleteId).then(res => {
           this._loadData(true)
           this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Material`
+          this.dcMessages = 'Berhasil menghapus jenis surat'
           setTimeout(() => {
             this.deleteId = ''
             this.showDC = false
@@ -315,18 +351,22 @@ export default {
         })
       } else {
         this.deleteId = value.id
-        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
+        this.dcMessages = `Hapus jenis surat <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }
     },
     _clearFilter () {
-      this.searchQuery = null
+      this.filterTask = {
+        search: null,
+        kode_surat: null,
+        nama_jenis_surat: null
+      }
       this._loadData(true)
     },
     _loadData (abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
-        this.getMaterial({ search: this.searchQuery, ...this.options })
+        this.getJenisSurat({ add: this.filterTask, ...this.options })
           .then((data) => {
             this.datas = data.items || []
             this.serverLength = data.total || 0

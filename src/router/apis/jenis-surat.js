@@ -1,10 +1,10 @@
 import $axios from '@/router/server'
 
-export default {
-  // START Material API
-  getMaterial ({ commit }, payload) {
+const JenisSurat = {
+  // START JenisSurat API
+  getJenisSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      let { page, itemsPerPage, sortBy, sortDesc, search } = payload
+      const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {
         search: search || '',
         page: page || 1,
@@ -13,10 +13,10 @@ export default {
         sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : ''
       }
       query = new URLSearchParams(query).toString()
-      $axios.get(`/material/all?${query}`)
+      $axios.get(`/jenis-surat/all?${query}`)
         .then((response) => {
           if (response.status === 200) {
-            let items = response.data.value.data
+            const items = response.data.value.data
             const total = response.data.value.total
             resolve({ items, total })
           } else {
@@ -29,9 +29,9 @@ export default {
         })
     })
   },
-  getMaterialById ({ commit }, payload) {
+  getJenisSuratById ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/material/detail/${payload.id}`)
+      $axios.get(`/jenis-surat/detail/${payload.id}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -45,9 +45,9 @@ export default {
         })
     })
   },
-  deleteMaterial ({ commit }, payload) {
+  deleteJenisSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.delete(`/material/delete/${payload}`)
+      $axios.delete(`/jenis-surat/delete/${payload}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -61,9 +61,9 @@ export default {
         })
     })
   },
-  addMaterial ({ commit }, payload) {
+  addJenisSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post(`/material/baru`, payload)
+      $axios.post('/jenis-surat/baru', payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -77,9 +77,9 @@ export default {
         })
     })
   },
-  updateMaterial ({ commit }, payload) {
+  updateJenisSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.put(`/material/update/${payload.id}`, payload)
+      $axios.put(`/jenis-surat/update/${payload.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)
@@ -94,5 +94,7 @@ export default {
         })
     })
   }
-  // END Material API
+  // END JenisSurat API
 }
+
+export default JenisSurat

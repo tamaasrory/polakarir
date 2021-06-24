@@ -9,22 +9,21 @@
       fixed
       dark
       color="primary"
-      elevation="0"
-    >
+          >
       <v-btn
         icon
         dark
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
-        Edit Material
+        Edit Surat Keluar
         <div
           v-if="!loadingData"
           style="font-size: 11pt"
         >
-          {{ material.id }}
+          {{ surat_keluar.id }}
         </div>
         <v-skeleton-loader
           v-else
@@ -47,13 +46,13 @@
               md="12"
             >
               <v-text-field
-                v-model="material.nama"
-                label="Nama Material"
+                v-model="surat_keluar.nama"
+                label="Nama Surat Keluar"
                 outlined
                 :rules="[rules.required]"
               />
               <v-text-field
-                v-model="material.satuan"
+                v-model="surat_keluar.satuan"
                 label="Satuan"
                 outlined
                 :rules="[rules.required]"
@@ -103,7 +102,7 @@ export default {
   data () {
     return {
       loadingData: true,
-      material: {
+      surat_keluar: {
         nama: null,
         satuan: null
       },
@@ -121,39 +120,39 @@ export default {
   },
   computed: {
     dataValidation () {
-      return !!(this.material.nama)
+      return !!(this.surat_keluar.nama)
     }
   },
   created () {
-    this.getMaterialById({ id: this.id })
+    this.getSuratKeluarById({ id: this.id })
       .then(data => {
-        this.material = data || {}
+        this.surat_keluar = data || {}
         this.loadingData = false
       })
       .catch((error) => {
-        this.material = {}
+        this.surat_keluar = {}
         console.log('Error : ' + error)
       })
   },
   methods: {
-    ...mapActions(['getMaterialById', 'updateMaterial']),
+    ...mapActions(['getSuratKeluarById', 'updateSuratKeluar']),
     backButton () {
-      this.$router.push({ name: 'material' })
+      this.$router.push({ name: 'surat_keluar' })
     },
     postUpdate () {
       this.dcProgress = true
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
-      this.dcMessages = 'Sedang Menyimpan Material...'
+      this.dcMessages = 'Sedang Menyimpan Surat Keluar...'
 
-      this.updateMaterial(this.material).then((res) => {
-        this.dcMessages = 'Berhasil Memperbarui Material'
+      this.updateSuratKeluar(this.surat_keluar).then((res) => {
+        this.dcMessages = 'Berhasil Memperbarui Surat Keluar'
         this.dcProgress = false
         setTimeout(() => {
           this.showDC = false
           this.dcdisabledNegativeBtn = false
           this.dcdisabledPositiveBtn = false
-          this.$router.push({ name: 'material' })
+          this.$router.push({ name: 'surat_keluar' })
           this.dcMessages = 'Simpan Perubahan Sekarang?'
         }, 1500)
       })

@@ -53,6 +53,18 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         /** @see \App\Http\Controllers\Base\ExtAuthController::refresh() */
         $router->get('auth/refresh', 'Base\ExtAuthController@refresh');
 
+        $router->group(['prefix' => 'sinergi'], function () use ($router) {
+
+            /** @see \App\Http\Controllers\Base\SinergiController */
+            $ctrlName = 'Base\SinergiController';
+
+            $router->post('opd', $ctrlName . '@listOpd');
+            $router->post('opd-by-id', $ctrlName . '@getOpdById');
+            $router->post('pegawai-by-opd', $ctrlName . '@listPegawaiByOpd');
+            $router->post('pegawai-by-nip', $ctrlName . '@getPegawaiByNip');
+
+        });
+
         include "fitures.php";
     });
 });

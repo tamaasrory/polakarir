@@ -1,8 +1,8 @@
 import $axios from '@/router/server'
 
-export default {
-  // START Roles API
-  getRoles ({ commit }, payload) {
+const TemplateSurat = {
+  // START TemplateSurat API
+  getTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {
@@ -13,7 +13,7 @@ export default {
         sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : ''
       }
       query = new URLSearchParams(query).toString()
-      $axios.get(`/roles/all?${query}`)
+      $axios.get(`/template-surat/all?${query}`)
         .then((response) => {
           if (response.status === 200) {
             const items = response.data.value.data
@@ -29,41 +29,9 @@ export default {
         })
     })
   },
-  getRolesById ({ commit }, payload) {
+  getTemplateSuratById ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/roles/detail/${payload.id}`)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve({})
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
-  getPermissions ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.get('/roles/permissions')
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve([])
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
-  deleteRoles ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.delete(`/roles/delete/${payload}`)
+      $axios.get(`/template-surat/detail/${payload.id}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -77,9 +45,9 @@ export default {
         })
     })
   },
-  addRoles ({ commit }, payload) {
+  deleteTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post('/roles/baru', payload)
+      $axios.delete(`/template-surat/delete/${payload}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -93,9 +61,25 @@ export default {
         })
     })
   },
-  updateRoles ({ commit }, payload) {
+  addTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.put(`/roles/update/${payload.id}`, payload)
+      $axios.post('/template-surat/baru', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve([])
+        })
+    })
+  },
+  updateTemplateSurat ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.put(`/template-surat/update/${payload.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)
@@ -110,5 +94,7 @@ export default {
         })
     })
   }
-  // END Roles API
+  // END TemplateSurat API
 }
+
+export default TemplateSurat

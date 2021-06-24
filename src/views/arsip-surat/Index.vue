@@ -7,8 +7,7 @@
   <div class="material">
     <v-app-bar
       color="white"
-      elevation="0"
-      fixed
+            fixed
       app
       light
     >
@@ -85,7 +84,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['admin'])"
             bottom
           >
             <template v-slot:activator="{ on, attrs }">
@@ -219,7 +218,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can } from '@/plugins/supports'
 
 export default {
   name: 'Material',
@@ -282,7 +281,7 @@ export default {
   },
   methods: {
     ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
+    can,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },

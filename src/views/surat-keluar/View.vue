@@ -9,22 +9,21 @@
       fixed
       dark
       color="primary"
-      elevation="0"
-    >
+          >
       <v-btn
         icon
         dark
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
-        Detail Material
+        Detail Surat Keluar
         <div
           v-if="!loadingData"
           style="font-size: 11pt"
         >
-          {{ material.id }}
+          {{ surat_keluar.id }}
         </div>
         <v-skeleton-loader
           v-else
@@ -56,9 +55,9 @@
                   class="v-label v-label--active theme--light"
                   style="font-size: 9pt !important;"
                 >
-                  Nama Material
+                  Nama Surat Keluar
                 </label>
-                <div v-text="material.nama" />
+                <div v-text="surat_keluar.nama" />
               </v-col>
               <v-col
                 cols="12"
@@ -70,7 +69,7 @@
                 >
                   Satuan
                 </label>
-                <div v-text="material.satuan" />
+                <div v-text="surat_keluar.satuan" />
               </v-col>
             </v-row>
           </v-col>
@@ -90,24 +89,24 @@ export default {
   data () {
     return {
       loadingData: true,
-      material: {}
+      surat_keluar: {}
     }
   },
   created () {
-    this.getMaterialById({ id: this.id })
+    this.getSuratKeluarById({ id: this.id })
       .then(data => {
-        this.material = data || {}
+        this.surat_keluar = data || {}
         this.loadingData = false
       })
       .catch((error) => {
-        this.material = {}
+        this.surat_keluar = {}
         console.log('Error : ' + error)
       })
   },
   methods: {
-    ...mapActions(['getMaterialById']),
+    ...mapActions(['getSuratKeluarById']),
     backButton () {
-      this.$router.push({ name: 'material' })
+      this.$router.push({ name: 'surat_keluar' })
     }
   }
 }

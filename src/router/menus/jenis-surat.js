@@ -1,16 +1,16 @@
-const path = '/roles'
-const permission = 'role-'
-const routeName = 'roles'
-const folder = 'roles'
-const title = 'Roles'
-const Roles = [
+const path = '/jenis-surat'
+const permission = 'jenis-surat-'
+const routeName = 'jenis_surat'
+const folder = 'jenis-surat'
+const title = 'Jenis Surat'
+const JenisSurat = [
   {
     path: path,
     name: routeName,
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
       title: title,
-      icon: 'mdi-key',
+      icon: 'mdi-shape',
       // subheader: '-',
       requiresAuth: true,
       requirePermission: permission + 'list'
@@ -50,4 +50,4 @@ const Roles = [
   }
 ]
 
-export default Roles
+export default JenisSurat

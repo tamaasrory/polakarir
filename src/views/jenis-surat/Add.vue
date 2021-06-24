@@ -6,19 +6,21 @@
 <template>
   <div>
     <v-app-bar
+      color="white"
       fixed
-      dark
-      color="primary"
-      elevation="0"
+      app
+      light
     >
       <v-btn
         icon
         dark
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">
+          mdi-arrow-left
+        </v-icon>
       </v-btn>
-      <v-toolbar-title>Material Baru</v-toolbar-title>
+      <v-toolbar-title>Jenis Surat Baru</v-toolbar-title>
     </v-app-bar>
     <v-container class="white">
       <v-row class="py-0 py-md-3">
@@ -33,14 +35,14 @@
               md="12"
             >
               <v-text-field
-                v-model="material.nama"
-                label="Nama Material"
+                v-model="jenis_surat.nama_jenis_surat"
+                label="Nama Jenis Surat"
                 outlined
                 :rules="[rules.required]"
               />
               <v-text-field
-                v-model="material.satuan"
-                label="Satuan"
+                v-model="jenis_surat.kode_surat"
+                label="Kode Surat"
                 outlined
                 :rules="[rules.required]"
               />
@@ -48,8 +50,8 @@
               <v-btn
                 color="green"
                 large
-                :dark="dataValidation"
-                :disabled="!dataValidation"
+                :dark="!dataValidation"
+                :disabled="dataValidation"
                 @click="showDC = true"
               >
                 <v-icon color="white">
@@ -78,6 +80,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
+import { inputValidator, isEmpty } from '@/plugins/supports'
 
 export default {
   components: {
@@ -86,16 +89,22 @@ export default {
   data () {
     return {
       loadingData: true,
-      dataValidation: true,
-      material: {
-        nama: null,
-        satuan: null
+      jenis_surat: {
+        nama_jenis_surat: null,
+        kode_surat: null
+      },
+      schema: {
+        kode_surat: 'required',
+        nama_jenis_surat: 'required'
       },
       rules: {
-        required: value => !!value || 'Tidak Boleh Kosong'
+        required: v => {
+          v = isEmpty(v)
+          return !v || 'Tidak Boleh Kosong'
+        }
       },
       showDC: false,
-      dcMessages: 'Simpan Material Baru Sekarang?',
+      dcMessages: 'Simpan Jenis Surat Baru Sekarang?',
       dcProgress: false,
       dcdisabledNegativeBtn: false,
       dcdisabledPositiveBtn: false,
@@ -104,24 +113,27 @@ export default {
     }
   },
   computed: {
+    dataValidation () {
+      return inputValidator(this.schema, this.rules, this.jenis_surat)
+    }
   },
   methods: {
-    ...mapActions(['addMaterial']),
+    ...mapActions(['addJenisSurat']),
     backButton () {
-      this.$router.push({ name: 'material' })
+      this.$router.push({ name: 'jenis_surat' })
     },
     postAdd () {
       this.dcProgress = true
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
-      this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Material Baru...'
-      this.addMaterial(this.material).then((res) => {
+      this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Jenis Surat Baru...'
+      this.addJenisSurat(this.jenis_surat).then((res) => {
         this.dcProgress = false
-        this.dcMessages = 'Berhasil Menyimpan Material Baru'
+        this.dcMessages = 'Berhasil Menyimpan Jenis Surat Baru'
         setTimeout(() => {
           this.showDC = false
-          this.$router.push({ name: 'material' })
-          this.dcMessages = 'Simpan Material Baru Sekarang?'
+          this.$router.push({ name: 'jenis_surat' })
+          this.dcMessages = 'Simpan Jenis Surat Baru Sekarang?'
         }, 1500)
       })
     }

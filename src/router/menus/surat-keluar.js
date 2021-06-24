@@ -1,49 +1,53 @@
+const path = '/surat-keluar'
+const permission = 'surat-keluar-'
+const routeName = 'surat_keluar'
+const folder = 'surat-keluar'
+const title = 'Surat Keluar'
 const SuratKeluar = [
-  // ROUTES PARFUM START HERE
   {
-    path: '/surat-keluar',
-    name: 'surat-keluar',
-    component: () => import(/* webpackChunkName: "surat-keluar.chunk" */ '@/views/surat-keluar/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Surat Keluar',
+      title: title,
       icon: 'mdi-email-send',
-      // subheader: 'Data Master',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/surat-keluar/baru',
-    name: 'surat-keluar_add',
-    component: () => import(/* webpackChunkName: "surat-keluar.chunk" */ '@/views/surat-keluar/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Surat Keluar',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
-    path: '/surat-keluar/view/:id',
-    name: 'surat-keluar_view',
-    component: () => import(/* webpackChunkName: "surat-keluar.chunk" */ '@/views/surat-keluar/View'),
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
     props: true,
     meta: {
-      title: 'Detail Surat Keluar',
+      title: 'Detail' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/surat-keluar/edit/:id',
-    name: 'surat-keluar_edit',
-    component: () => import(/* webpackChunkName: "surat-keluar.chunk" */ '@/views/surat-keluar/Edit'),
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
-      title: 'Edit Surat Keluar',
+      title: 'Edit' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'edit'
     }
   }
-  // END PARFUM
 ]
+
 export default SuratKeluar

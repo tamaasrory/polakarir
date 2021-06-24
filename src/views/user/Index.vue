@@ -7,16 +7,17 @@
   <div class="user">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
     >
       <v-icon
         color="primary"
+        class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
+      <v-toolbar-title>User</v-toolbar-title>
 
       <v-spacer />
       <v-btn
@@ -41,9 +42,6 @@
       </v-btn>
     </v-app-bar>
     <v-container fluid>
-      <h1 class="mb-3 mt-1">
-        Pengguna
-      </h1>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
