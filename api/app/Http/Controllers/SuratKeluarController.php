@@ -229,8 +229,9 @@ class SuratKeluarController extends Controller {
 
 
 
-  //      shell_exec('export HOME=./ && libreoffice --headless -convert-to pdf --outdir ./suratkeluar_pdf /suratkeluar/edit.docx');
 
+        //convert to pdf
+        shell_exec("/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/SuratKeluar-1-1624501341.docx/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/");
 
         return "succes";
     }
