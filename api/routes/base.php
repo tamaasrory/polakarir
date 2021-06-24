@@ -60,7 +60,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->group(['prefix' => 'suratkeluar'], function () use ($router) {
 
             $router->get('all', 'SuratKeluarController@index');
-            $router->post('ttd', 'SuratKeluarController@ttd');
+            $router->post('tte', 'SuratKeluarController@tte');
             $router->get('detail/{id}', 'SuratKeluarController@show');
             $router->post('baru', 'SuratKeluarController@store');
             $router->put('update/{id}', 'SuratKeluarController@update');
