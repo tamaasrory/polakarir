@@ -18,7 +18,7 @@ class SuratKeluar extends SelfModel
     use Searchable;
 
     protected $table = 'tb_surat_keluar';
-    protected $primaryKey = 'id_opd';
+    protected $primaryKey = 'id_surat_keluar';
     public $incrementing = true;
 
     public $searchable = [
@@ -33,6 +33,7 @@ class SuratKeluar extends SelfModel
      * @var array
      */
     protected $fillable = [
+        'id_surat_keluar',
         'id_opd',
         'kode_jabatan_terusan',
         'id_jenis_surat',
