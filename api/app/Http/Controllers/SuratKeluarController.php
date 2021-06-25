@@ -206,62 +206,71 @@ class SuratKeluarController extends Controller {
 
         //data surat keluar
         $data = SuratKeluar::find($id_surat);
-        //data pegawai
-        $pegawai =  ExtApi::getPegawaiByNip($request);
+
+        if ($data['status'] != 'Selesai'){
+
+            //data pegawai
+            $pegawai =  ExtApi::getPegawaiByNip($request);
 
 
-        //Save into PDF
-        $savePdfPath =  './suratkeluar_pdf/'.$data['lampiran'].'.pdf';
+            //Save into PDF
+            $savePdfPath =  './suratkeluar_pdf/'.$data['lampiran'].'.pdf';
 
-        /*@ If already PDF exists then delete it */
-        if ( file_exists($savePdfPath) ) {
-            unlink($savePdfPath);
-        }
+            /*@ If already PDF exists then delete it */
+            if ( file_exists($savePdfPath) ) {
+                unlink($savePdfPath);
+            }
 
-        //generate qrcode
-        $output_file_qr = 'tte-'.$id_surat;
-        $this->generatorQr($savePdfPath,$output_file_qr);
+            //generate qrcode
+            $output_file_qr = 'tte-'.$id_surat;
+            $this->generatorQr($savePdfPath,$output_file_qr);
 
-        //lokasi surat keluar setelah di setujui (.docx)
-        $path_word_validasi = './suratkeluar_validasi/'.$data['lampiran'];
+            //lokasi surat keluar setelah di setujui (.docx)
+            $path_word_validasi = './suratkeluar_validasi/'.$data['lampiran'];
 
-        $tanggal = $this->tanggal_indo(date('Y-m-d'));
+            $tanggal = $this->tanggal_indo(date('Y-m-d'));
 
-        //update template
-        $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
-        $template->setValue('${nomorsurat}',"071/bbp-inotek/10/2021");
-        $template->setValue('${tanggal}',$tanggal);
-        $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
-        $template->setValue('${nip}',$pegawai['nip']);
+            //update template
+            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
+            $template->setValue('${nomorsurat}',"071/bbp-inotek/10/2021");
+            $template->setValue('${tanggal}',$tanggal);
+            $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
+            $template->setValue('${nip}',$pegawai['nip']);
 
-        if ($request->has('hash_tte')){
+            if ($request->has('hash_tte')){
 
-            //dengan tte
-            $hash_tte = $request->input('hash_tte');
-            $template->setImageValue('ttdelektronik',"./qrcode/$output_file_qr.jpg");
+                //dengan tte
+                $hash_tte = $request->input('hash_tte');
+                $template->setImageValue('ttdelektronik',"./qrcode/$output_file_qr.jpg");
+            }else{
+
+                //tanpa tte
+                $template->setValue('${ttdelektronik}',' </w:t><w:br/><w:t> ');
+            }
+
+            $template->saveAs($path_word_validasi);
+
+            //convert to pdf
+            $cmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/'.$data['lampiran'].'/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/';
+            shell_exec($cmd);
+
+            //update surat keluar
+            $data->status = 'Selesai';
+            $file = explode('.',$data['lampiran']);
+            $data->lampiran = $file[0].'.pdf';
+            $data->update();
+
+
+            return [
+                'value' => $data,
+                'msg' => "Surat Keluar Berhasil Disetujui"
+            ];
         }else{
-
-            //tanpa tte
-            $template->setValue('${ttdelektronik}',' </w:t><w:br/><w:t> ');
+            return [
+                'value' => $data,
+                'msg' => "Gagal,Status Surat Keluar Telah Selesai"
+            ];
         }
-
-        $template->saveAs($path_word_validasi);
-
-        //convert to pdf
-        $cmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/'.$data['lampiran'].'/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/';
-        shell_exec($cmd);
-
-        //update surat keluar
-        $data->status = 'Selesai';
-        $file = explode('.',$data['lampiran']);
-        $data->lampiran = $file[0].'.pdf';
-        $data->update();
-
-
-        return [
-            'value' => $data,
-            'msg' => "Surat Keluar Berhasil Disetujui"
-        ];
     }
 
     function generatorQr($data,$output_file){
