@@ -55,7 +55,99 @@
             </v-tabs>
           </v-col>
         </v-row>
-        
+        <v-row>
+          <v-col cols="3" class="align-self-center mr-auto">
+            <v-data-footer
+              :pagination="pagination"
+              :prev-icon="null"
+              :next-icon="null"
+              :first-icon="null"
+              :last-icon="null"
+              items-per-page-text="Show"
+              :items-per-page-options="[10, 15, 50, 100, -1]"
+              :options.sync="options"
+            />
+          </v-col>
+          <v-col cols="3" align="right" class="ml-auto">
+            <v-card-title>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                rounded
+                class="shrink"
+                outlined
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+          </v-col>
+          <v-col cols="1" class="align-self-lg-center" align="right">
+            <v-btn
+              class="mx-2"
+              fab
+              align="end"
+              x-small
+              outlined
+              @click="_addArsip()"
+              style="border-width: 3px"
+              color="cyan"
+            >
+              <v-icon dark large> mdi-plus </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-data-table
+          :loading="isLoading"
+          :headers="headerData"
+          :search="searchQuery"
+          :items="datas"
+          :sort-by.sync="config.table.sortBy"
+          :sort-desc.sync="config.table.sortDesc"
+          :items-per-page="config.table.itemsPerPage"
+          :page.sync="config.table.page"
+          :server-items-length="serverLength"
+          :options.sync="options"
+          height="350pt"
+          item-key="id"
+          class="elevation-2"
+          multi-sort
+          hide-default-footer
+          fixed-header
+          @page-count="config.table.pageCount = $event"
+          @pagination="pagination = $event"
+        >
+          <template v-slot:item.updated_at="{ item }">
+            {{ item.updated_at | moment("DD MMMM YYYY HH:mm") }}
+          </template>
+          <template v-slot:item.aksi="{ item }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" @click="_edit(item)" v-on="on">
+                  <v-icon color="blue"> mdi-circle-edit-outline </v-icon>
+                </v-btn>
+              </template>
+              <span>Ubah</span>
+            </v-tooltip>
+            <v-tooltip v-if="canEdit(['admin'])" bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn v-bind="attrs" icon @click="_delete(item)" v-on="on">
+                  <v-icon color="pink"> mdi-delete </v-icon>
+                </v-btn>
+              </template>
+              <span>Hapus</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn v-bind="attrs" icon @click="_detail(item)" v-on="on">
+                  <v-icon color="green"> mdi-file-find </v-icon>
+                </v-btn>
+              </template>
+              <span>Detail</span>
+            </v-tooltip>
+          </template>
+        </v-data-table>
       </v-card>
       <div class="row align-center pb-3">
         <div class="col-md-6 col-12 order-md-0 order-1 pt-0 pt-md-4">
