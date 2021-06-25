@@ -201,7 +201,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can } from '@/plugins/supports'
 
 export default {
   name: 'Material',
@@ -264,7 +264,7 @@ export default {
   },
   methods: {
     ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
+    can,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },

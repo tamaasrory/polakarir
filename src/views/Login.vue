@@ -4,14 +4,10 @@
   -->
 
 <template>
-
   <div
-    style=" background-size: cover;
-    height: 100%;
-    width: 100%"
-    :style="`background-image: url(${require('../assets/bg-login-v1.svg')});`"
+    style=" background-size: cover;height: 100%;width: 100%"
+    :style="`background-image: url(${require('../assets/bg-login.svg')});`"
   >
-
     <v-container
       fluid
       fill-height
@@ -186,7 +182,6 @@
         </v-flex>
       </v-layout>
     </v-container>
-
   </div>
 </template>
 

@@ -26,16 +26,16 @@ const Agenda = [
       requirePermission: permission + 'create'
     }
   },
-  {
-    path: '/agenda/buat_agenda',
-    name: 'buat_agenda',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/BuatAgenda'),
-    meta: {
-      title: 'Buat Agenda',
-      requiresAuth: true,
-      requirePermission: permission + 'create'
-    }
-  },
+  // {
+  //   path: '/agenda/buat_agenda',
+  //   name: 'buat_agenda',
+  //   component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/BuatAgenda'),
+  //   meta: {
+  //     title: 'Buat Agenda',
+  //     requiresAuth: true,
+  //     requirePermission: permission + 'create'
+  //   }
+  // },
   {
     path: path + '/view/:id',
     name: routeName + '_view',
