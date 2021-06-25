@@ -13,7 +13,7 @@
       >
         <v-flex xs12>
           <v-img
-            :src="require('../assets/logo-tajriy.svg')"
+            :src="require('../assets/ic-e-office.png')"
             class="my-3"
             contain
             height="200"
@@ -21,7 +21,7 @@
         </v-flex>
         <v-flex mb-4>
           <div class="subheading font-weight-bold mt-2 text-h6">
-            Tajriy App
+            E-Office
           </div>
           <div>App Version v1.0</div>
         </v-flex>

@@ -85,7 +85,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="can(['admin'])"
+            v-if="can(['jenis-surat-delete'])"
             bottom
           >
             <template #activator="{ on, attrs }">
