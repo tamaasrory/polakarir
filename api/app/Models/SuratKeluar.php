@@ -35,6 +35,7 @@ class SuratKeluar extends SelfModel
      */
     protected $fillable = [
         'id_surat_keluar',
+        'nip_author',
         'id_opd',
         'kode_jabatan_terusan',
         'id_jenis_surat',

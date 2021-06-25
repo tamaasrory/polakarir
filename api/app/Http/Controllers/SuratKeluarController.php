@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Base\Controller;
 use App\Models\JenisSurat;
 use App\Models\SuratKeluar;
+use App\Models\Base\KeyGen;
 use App\Supports\ExtApi;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
@@ -12,6 +13,9 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
+use NcJoes\OfficeConverter\OfficeConverter;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Settings;
 
 class SuratKeluarController extends Controller {
 
@@ -83,6 +87,7 @@ class SuratKeluarController extends Controller {
         $data = new SuratKeluar();
         $data->fill(request()->all());
 
+
         if ($request->hasFile('lampiran')) {
             $original_filename = $request->file('lampiran')->getClientOriginalName();
             $original_filename_arr = explode('.', $original_filename);
@@ -91,6 +96,8 @@ class SuratKeluarController extends Controller {
             $namasurat = 'SuratKeluar-'.$data['id_opd'].'-'. time() .'.' . $file_ext;
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
+                $data->id_surat_keluar = KeyGen::randomKey();
+                $data->status = 'Diajukan';
                 $data->lampiran =  $namasurat;
 
                 if ($data->save()) {
@@ -205,47 +212,79 @@ class SuratKeluarController extends Controller {
         ];
     }
 
-    public function ttd(Request $request){
+
+    public function tte(Request $request){
 
         $id_surat = $request->input('id_surat_keluar');
-        $nama_file_word = $request->input('nama_file_word');
-        $nip = $request->input('nip');
 
 
-        $pegawai =  ExtApi::getPegawaiByNip($request);
+        //data surat keluar
+        $data = SuratKeluar::find($id_surat);
+
+        if ($data['status'] != 'Selesai'){
+
+            //data pegawai
+            $pegawai =  ExtApi::getPegawaiByNip($request);
 
 
-        //Save into PDF
-        $savePdfPath =  './suratkeluar_pdf/'.$nama_file_word.'.pdf';
+            //Save into PDF
+            $savePdfPath =  './suratkeluar_pdf/'.$data['lampiran'].'.pdf';
 
-        /*@ If already PDF exists then delete it */
-        if ( file_exists($savePdfPath) ) {
-            unlink($savePdfPath);
+            /*@ If already PDF exists then delete it */
+            if ( file_exists($savePdfPath) ) {
+                unlink($savePdfPath);
+            }
+
+            //generate qrcode
+            $output_file_qr = 'tte-'.$id_surat;
+            $this->generatorQr($savePdfPath,$output_file_qr);
+
+            //lokasi surat keluar setelah di setujui (.docx)
+            $path_word_validasi = './suratkeluar_validasi/'.$data['lampiran'];
+
+            $tanggal = $this->tanggal_indo(date('Y-m-d'));
+
+            //update template
+            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
+            $template->setValue('${nomorsurat}',"071/bbp-inotek/10/2021");
+            $template->setValue('${tanggal}',$tanggal);
+            $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
+            $template->setValue('${nip}',$pegawai['nip']);
+
+            if ($request->has('hash_tte')){
+
+                //dengan tte
+                $hash_tte = $request->input('hash_tte');
+                $template->setImageValue('ttdelektronik',"./qrcode/$output_file_qr.jpg");
+            }else{
+
+                //tanpa tte
+                $template->setValue('${ttdelektronik}',' </w:t><w:br/><w:t> ');
+            }
+
+            $template->saveAs($path_word_validasi);
+
+            //convert to pdf
+            $cmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/'.$data['lampiran'].'/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/';
+            shell_exec($cmd);
+
+            //update surat keluar
+            $data->status = 'Selesai';
+            $file = explode('.',$data['lampiran']);
+            $data->lampiran = $file[0].'.pdf';
+            $data->update();
+
+
+            return [
+                'value' => $data,
+                'msg' => "Surat Keluar Berhasil Disetujui"
+            ];
+        }else{
+            return [
+                'value' => $data,
+                'msg' => "Gagal,Status Surat Keluar Telah Selesai"
+            ];
         }
-
-        //generate qrcode
-        $output_file_qr = 'tte-'.$id_surat;
-        $this->generatorQr($savePdfPath,$output_file_qr);
-
-
-        $path_word_validasi = './suratkeluar_validasi/'.$nama_file_word;
-        $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$nama_file_word.'');
-        $template->setValue('${nomorsurat}',"071/bbp-inotek/10/2021");
-        $template->setImageValue('ttdelektronik',"./qrcode/$output_file_qr.jpg");
-        $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
-        $template->setValue('${nip}',$pegawai['nip']);
-
-        $template->saveAs($path_word_validasi);
-
-
-
-
-
-
-        //convert to pdf
-        shell_exec("/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/SuratKeluar-1-1624501341.docx/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/");
-
-        return "succes";
     }
 
     function generatorQr($data,$output_file){
@@ -256,7 +295,7 @@ class SuratKeluarController extends Controller {
            ->setEncoding(new Encoding('UTF-8'))
            ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
            ->setSize(300)
-           ->setMargin(10)
+           ->setMargin(-10)
            ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
            ->setForegroundColor(new Color(0,0,0))
            ->setBackgroundColor(new Color(255,255,255));
@@ -268,6 +307,26 @@ class SuratKeluarController extends Controller {
         $result->saveToFile("./qrcode/$output_file.jpg");
 
 
+    }
+
+
+    function tanggal_indo($tanggal)
+    {
+        $bulan = array (1 =>   'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        );
+        $split = explode('-', $tanggal);
+        return $split[2] . ' ' . $bulan[ (int)$split[1] ] . ' ' . $split[0];
     }
 
 
