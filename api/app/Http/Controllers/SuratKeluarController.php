@@ -2,9 +2,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
+use App\Models\Base\KeyGen;
 use App\Models\JenisSurat;
 use App\Models\SuratKeluar;
-use App\Models\Base\KeyGen;
 use App\Supports\ExtApi;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
@@ -13,9 +13,6 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
-use NcJoes\OfficeConverter\OfficeConverter;
-use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\Settings;
 
 class SuratKeluarController extends Controller {
 
