@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJenisSuratTable extends Migration
+class CreateTbKlasifikasiTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateJenisSuratTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_jenis_surat', function (Blueprint $table) {
-            $table->id('id_jenis_surat');
-            $table->string('kode_surat', 10);
-            $table->string('nama_jenis_surat', 100);
+        Schema::create('tb_klasifikasi', function (Blueprint $table) {
+            $table->id('id_klasifikasi');
+            $table->string('nama_klasifikasi',200);
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateJenisSuratTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_jenis_surat');
+        Schema::dropIfExists('tb_klasifikasi');
     }
 }
