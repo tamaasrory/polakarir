@@ -26,7 +26,7 @@
       <v-row class="py-6 py-md-8 px-2">
         <v-col
           cols="12"
-          md="4"
+          md="8"
           class="py-0"
         >
           <v-autocomplete
@@ -40,239 +40,18 @@
         </v-col>
         <v-col
           cols="12"
-          md="8"
+          md="4"
           class="py-0"
         >
-          <v-autocomplete
-            v-model="surat_keluar.id_opd"
-            :items="items.opd"
-            label="OPD"
-            outlined
-            :rules="[rules.required]"
-            :disabled="tmp.loadingOpd"
-            @change="onChangeOpd"
-          />
-        </v-col>
-        <v-col
-          v-if="tmp.loadingOpd"
-          class="pt-0 pb-5 text-center"
-          md="12"
-        >
-          <div
-            style="background-color: #eee"
-            class="py-3"
-          >
-            <v-progress-circular
-              :indeterminate="tmp.loadingOpd"
-              color="primary"
-              class="mr-2"
-            />
-            Sedang Memuat Data...
-          </div>
-        </v-col>
-        <v-col
-          v-show="tmp.opd_selected"
-          class="pb-0"
-        >
           <v-btn
-            class="float-left"
-            x-small
-            text
-            absolute
-            right
-            style="margin-top: -36px;"
-            @click="colSize.expand?collapse():expand()"
+            x-large
+            color="#2d62ed"
+            dark
+            block
+            @click="tmp.showDialogTujuan=true"
           >
-            {{ colSize.expand?'kecilkan&nbsp;':'perluas&nbsp;' }}
-            <v-icon
-              small
-              color="primary"
-            >
-              {{ 'mdi-arrow-'+(colSize.expand?'collapse':'expand') }}
-            </v-icon>
+            Tujuan Surat
           </v-btn>
-          <v-row>
-            <v-col
-              :cols="colSize.col"
-              :sm="colSize.sm"
-              :md="colSize.md"
-              class="py-0"
-            >
-              <v-autocomplete
-                v-model="tmp.jabatan"
-                :items="items.jabatan"
-                label="Pilih Berdasarkan Jabatan"
-                outlined
-                multiple
-                deletable-chips
-                clearable
-                @change="onChangeJabatan"
-              >
-                <template #prepend-item>
-                  <v-list-item
-                    ripple
-                    @click="togglejabatan()"
-                  >
-                    <v-list-item-action>
-                      <v-icon :color="tmp.jabatan.length > 0 ? 'indigo darken-4' : ''">
-                        {{ toggleIconJabatan }}
-                      </v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        Select All
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider class="mt-2" />
-                </template>
-                <template #selection="{ item, index }">
-                  <v-chip
-                    v-if="index < colSize.show"
-                    close
-                    @click:close="remove(item.value,'jabatan')"
-                  >
-                    <span>{{ colSize.expand?item.text:item.text.substring(0,20)+'...' }}</span>
-                  </v-chip>
-                  <span
-                    v-if="index === colSize.show"
-                    class="primary--text text-caption"
-                  >
-                    (+{{ tmp.jabatan.length - colSize.show }})
-                  </span>
-                </template>
-              </v-autocomplete>
-            </v-col>
-            <v-col
-              :cols="colSize.col"
-              :sm="colSize.sm"
-              :md="colSize.md"
-              class="py-0"
-            >
-              <v-autocomplete
-                v-model="tmp.pegawai"
-                :items="items.pegawai"
-                label="Pilih Berdasarkan Nama Pegawai"
-                multiple
-                outlined
-                deletable-chips
-                clearable
-                @change="onChangePegawai"
-              >
-                <template #prepend-item>
-                  <v-list-item
-                    ripple
-                    @click="togglepegawai()"
-                  >
-                    <v-list-item-action>
-                      <v-icon :color="tmp.pegawai.length > 0 ? 'indigo darken-4' : ''">
-                        {{ toggleIconPegawai }}
-                      </v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        Select All
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider class="mt-2" />
-                </template>
-                <template #selection="{ item, index }">
-                  <v-chip
-                    v-if="index < colSize.show"
-                    close
-                    @click:close="remove(item.value,'pegawai')"
-                  >
-                    <span>{{ (colSize.expand?item.text:item.text.substring(0,20)+'...').toUpperCase() }}</span>
-                  </v-chip>
-                  <span
-                    v-if="index === colSize.show"
-                    class="primary--text text-caption"
-                  >
-                    (+{{ tmp.pegawai.length - colSize.show }})
-                  </span>
-                </template>
-              </v-autocomplete>
-            </v-col>
-            <v-col
-              :cols="colSize.col"
-              :sm="colSize.sm"
-              :md="colSize.md"
-              class="py-0"
-            >
-              <v-autocomplete
-                v-model="tmp.esselon"
-                :items="items.esselon"
-                label="Pilih Berdasarkan Esselon"
-                multiple
-                outlined
-                deletable-chips
-                clearable
-                @change="onChangeEsselon"
-              >
-                <template #prepend-item>
-                  <v-list-item
-                    ripple
-                    @click="toggleesselon()"
-                  >
-                    <v-list-item-action>
-                      <v-icon :color="tmp.esselon.length > 0 ? 'indigo darken-4' : ''">
-                        {{ toggleIconEsselon }}
-                      </v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        Select All
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider class="mt-2" />
-                </template>
-                <template #selection="{ item, index }">
-                  <v-chip
-                    v-if="index < colSize.show"
-                    close
-                    @click:close="remove(item.value,'esselon')"
-                  >
-                    <span>{{ item.text }}</span>
-                  </v-chip>
-                  <span
-                    v-if="index === colSize.show"
-                    class="primary--text text-caption"
-                  >
-                    (+{{ tmp.esselon.length - colSize.show }})
-                  </span>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col
-          v-show="tmp.opd_selected"
-          cols="12"
-          md="12"
-          class="pt-3 pb-5"
-        >
-          <v-data-table
-            fixed-header
-            :headers="[{text:'Tujuan Surat',value:'text'},{text:'Aksi',value:'value', align: 'center'}]"
-            :items="showDataTerpilih"
-            disable-pagination
-            hide-default-footer
-            class="elevation-1"
-            no-data-text="Belum ada tujuan yang dipilih"
-          >
-            <template #item.value="{item}">
-              <v-btn
-                icon
-                @click="removeDt(item.value)"
-              >
-                <v-icon color="#d81b60">
-                  mdi-delete
-                </v-icon>
-              </v-btn>
-            </template>
-          </v-data-table>
         </v-col>
         <v-col
           cols="12"
@@ -359,6 +138,7 @@
           class="py-0"
         >
           <v-text-field
+            v-model="surat_keluar.perihal_surat"
             label="Perihal Surat"
             outlined
           />
@@ -369,6 +149,7 @@
           class="py-0"
         >
           <v-file-input
+            v-model="surat_keluar.lampiran"
             label="Lampiran"
             prepend-inner-icon="mdi-paperclip"
             :prepend-icon="null"
@@ -395,6 +176,279 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog
+      v-model="tmp.showDialogTujuan"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-toolbar
+          dark
+          color="primary"
+        >
+          <v-btn
+            icon
+            dark
+            @click="tmp.showDialogTujuan = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Tujuan Surat</v-toolbar-title>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn
+              dark
+              text
+              @click="tmp.showDialogTujuan = false"
+            >
+              Simpan
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-card-text>
+          <v-container fluid>
+            <v-row>
+              <v-col
+                cols="12"
+                md="12"
+                class="pt-7 pt-md-6 pb-0"
+              >
+                <v-autocomplete
+                  v-model="surat_keluar.id_opd"
+                  :items="items.opd"
+                  label="OPD"
+                  outlined
+                  :rules="[rules.required]"
+                  :disabled="tmp.loadingOpd"
+                  @change="onChangeOpd"
+                />
+              </v-col>
+              <v-col
+                v-if="tmp.loadingOpd"
+                class="pt-0 pb-5 text-center"
+                md="12"
+              >
+                <div
+                  style="background-color: #fff"
+                  class="py-3"
+                >
+                  <v-progress-circular
+                    :indeterminate="tmp.loadingOpd"
+                    color="primary"
+                    class="mr-2"
+                  />
+                  Sedang Memuat Data...
+                </div>
+              </v-col>
+              <v-col
+                v-show="tmp.opd_selected"
+                cols="12"
+                md="12"
+                class="pb-0"
+              >
+                <v-btn
+                  class="float-right"
+                  x-small
+                  text
+                  style="margin-top: -36px;"
+                  @click="colSize.expand?collapse():expand()"
+                >
+                  {{ colSize.expand?'kecilkan&nbsp;':'perluas&nbsp;' }}
+                  <v-icon
+                    small
+                    color="primary"
+                  >
+                    {{ 'mdi-arrow-'+(colSize.expand?'collapse':'expand') }}
+                  </v-icon>
+                </v-btn>
+                <v-row>
+                  <v-col
+                    :cols="colSize.col"
+                    :sm="colSize.sm"
+                    :md="colSize.md"
+                    class="py-0"
+                  >
+                    <v-autocomplete
+                      v-model="tmp.jabatan[surat_keluar.id_opd]"
+                      :items="items.jabatan"
+                      label="Pilih Berdasarkan Jabatan"
+                      outlined
+                      multiple
+                      deletable-chips
+                      clearable
+                      @change="onChangeJabatan"
+                    >
+                      <template #prepend-item>
+                        <v-list-item
+                          ripple
+                          @click="togglejabatan()"
+                        >
+                          <v-list-item-action>
+                            <v-icon :color="tmp.jabatan[surat_keluar.id_opd].length > 0 ? 'indigo darken-4' : ''">
+                              {{ toggleIconJabatan }}
+                            </v-icon>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              Select All
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider class="mt-2" />
+                      </template>
+                      <template #selection="{ item, index }">
+                        <v-chip
+                          v-if="index < colSize.show"
+                          close
+                          @click:close="remove(item.value,'jabatan')"
+                        >
+                          <span>{{ colSize.expand?item.text:item.text.substring(0,20)+'...' }}</span>
+                        </v-chip>
+                        <span
+                          v-if="index === colSize.show"
+                          class="primary--text text-caption"
+                        >
+                          (+{{ tmp.jabatan[surat_keluar.id_opd].length - colSize.show }})
+                        </span>
+                      </template>
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col
+                    :cols="colSize.col"
+                    :sm="colSize.sm"
+                    :md="colSize.md"
+                    class="py-0"
+                  >
+                    <v-autocomplete
+                      v-model="tmp.pegawai[surat_keluar.id_opd]"
+                      :items="items.pegawai"
+                      label="Pilih Berdasarkan Nama Pegawai"
+                      multiple
+                      outlined
+                      deletable-chips
+                      clearable
+                      @change="onChangePegawai"
+                    >
+                      <template #prepend-item>
+                        <v-list-item
+                          ripple
+                          @click="togglepegawai()"
+                        >
+                          <v-list-item-action>
+                            <v-icon :color="tmp.pegawai[surat_keluar.id_opd].length > 0 ? 'indigo darken-4' : ''">
+                              {{ toggleIconPegawai }}
+                            </v-icon>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              Select All
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider class="mt-2" />
+                      </template>
+                      <template #selection="{ item, index }">
+                        <v-chip
+                          v-if="index < colSize.show"
+                          close
+                          @click:close="remove(item.value,'pegawai')"
+                        >
+                          <span>{{ (colSize.expand?item.text:item.text.substring(0,20)+'...').toUpperCase() }}</span>
+                        </v-chip>
+                        <span
+                          v-if="index === colSize.show"
+                          class="primary--text text-caption"
+                        >
+                          (+{{ tmp.pegawai[surat_keluar.id_opd].length - colSize.show }})
+                        </span>
+                      </template>
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col
+                    :cols="colSize.col"
+                    :sm="colSize.sm"
+                    :md="colSize.md"
+                    class="py-0"
+                  >
+                    <v-autocomplete
+                      v-model="tmp.esselon[surat_keluar.id_opd]"
+                      :items="items.esselon"
+                      label="Pilih Berdasarkan Esselon"
+                      multiple
+                      outlined
+                      deletable-chips
+                      clearable
+                      @change="onChangeEsselon"
+                    >
+                      <template #prepend-item>
+                        <v-list-item
+                          ripple
+                          @click="toggleesselon()"
+                        >
+                          <v-list-item-action>
+                            <v-icon :color="tmp.esselon[surat_keluar.id_opd].length > 0 ? 'indigo darken-4' : ''">
+                              {{ toggleIconEsselon }}
+                            </v-icon>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              Select All
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider class="mt-2" />
+                      </template>
+                      <template #selection="{ item, index }">
+                        <v-chip
+                          v-if="index < colSize.show"
+                          close
+                          @click:close="remove(item.value,'esselon')"
+                        >
+                          <span>{{ item.text }}</span>
+                        </v-chip>
+                        <span
+                          v-if="index === colSize.show"
+                          class="primary--text text-caption"
+                        >
+                          (+{{ tmp.esselon[surat_keluar.id_opd].length - colSize.show }})
+                        </span>
+                      </template>
+                    </v-autocomplete>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col
+                v-show="tmp.opd_selected"
+                cols="12"
+                md="12"
+                class="pt-3 pb-5"
+              >
+                <v-data-table
+                  fixed-header
+                  :headers="headerDt"
+                  :items="showDataTerpilih"
+                  multi-sort
+                  class="elevation-1"
+                  no-data-text="Belum ada tujuan yang dipilih"
+                >
+                  <template #item.value="{item}">
+                    <v-btn
+                      icon
+                      @click="removeDt(item)"
+                    >
+                      <v-icon color="#d81b60">
+                        mdi-delete
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </v-data-table>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <dialog-confirm
       :show-dialog="showDC"
       :negative-button="dcNegativeBtn"
@@ -422,7 +476,7 @@ export default {
       loadingData: true,
       surat_keluar: {
         id_jenis_surat: null,
-        id_opd: null,
+        id_opd: 0,
         data_terpilih: [],
         kategori_surat: null,
         karakteristik_surat: null,
@@ -432,11 +486,12 @@ export default {
       },
       tmp: {
         tujuan: 'jabatan',
-        jabatan: [],
-        esselon: [],
-        pegawai: [],
+        jabatan: { },
+        esselon: { },
+        pegawai: { },
         opd_selected: false,
-        loadingOpd: false
+        loadingOpd: false,
+        showDialogTujuan: false
       },
       items: { jenis_surat: [], opd: [], jabatan: [], esselon: [], pegawai: [], datas: [] },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
@@ -445,6 +500,7 @@ export default {
         id_jenis_surat: 'required',
         id_opd: 'required',
         kategori_surat: 'required',
+        data_terpilih: 'required',
         karakteristik_surat: 'required',
         derajat_surat: 'required',
         perihal_surat: 'required',
@@ -453,7 +509,6 @@ export default {
       rules: {
         required: v => {
           v = isEmpty(v)
-          console.log('v => ', v)
           return !v || 'Tidak Boleh Kosong'
         }
       },
@@ -472,43 +527,48 @@ export default {
       return inputValidator(this.schema, this.rules, this.surat_keluar)
     },
     selectedAllJabatan () {
-      return this.tmp.jabatan.length === this.items.jabatan.length
+      return this.tmp.jabatan[this.surat_keluar.id_opd].length === this.items.jabatan.length
     },
     selectedAllEsselon () {
-      return this.tmp.esselon.length === this.items.esselon.length
+      return this.tmp.esselon[this.surat_keluar.id_opd].length === this.items.esselon.length
     },
     selectedAllPegawai () {
-      return this.tmp.pegawai.length === this.items.pegawai.length
+      return this.tmp.pegawai[this.surat_keluar.id_opd].length === this.items.pegawai.length
     },
     toggleIconJabatan () {
       if (this.selectedAllJabatan) return 'mdi-close-box'
-      if (this.tmp.jabatan.length > 0 && !this.selectedAllJabatan) return 'mdi-minus-box'
+      if (this.tmp.jabatan[this.surat_keluar.id_opd].length > 0 && !this.selectedAllJabatan) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     },
     toggleIconEsselon () {
       if (this.selectedAllEsselon) return 'mdi-close-box'
-      if (this.tmp.esselon.length > 0 && !this.selectedAllEsselon) return 'mdi-minus-box'
+      if (this.tmp.esselon[this.surat_keluar.id_opd].length > 0 && !this.selectedAllEsselon) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     },
     toggleIconPegawai () {
       if (this.selectedAllPegawai) return 'mdi-close-box'
-      if (this.tmp.pegawai.length > 0 && !this.selectedAllPegawai) return 'mdi-minus-box'
+      if (this.tmp.pegawai[this.surat_keluar.id_opd].length > 0 && !this.selectedAllPegawai) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     },
     showDataTerpilih () {
-      const tmp = []
-      for (const d of this.tmp[this.tmp.tujuan]) {
-        for (const j of this.items[this.tmp.tujuan]) {
-          if (d === j.value) {
-            tmp.push(j)
-            break
-          }
-        }
-      }
-      return tmp
+      return this.surat_keluar.data_terpilih
+    },
+    headerDt () {
+      return [
+        { text: 'Nama', value: 'nama_pegawai' },
+        { text: 'OPD', value: 'opd' },
+        { text: 'Jabatan', value: 'nama_jabatan' },
+        { text: 'Esselon', value: 'esselon' },
+        { text: 'Aksi', value: 'value', align: 'center' }
+      ]
     }
   },
   created () {
+    for (const d of ['jabatan', 'esselon', 'pegawai']) {
+      for (let i = 0; i < 60; i++) {
+        this.tmp[d][i] = []
+      }
+    }
     this.createSuratKeluar().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.items.opd = isEmpty(data.opd, [])
@@ -517,22 +577,22 @@ export default {
   methods: {
     ...mapActions(['addSuratKeluar', 'createSuratKeluar', 'getPegawaiByOpd']),
     remove (item, key) {
-      const index = this.tmp[key].indexOf(item)
-      if (index >= 0) this.tmp[key].splice(index, 1)
+      const index = this.tmp[key][this.surat_keluar.id_opd].indexOf(item)
+      if (index >= 0) this.tmp[key][this.surat_keluar.id_opd].splice(index, 1)
     },
     removeDt (key) {
-      const index = this.tmp[this.tmp.tujuan].indexOf(key)
-      if (index >= 0) this.tmp[this.tmp.tujuan].splice(index, 1)
+      const index = this.surat_keluar.data_terpilih.indexOf(key)
+      if (index >= 0) this.surat_keluar.data_terpilih.splice(index, 1)
     },
     togglejabatan () {
       this.$nextTick(() => {
         this.onChangeJabatan()
         if (!this.selectedAllJabatan) {
-          this.tmp.jabatan = this.items.jabatan.map(d => {
+          this.tmp.jabatan[this.surat_keluar.id_opd] = this.items.jabatan.map(d => {
             return d.value
           })
         } else {
-          this.tmp.jabatan = []
+          this.tmp.jabatan[this.surat_keluar.id_opd] = []
         }
       })
     },
@@ -540,11 +600,11 @@ export default {
       this.$nextTick(() => {
         this.onChangeEsselon()
         if (!this.selectedAllEsselon) {
-          this.tmp.esselon = this.items.esselon.map(d => {
+          this.tmp.esselon[this.surat_keluar.id_opd] = this.items.esselon.map(d => {
             return d.value
           })
         } else {
-          this.tmp.esselon = []
+          this.tmp.esselon[this.surat_keluar.id_opd] = []
         }
       })
     },
@@ -552,22 +612,44 @@ export default {
       this.$nextTick(() => {
         this.onChangePegawai()
         if (!this.selectedAllPegawai) {
-          this.tmp.pegawai = this.items.pegawai.map(d => {
+          this.tmp.pegawai[this.surat_keluar.id_opd] = this.items.pegawai.map(d => {
             return d.value
           })
         } else {
-          this.tmp.pegawai = []
+          this.tmp.pegawai[this.surat_keluar.id_opd] = []
         }
       })
     },
     onChangeJabatan () {
-      this.tmp.tujuan = 'jabatan'; this.tmp.pegawai = []; this.tmp.esselon = []
+      this.tmp.tujuan = 'jabatan'
+      this.onChange()
     },
     onChangeEsselon () {
-      this.tmp.tujuan = 'esselon'; this.tmp.pegawai = []; this.tmp.jabatan = []
+      this.tmp.tujuan = 'esselon'
+      this.onChange()
     },
     onChangePegawai () {
-      this.tmp.tujuan = 'pegawai'; this.tmp.esselon = []; this.tmp.jabatan = []
+      this.tmp.tujuan = 'pegawai'
+      this.onChange()
+    },
+    onChange () {
+      for (const d of this.tmp[this.tmp.tujuan][this.surat_keluar.id_opd]) {
+        for (const data of this.items.datas) {
+          if (d.indexOf(data.kode_jabatan) > -1) {
+            let o = ''
+            for (const opd of this.items.opd) {
+              if (parseInt(data.kode_jabatan.substring(0, 2)) === opd.value) {
+                o = opd.text
+                break
+              }
+            }
+            data.opd = o
+            if (this.surat_keluar.data_terpilih.indexOf(data) === -1) {
+              this.surat_keluar.data_terpilih.push(data)
+            }
+          }
+        }
+      }
     },
     collapse () { this.colSize = { col: 12, sm: 12, md: 4, show: 1, expand: false } },
     expand () { this.colSize = { col: 12, sm: 12, md: 12, show: 15, expand: true } },
@@ -576,7 +658,6 @@ export default {
       this.items.jabatan = []
       this.items.esselon = []
       this.items.pegawai = []
-      this.surat_keluar.data_terpilih = []
       this.tmp.opd_selected = false
       this.tmp.loadingOpd = true
       this.getPegawaiByOpd({ id_opd: this.surat_keluar.id_opd })
@@ -606,7 +687,7 @@ export default {
             // kelompokkan kode_jabatan berdasarkan nip
             if (!JSON.stringify(this.items.pegawai).includes(d.nip)) {
               this.items.pegawai.push({
-                value: { kj: d.kode_jabatan, nip: d.nip },
+                value: d.kode_jabatan,
                 text: d.nama_pegawai
               })
             }

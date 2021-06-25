@@ -78,7 +78,7 @@ class ExtApi
             ->run();
         if ($tmp) {
             return array_values(array_filter($tmp, function ($data) use ($id_opd) {
-                if (((int)substr($data['kode_jabatan'], 0, 2)) == $id_opd) {
+                if ((((int)substr($data['kode_jabatan'], 0, 2)) == $id_opd) || ($id_opd == '-1')) {
                     return $data;
                 }
             }));

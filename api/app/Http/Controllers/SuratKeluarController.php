@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
@@ -14,7 +15,8 @@ use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 
-class SuratKeluarController extends Controller {
+class SuratKeluarController extends Controller
+{
 
     public $title = 'Surat Keluar';
 
@@ -34,7 +36,7 @@ class SuratKeluarController extends Controller {
      */
     public function index(Request $request)
     {
-        $data = SuratKeluar::search($request,new SuratKeluar());
+        $data = SuratKeluar::search($request, new SuratKeluar());
 
         if ($data) {
             return [
@@ -64,7 +66,9 @@ class SuratKeluarController extends Controller {
             $tmp['text'] = $data['nama'];
 
             return $tmp;
-        });
+        })->toArray();
+
+        $opd = array_merge([['value' => '-1', 'text' => 'Seluruh OPD']], $opd);
 
         return [
             'value' => compact('jenis_surat', 'opd')
@@ -80,7 +84,6 @@ class SuratKeluarController extends Controller {
     {
 
 
-
         $data = new SuratKeluar();
         $data->fill(request()->all());
 
@@ -90,12 +93,12 @@ class SuratKeluarController extends Controller {
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
             $destination_path = './suratkeluar/';
-            $namasurat = 'SuratKeluar-'.$data['id_opd'].'-'. time() .'.' . $file_ext;
+            $namasurat = 'SuratKeluar-' . $data['id_opd'] . '-' . time() . '.' . $file_ext;
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
                 $data->id_surat_keluar = KeyGen::randomKey();
                 $data->status = 'Diajukan';
-                $data->lampiran =  $namasurat;
+                $data->lampiran = $namasurat;
 
                 if ($data->save()) {
                     return [
@@ -116,10 +119,6 @@ class SuratKeluarController extends Controller {
                 'msg' => "{$this->title} baru gagal disimpan"
             ];
         }
-
-
-
-
 
 
         return [
@@ -210,7 +209,8 @@ class SuratKeluarController extends Controller {
     }
 
 
-    public function tte(Request $request){
+    public function tte(Request $request)
+    {
 
         $id_surat = $request->input('id_surat_keluar');
 
@@ -218,57 +218,57 @@ class SuratKeluarController extends Controller {
         //data surat keluar
         $data = SuratKeluar::find($id_surat);
 
-        if ($data['status'] != 'Selesai'){
+        if ($data['status'] != 'Selesai') {
 
             //data pegawai
-            $pegawai =  ExtApi::getPegawaiByNip($request);
+            $pegawai = ExtApi::getPegawaiByNip($request);
 
 
             //Save into PDF
-            $savePdfPath =  './suratkeluar_pdf/'.$data['lampiran'].'.pdf';
+            $savePdfPath = './suratkeluar_pdf/' . $data['lampiran'] . '.pdf';
 
             /*@ If already PDF exists then delete it */
-            if ( file_exists($savePdfPath) ) {
+            if (file_exists($savePdfPath)) {
                 unlink($savePdfPath);
             }
 
             //generate qrcode
-            $output_file_qr = 'tte-'.$id_surat;
-            $this->generatorQr($savePdfPath,$output_file_qr);
+            $output_file_qr = 'tte-' . $id_surat;
+            $this->generatorQr($savePdfPath, $output_file_qr);
 
             //lokasi surat keluar setelah di setujui (.docx)
-            $path_word_validasi = './suratkeluar_validasi/'.$data['lampiran'];
+            $path_word_validasi = './suratkeluar_validasi/' . $data['lampiran'];
 
             $tanggal = $this->tanggal_indo(date('Y-m-d'));
 
             //update template
-            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
-            $template->setValue('${nomorsurat}',"071/bbp-inotek/10/2021");
-            $template->setValue('${tanggal}',$tanggal);
-            $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
-            $template->setValue('${nip}',$pegawai['nip']);
+            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
+            $template->setValue('${nomorsurat}', "071/bbp-inotek/10/2021");
+            $template->setValue('${tanggal}', $tanggal);
+            $template->setValue('${namalengkap}', $pegawai['nama_pegawai']);
+            $template->setValue('${nip}', $pegawai['nip']);
 
-            if ($request->has('hash_tte')){
+            if ($request->has('hash_tte')) {
 
                 //dengan tte
                 $hash_tte = $request->input('hash_tte');
-                $template->setImageValue('ttdelektronik',"./qrcode/$output_file_qr.jpg");
-            }else{
+                $template->setImageValue('ttdelektronik', "./qrcode/$output_file_qr.jpg");
+            } else {
 
                 //tanpa tte
-                $template->setValue('${ttdelektronik}',' </w:t><w:br/><w:t> ');
+                $template->setValue('${ttdelektronik}', ' </w:t><w:br/><w:t> ');
             }
 
             $template->saveAs($path_word_validasi);
 
             //convert to pdf
-            $cmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/'.$data['lampiran'].'/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/';
+            $cmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/' . $data['lampiran'] . '/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/';
             shell_exec($cmd);
 
             //update surat keluar
             $data->status = 'Selesai';
-            $file = explode('.',$data['lampiran']);
-            $data->lampiran = $file[0].'.pdf';
+            $file = explode('.', $data['lampiran']);
+            $data->lampiran = $file[0] . '.pdf';
             $data->update();
 
 
@@ -276,7 +276,7 @@ class SuratKeluarController extends Controller {
                 'value' => $data,
                 'msg' => "Surat Keluar Berhasil Disetujui"
             ];
-        }else{
+        } else {
             return [
                 'value' => $data,
                 'msg' => "Gagal,Status Surat Keluar Telah Selesai"
@@ -284,23 +284,24 @@ class SuratKeluarController extends Controller {
         }
     }
 
-    function generatorQr($data,$output_file){
+    function generatorQr($data, $output_file)
+    {
 
-        $writer =  new PngWriter();
+        $writer = new PngWriter();
 
-       $qrCode = QrCode::create($data)
-           ->setEncoding(new Encoding('UTF-8'))
-           ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-           ->setSize(300)
-           ->setMargin(-10)
-           ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
-           ->setForegroundColor(new Color(0,0,0))
-           ->setBackgroundColor(new Color(255,255,255));
+        $qrCode = QrCode::create($data)
+            ->setEncoding(new Encoding('UTF-8'))
+            ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+            ->setSize(300)
+            ->setMargin(-10)
+            ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+            ->setForegroundColor(new Color(0, 0, 0))
+            ->setBackgroundColor(new Color(255, 255, 255));
 
 
-       $result = $writer->write($qrCode);
+        $result = $writer->write($qrCode);
 
-       //save qrcode
+        //save qrcode
         $result->saveToFile("./qrcode/$output_file.jpg");
 
 
@@ -309,7 +310,7 @@ class SuratKeluarController extends Controller {
 
     function tanggal_indo($tanggal)
     {
-        $bulan = array (1 =>   'Januari',
+        $bulan = array(1 => 'Januari',
             'Februari',
             'Maret',
             'April',
@@ -323,9 +324,8 @@ class SuratKeluarController extends Controller {
             'Desember'
         );
         $split = explode('-', $tanggal);
-        return $split[2] . ' ' . $bulan[ (int)$split[1] ] . ' ' . $split[0];
+        return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
     }
-
 
 
 }
