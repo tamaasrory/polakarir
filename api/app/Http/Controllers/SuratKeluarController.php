@@ -14,6 +14,8 @@ use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\NomorSuratTerakhirController;
+
 class SuratKeluarController extends Controller {
 
     public $title = 'Surat Keluar';
@@ -241,12 +243,19 @@ class SuratKeluarController extends Controller {
 
             $tanggal = $this->tanggal_indo(date('Y-m-d'));
 
+            //get nomor surat terakhir
+            $nomorSuratTerakhir = new NomorSuratTerakhirController;
+            $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'],$data['id_jenis_surat']);
+
             //update template
             $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
-            $template->setValue('${nomorsurat}',"071/bbp-inotek/10/2021");
+            $template->setValue('${nomorsurat}',$nomor_surat['nomor_selanjutnya']);
             $template->setValue('${tanggal}',$tanggal);
             $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
             $template->setValue('${nip}',$pegawai['nip']);
+
+            //update data nomor terakhir surat, nomor autonya berubah jadi nomor yang telah dipakai
+            $nomorSuratTerakhir->update($data['id_opd'],$data['id_jenis_surat'],$nomor_surat['nomor_auto_selanjutnya']);
 
             if ($request->has('hash_tte')){
 

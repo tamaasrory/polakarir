@@ -60,11 +60,11 @@ class NomorSuratTerakhirController extends Controller
         ];
     }
 
-    public function getNomorTerakhir(Request $request)
+    public function getNomorTerakhir($id_opd,$id_jenis_surat)
     {
         $data = DB::table('tb_nomor_surat_terakhir')
             ->join('tb_jenis_surat', 'tb_nomor_surat_terakhir.id_jenis_surat', '=', 'tb_jenis_surat.id_jenis_surat')
-            ->where(["tb_nomor_surat_terakhir.id_opd" => $request->id_opd, 'tb_nomor_surat_terakhir.id_jenis_surat' => $request->id_jenis_surat])
+            ->where(["tb_nomor_surat_terakhir.id_opd" => $id_opd, 'tb_nomor_surat_terakhir.id_jenis_surat' => $id_jenis_surat])
             ->select('tb_nomor_surat_terakhir.*', 'tb_jenis_surat.kode_surat', 'tb_jenis_surat.nama_jenis_surat')
             ->first();
 
@@ -72,6 +72,7 @@ class NomorSuratTerakhirController extends Controller
             $format = explode("/", $data->format_penomoran);
             $format_terakhir = "";
             $format_selanjutnya = "";
+            $nomor_auto_selanjutnya = "";
             foreach ($format as $d) {
                 //jika pertama tidak pakai slash
                 if ($format_terakhir == "") {
@@ -83,6 +84,7 @@ class NomorSuratTerakhirController extends Controller
                 //auto increment utk nomor_auto
                 if ($d == "nomor_auto") {
                     $data->$d = $data->$d + 1;
+                    $nomor_auto_selanjutnya = $data->$d;
                 }
 
                 //jika pertama tidak pakai slash
@@ -96,12 +98,14 @@ class NomorSuratTerakhirController extends Controller
             return [
                 'nomor_terakhir' => $format_terakhir,
                 'nomor_selanjutnya' => $format_selanjutnya,
+                'nomor_auto_selanjutnya' => $nomor_auto_selanjutnya,
                 'msg' => "Data {$this->title} Ditemukan"
             ];
         }
         return [
             'nomor_terakhir' => "",
             'nomor_selanjutnya' => "",
+            'nomor_auto_selanjutnya' => "",
             'msg' => "Data {$this->title} Tidak Ditemukan"
         ];
     }
@@ -154,6 +158,22 @@ class NomorSuratTerakhirController extends Controller
             ->delete();
         if ($delete) {
             return response()->json(['msg' => 'Berhasil dihapus']);
+        } else {
+            return response()->json(['msg' => 'Terjadi masalah, coba lagi']);
+        }
+
+    }
+
+    public function update($id_opd,$id_jenis_surat,$nomor_auto)
+    {
+        $edit = DB::table('tb_nomor_surat_terakhir')
+            ->where(['id_opd'=>$id_opd,'id_jenis_surat'=>$id_jenis_surat])
+            ->update([
+                'nomor_auto' => $nomor_auto,
+                'modified_at' => Carbon::now()
+            ]);
+        if ($edit) {
+            return response()->json(['msg' => 'Berhasil update']);
         } else {
             return response()->json(['msg' => 'Terjadi masalah, coba lagi']);
         }
