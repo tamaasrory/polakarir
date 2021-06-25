@@ -13,35 +13,102 @@
     >
       <v-icon
         color="primary"
+        class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
-      <v-spacer />
-      <v-btn
-        title="Tambah Material"
-        icon
-        @click="_add()"
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click="toggleFp = !toggleFp"
-      >
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <v-btn
-        title="Perbarui Data"
-        icon
-        @click="_loadData(true)"
-      >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
+      <v-spacer/>
+      <v-avatar class="mx-3">
+        <img
+          src="https://cdn.vuetifyjs.com/images/john.jpg"
+          alt="John"
+        >
+      </v-avatar>
+      <div class="mt-5">
+        <h4 class="mr-5 light-blue--text accent-4">
+          Tri Mueri Sandess
+        </h4>
+        <p class="mr-5 light-blue--text accent-1">
+          Kasubag umum
+        </p>
+      </div>
+      <div class="text-center">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              fab
+              text
+              small
+              color="light-blue accent-4"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon large>
+                mdi-chevron-down
+              </v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in items"
+              :key="index"
+            >
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </v-app-bar>
     <v-container fluid>
       <h1 class="my-2">
-        Material
+        Template Surat
       </h1>
+      <v-card>
+        <v-row>
+          <v-col cols="3" class="align-self-center mr-auto" >
+              <v-data-footer
+                :pagination="pagination"
+                :prev-icon="null"
+                :next-icon="null"
+                :first-icon="null"
+                :last-icon="null"
+                items-per-page-text="Show"
+                :items-per-page-options="[10,15,50,100,-1]"
+                :options.sync="options"
+              />
+          </v-col>
+          <v-col cols="3" align="right" class="ml-auto">
+            <v-card-title>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                rounded
+                class="shrink"
+                outlined
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+          </v-col>
+            <v-col cols="1" class="align-self-lg-center " align="right">
+            <v-btn
+              class="mx-2"
+              fab
+              align="end"
+              x-small
+              outlined
+              @click="_add()"
+              style="border-width: 3px"
+              color="cyan"
+            >
+              <v-icon dark large>
+                mdi-plus
+              </v-icon>
+            </v-btn>
+            </v-col>
+        </v-row>
+
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
@@ -84,7 +151,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="can(['admin'])"
+            v-if="can(['template-surat-delete'])"
             bottom
           >
             <template v-slot:activator="{ on, attrs }">
@@ -118,6 +185,7 @@
           </v-tooltip>
         </template>
       </v-data-table>
+      </v-card>
       <div
         class="row align-center pb-3"
       >
@@ -129,6 +197,8 @@
             :next-icon="null"
             :first-icon="null"
             :last-icon="null"
+            :page-text="baris"
+            :items-per-page-text="smfbsm"
             :items-per-page-options="[10,15,50,100,-1]"
             :options.sync="options"
           />
@@ -259,15 +329,14 @@ export default {
   computed: {
     headerData () {
       return [
-        {
-          text: 'ID',
-          align: 'left',
-          value: 'id'
-        },
-        { text: 'Nama', value: 'nama' },
-        { text: 'Satuan', value: 'satuan' },
-        { text: 'Updated', value: 'updated_at' },
-        { text: '', value: 'aksi' }
+        { text: 'Nomor', value: 'nama' },
+        { text: 'Nama Template', value: 'satuan' },
+        { text: 'Jenis Surat', value: 'updated_at' },
+        { text: 'Pembuat', value: 'updated_at' },
+        { text: 'Tanggal Pembuatan', value: 'updated_at' },
+        { text: 'Validator', value: 'updated_at' },
+        { text: 'Status', value: 'updated_at' },
+        { text: 'Aksi', value: 'aksi' }
       ]
     }
   },
@@ -280,13 +349,12 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getMaterial', 'deleteMaterial']),
     can,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },
     _add () {
-      this.$router.push({ name: 'material_add' })
+      this.$router.push({ name: 'template_surat_add' })
     },
     _edit (value) {
       this.$router.push({ name: 'material_edit', params: { id: value.id } })
@@ -297,21 +365,6 @@ export default {
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
         this.dcMessages = `Sedang menghapus material`
-        this.deleteMaterial(this.deleteId).then(res => {
-          this._loadData(true)
-          this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Material`
-          setTimeout(() => {
-            this.deleteId = ''
-            this.showDC = false
-            this.dcdisabledNegativeBtn = false
-            this.dcdisabledPositiveBtn = false
-          }, 1500)
-        }).catch(err => {
-          console.log(err)
-          this.dcdisabledNegativeBtn = false
-          this.dcdisabledPositiveBtn = false
-        })
       } else {
         this.deleteId = value.id
         this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
@@ -325,12 +378,6 @@ export default {
     _loadData (abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
-        this.getMaterial({ search: this.searchQuery, ...this.options })
-          .then((data) => {
-            this.datas = data.items || []
-            this.serverLength = data.total || 0
-            this.isLoading = false
-          })
       } else {
         this.isLoading = false
       }

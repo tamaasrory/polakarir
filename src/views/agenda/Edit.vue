@@ -124,18 +124,8 @@ export default {
     }
   },
   created () {
-    this.getMaterialById({ id: this.id })
-      .then(data => {
-        this.material = data || {}
-        this.loadingData = false
-      })
-      .catch((error) => {
-        this.material = {}
-        console.log('Error : ' + error)
-      })
   },
   methods: {
-    ...mapActions(['getMaterialById', 'updateMaterial']),
     backButton () {
       this.$router.push({ name: 'material' })
     },
@@ -144,18 +134,6 @@ export default {
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
       this.dcMessages = 'Sedang Menyimpan Material...'
-
-      this.updateMaterial(this.material).then((res) => {
-        this.dcMessages = 'Berhasil Memperbarui Material'
-        this.dcProgress = false
-        setTimeout(() => {
-          this.showDC = false
-          this.dcdisabledNegativeBtn = false
-          this.dcdisabledPositiveBtn = false
-          this.$router.push({ name: 'material' })
-          this.dcMessages = 'Simpan Perubahan Sekarang?'
-        }, 1500)
-      })
     }
   }
 }

@@ -100,7 +100,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="can(['admin'])"
+            v-if="can(['role-delete'])"
             bottom
           >
             <template #activator="{ on, attrs }">
@@ -118,7 +118,7 @@
             <span>Hapus</span>
           </v-tooltip>
           <!--          <v-tooltip
-            v-if="can(['admin'])"
+            v-if="can(['role-list'])"
             bottom
           >
             <template v-slot:activator="{ on, attrs }">

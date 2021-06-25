@@ -93,18 +93,8 @@ export default {
     }
   },
   created () {
-    this.getMaterialById({ id: this.id })
-      .then(data => {
-        this.material = data || {}
-        this.loadingData = false
-      })
-      .catch((error) => {
-        this.material = {}
-        console.log('Error : ' + error)
-      })
   },
   methods: {
-    ...mapActions(['getMaterialById']),
     backButton () {
       this.$router.push({ name: 'material' })
     }

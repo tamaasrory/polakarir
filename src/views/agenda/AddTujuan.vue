@@ -4,7 +4,7 @@
   -->
 
 <template>
-  <div>
+  <div class="material">
     <v-app-bar
       color="white"
       elevation="0"
@@ -26,10 +26,10 @@
         >
       </v-avatar>
       <div class="mt-5">
-        <h4 class="mr-5 light-blue--text accent-4">
-          Tri Mueri Sandess
+        <h4 class="mr-5 primary--text">
+          Tri Mueri Sandes
         </h4>
-        <p class="mr-5 light-blue--text accent-1">
+        <p class="mr-5 primary--text accent-4">
           Kasubag umum
         </p>
       </div>
@@ -66,12 +66,81 @@
       <h1 class="my-2">
         Buat Agenda
       </h1>
+      <v-spacer>
       <div class="mt-lg-10">
         <v-row>
-          <v-col cols="2">
+          <v-col cols="3">
             <v-subheader
               class="font-weight-black black--text"
-            >Kegiatan</v-subheader>
+            >Pilih Grup</v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-select
+              v-model="select"
+              :items="items"
+              :rules="[v => !!v || 'Pilih grup dahulu']"
+              label="Pilih"
+              outlined
+              required
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="3">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Dinas/Instansi</v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-select
+              v-model="select"
+              :items="items"
+              :rules="[v => !!v || 'Pilih dinas dahulu']"
+              label=""
+              outlined
+              required
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="3">
+            <v-subheader
+              class="font-weight-black black--text"
+              :rules="[v => !!v || 'Masukkan nama dahulu']"
+            >Nama Pegawai</v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7" style="height: 100px">
+          <v-col cols="3">
+          </v-col>
+          <v-col cols="6">
+            <v-btn
+              style="border-radius: 10px"
+              elevation="2"
+              large
+              color="#3acce1"
+              class="text-capitalize white--text"
+            >Pilih Pegawai</v-btn>
+            <v-btn
+              style="border-radius: 10px"
+              elevation="2"
+              large
+              color="#3acce1"
+              class="text-capitalize white--text mx-3"
+            >Pilih Seluruh Pegawai OPD</v-btn>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="3">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Nama Non Pegawai</v-subheader>
           </v-col>
           <v-col cols="5">
             <v-text-field
@@ -81,46 +150,7 @@
           </v-col>
         </v-row>
         <v-row class="mt-n7">
-          <v-col cols="2">
-            <v-subheader
-              class="font-weight-black black--text"
-            >Tanggal Kegiatan</v-subheader>
-          </v-col>
-          <v-col cols="5">
-            <v-text-field
-              class="outline yellow--text"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row class="mt-n7">
-          <v-col cols="2">
-            <v-subheader
-              class="font-weight-black black--text"
-            >Lokasi</v-subheader>
-          </v-col>
-          <v-col cols="5">
-            <v-text-field
-              class="outline yellow--text"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row class="mt-n7">
-          <v-col cols="2">
-            <v-subheader
-              class="font-weight-black black--text"
-            >Status</v-subheader>
-          </v-col>
-          <v-col cols="5">
-            <v-text-field
-              class="outline yellow--text"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row class="mt-n7">
-          <v-col cols="2">
+          <v-col cols="3">
             <v-subheader
               class="font-weight-black black--text"
             >Tujuan</v-subheader>
@@ -133,14 +163,13 @@
           </v-col>
           <v-col>
             <v-btn
-              elevation="2"
-              @click="_addTujuan()"
+              elevation="3"
               class="cyan accent-3 text-capitalize white--text rounded-xl"
             >Pilih tujuan</v-btn>
           </v-col>
         </v-row class="mt-n7">
         <v-row>
-          <v-col sm="12" lg="7" md="12" align="right">
+          <v-col sm="12" lg="8" md="12" align="right">
             <v-btn
               elevation="2"
               large
@@ -149,6 +178,7 @@
           </v-col>
         </v-row>
       </div>
+      </v-spacer>
     </v-container>
     <delete-dialog-confirm
       :show-dialog="showDC"
@@ -290,9 +320,6 @@ export default {
     can,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
-    },
-    _addTujuan() {
-      this.$router.push({name: 'tujuan_add'})
     },
     _add () {
       this.$router.push({ name: 'material_add' })

@@ -31,14 +31,6 @@ const menus = [
       title: 'Login'
     }
   },
-  // {
-  //   path: '/loginmobile',
-  //   name: 'loginmobile',
-  //   component: () => import(/* webpackChunkName: "login.chunk" */ '@/views/LoginMobile'),
-  //   meta: {
-  //     title: 'LoginMobile'
-  //   }
-  // },
   {
     path: '*',
     name: 'not_found',
