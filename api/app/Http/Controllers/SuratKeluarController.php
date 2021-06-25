@@ -1,18 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Base\Controller;
+use App\Models\JenisSurat;
+use App\Models\SuratKeluar;
 use App\Supports\ExtApi;
-use App\SuratKeluar;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
-use Gears\Pdf;
 use Illuminate\Http\Request;
-use NcJoes\OfficeConverter\OfficeConverter;
-use PhpOffice\PhpWord\PhpWord;
 
 class SuratKeluarController extends Controller {
 
@@ -20,20 +19,21 @@ class SuratKeluarController extends Controller {
 
     public function __construct()
     {
-        $this->middleware('permission:material-list|material-create|material-edit|material-delete', ['only' => 'index', 'show']);
-        $this->middleware('permission:material-create', ['only' => 'create', 'store']);
-        $this->middleware('permission:material-edit', ['only' => 'edit', 'update']);
-        $this->middleware('permission:material-delete', ['only' => 'destroy']);
+        $this->middleware('permission:surat-keluar-list|surat-keluar-create|surat-keluar-edit|surat-keluar-delete', ['only' => 'index', 'show']);
+        $this->middleware('permission:surat-keluar-create', ['only' => 'create', 'store']);
+        $this->middleware('permission:surat-keluar-edit', ['only' => 'edit', 'update']);
+        $this->middleware('permission:surat-keluar-delete', ['only' => 'destroy']);
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response|array
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = SuratKeluar::paginate(20);
+        $data = SuratKeluar::search($request,new SuratKeluar());
 
         if ($data) {
             return [
@@ -55,7 +55,19 @@ class SuratKeluarController extends Controller {
      */
     public function create()
     {
+        $jenis_surat = JenisSurat::selectRaw(
+            "id as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
+        $opd = collect(ExtApi::listOpd())->map(function ($data) {
+            $tmp = [];
+            $tmp['value'] = $data['id_opd'];
+            $tmp['text'] = $data['nama'];
 
+            return $tmp;
+        });
+
+        return [
+            'value' => compact('jenis_surat', 'opd')
+        ];
     }
 
     /**

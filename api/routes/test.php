@@ -6,6 +6,8 @@
  * @var Illuminate\Support\Facades\Route $router
  */
 
+use App\Http\Controllers\Base\ExtAuthController;
+use App\Http\Controllers\Base\TestController;
 use Illuminate\Http\Request;
 
 $router->get('/test-page', function () {
@@ -14,23 +16,19 @@ $router->get('/test-page', function () {
 
 $router->group(['prefix' => 'api/test'], function () use ($router) {
 
-    /** @see \App\Http\Controllers\Base\ExtAuthController::authenticate() */
-    $router->post('auth', 'Base\ExtAuthController@authenticate');
+    $router->post('auth', [ExtAuthController::class, 'authenticate']);
 
-    /** @see \App\Http\Controllers\Base\TestController::login() */
-    $router->post('login', 'Base\TestController@login');
+    $router->post('login', [TestController::class, 'login']);
 
-    /** @see \App\Http\Controllers\Base\TestController::listOpd() */
-    $router->post('opd', 'Base\TestController@listOpd');
+    $router->get('index', [TestController::class, 'index']);
 
-    /** @see \App\Http\Controllers\Base\TestController::getOpdById() */
-    $router->post('opd-by-id', 'Base\TestController@getOpdById');
+    $router->post('opd', [TestController::class, 'listOpd']);
 
-    /** @see \App\Http\Controllers\Base\TestController::listPegawaiByOpd() */
-    $router->post('pegawai-by-opd', 'Base\TestController@listPegawaiByOpd');
+    $router->post('opd-by-id', [TestController::class, 'getOpdById']);
 
-    /** @see \App\Http\Controllers\Base\TestController::getPegawaiByNip() */
-    $router->post('pegawai-by-nip', 'Base\TestController@getPegawaiByNip');
+    $router->post('pegawai-by-opd', [TestController::class, 'listPegawaiByOpd']);
+
+    $router->post('pegawai-by-nip', [TestController::class, 'getPegawaiByNip']);
 
     // test penerapan TOKEN JWT
     $router->group(['middleware' => ['extauth']], function () use ($router) {

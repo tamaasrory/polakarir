@@ -3,6 +3,11 @@ GET http://localhost:7000/test-page
 
 ### uji coba login
 
+GET http://localhost:7000/api/test/index
+Content-Type: application/json
+
+### uji coba login
+
 POST http://localhost:7000/api/test/auth
 Content-Type: application/json
 

@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use App\Models\Base\SelfModel;
 use App\Traits\Searchable;
 
 /**

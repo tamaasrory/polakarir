@@ -6,52 +6,37 @@
  * @var Illuminate\Support\Facades\Route $router
  */
 
+use App\Http\Controllers\JenisSuratController;
+use App\Http\Controllers\NomorSuratTerakhirController;
+use App\Http\Controllers\SuratKeluarController;
+
 $router->group(['prefix' => 'jenis-surat'], function () use ($router) {
-
-    /** @see \App\Http\Controllers\JenisSuratController */
-    $ctrlName = 'JenisSuratController';
-
-    $router->get('all', $ctrlName . '@index');
-    $router->get('detail/{id}', $ctrlName . '@show');
-
-    $router->get('create', $ctrlName . '@create');
-    $router->post('baru', $ctrlName . '@store');
-
-    $router->get('edit/{id}', $ctrlName . '@edit');
-    $router->put('update/{id}', $ctrlName . '@update');
-
-    $router->delete('delete/{id}', $ctrlName . '@destroy');
-
+    $router->get('all', [JenisSuratController::class, 'index']);
+    $router->get('detail/{id}', [JenisSuratController::class, 'show']);
+    $router->get('create', [JenisSuratController::class, 'create']);
+    $router->post('baru', [JenisSuratController::class, 'store']);
+    $router->get('edit/{id}', [JenisSuratController::class, 'edit']);
+    $router->put('update/{id}', [JenisSuratController::class, 'update']);
+    $router->delete('delete/{id}', [JenisSuratController::class, 'destroy']);
 });
 
 $router->group(['prefix' => 'surat-keluar'], function () use ($router) {
-
-    /** @see \App\Http\Controllers\SuratKeluarController */
-    $ctrlName = 'SuratKeluarController';
-
-    $router->get('all', $ctrlName . '@index');
-    $router->get('detail/{id}', $ctrlName . '@show');
-
-    $router->get('create', function (\Illuminate\Http\Request $request) {
-        $jenis_surat = \App\Models\JenisSurat::selectRaw("id as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
-        $opd = collect(\App\Supports\ExtApi::listOpd())->map(function ($data) {
-            $tmp = [];
-            $tmp['value'] = $data['id_opd'];
-            $tmp['text'] = $data['nama'];
-
-            return $tmp;
-        });
-
-        return [
-            'value' => compact('jenis_surat', 'opd')
-        ];
-    });
-
-    $router->post('baru', $ctrlName . '@store');
-
-    $router->get('edit/{id}', $ctrlName . '@edit');
-    $router->put('update/{id}', $ctrlName . '@update');
-
-    $router->delete('delete/{id}', $ctrlName . '@destroy');
-
+    $router->get('all', [SuratKeluarController::class, 'index']);
+    $router->get('detail/{id}', [SuratKeluarController::class, 'show']);
+    $router->get('create', [SuratKeluarController::class, 'create']);
+    $router->post('baru', [SuratKeluarController::class, 'store']);
+    $router->get('edit/{id}', [SuratKeluarController::class, 'edit']);
+    $router->put('update/{id}', [SuratKeluarController::class, 'update']);
+    $router->delete('delete/{id}', [SuratKeluarController::class, 'destroy']);
+    $router->post('ttd', [SuratKeluarController::class, 'ttd']);
 });
+
+$router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {
+    $router->get('all', [NomorSuratTerakhirController::class, 'index']);
+    $router->get('all/{id_opd}', [NomorSuratTerakhirController::class, 'indexByOPD']);
+    $router->get('getnomor/{id_opd}/{id_jenis_surat}', [NomorSuratTerakhirController::class, 'getNomorTerakhir']);
+    $router->post('baru', [NomorSuratTerakhirController::class, 'store']);
+    $router->put('edit', [NomorSuratTerakhirController::class, 'edit']);
+    $router->delete('delete/{id_nomor_surat_terakhir}', [NomorSuratTerakhirController::class, 'destroy']);
+});
+

@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
+    public function index()
+    {
+        return ['oke'];
+    }
+
     public function login(Request $request)
     {
         return ExtApi::login($request);
