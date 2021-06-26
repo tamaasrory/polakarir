@@ -12,8 +12,8 @@ POST http://localhost:7000/api/test/auth
 Content-Type: application/json
 
 {
-    "username": "198508032009021007",
-    "password": "salim"
+    "username": "198501062004121001",
+    "password": "tarmizi"
 }
 
 ### uji coba login
@@ -36,4 +36,4 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd
 
 GET http://localhost:7000/api/test/dump-test
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTg1MDgwMzIwMDkwMjEwMDciLCJrZGoiOiIwMS4wMS4wNC4wMi4ifSwiaWF0IjoxNjIzMzY4NDExfQ.ylBVvOJsnV1yQRMGsnbLuvA4IBa5njGvRqakZUk_5Zg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTg1MDEwNjIwMDQxMjEwMDEiLCJrZGoiOiIwNS4wMS4ifSwiaWF0IjoxNjI0NjkxMDIwfQ.KWotftU1KppsVUMqxYCQgLaRZK1kQLKwUn8Igy3Vp58
