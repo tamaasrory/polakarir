@@ -5,24 +5,37 @@
 
 <template>
   <div class="material">
-    <v-app-bar color="white" elevation="0" fixed app light>
+    <v-app-bar
+      color="white"
+      elevation="0"
+      fixed
+      app
+      light
+    >
       <v-icon
         color="primary"
         class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
-      <v-spacer />
+      <v-spacer/>
       <v-avatar class="mx-3">
-        <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+        <img
+          src="https://cdn.vuetifyjs.com/images/john.jpg"
+          alt="John"
+        >
       </v-avatar>
       <div class="mt-5">
-        <h4 class="mr-5 light-blue--text accent-4">Tri Mueri Sandes</h4>
-        <p class="mr-5 light-blue--text accent-1">Kasubag umum</p>
+        <h4 class="mr-5 light-blue--text accent-4">
+          Tri Mueri Sandes
+        </h4>
+        <p class="mr-5 light-blue--text accent-1">
+          Kasubag umum
+        </p>
       </div>
       <div class="text-center">
         <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               fab
               text
@@ -31,11 +44,16 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon large> mdi-chevron-down </v-icon>
+              <v-icon large>
+                mdi-chevron-down
+              </v-icon>
             </v-btn>
           </template>
           <v-list>
-            <v-list-item v-for="(item, index) in items" :key="index">
+            <v-list-item
+              v-for="(item, index) in items"
+              :key="index"
+            >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -43,206 +61,85 @@
       </div>
     </v-app-bar>
     <v-container fluid>
-      <h1 class="my-2">Daftar Arsip</h1>
-      <v-card>
+      <h1 class="my-2">
+        Profil
+      </h1>
+      <v-container class="mt-16">
         <v-row>
-          <v-col>
-            <v-tabs centered slider-size="5">
-              <v-tabs v-model="tabs" align-with-title 
-              <v-tab><p class="font-weight-bold mb-n2">Unit Kerja</p>
-              </v-tab>
-              <v-tab><p class="font-weight-bold mb-n2">Pengguna</p></v-tab>
-            </v-tabs>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="3" class="align-self-center mr-auto">
-            <v-data-footer
-              :pagination="pagination"
-              :prev-icon="null"
-              :next-icon="null"
-              :first-icon="null"
-              :last-icon="null"
-              items-per-page-text="Show"
-              :items-per-page-options="[10, 15, 50, 100, -1]"
-              :options.sync="options"
-            />
-          </v-col>
-          <v-col cols="3" align="right" class="ml-auto">
-            <v-card-title>
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                rounded
-                class="shrink"
-                outlined
-                hide-details
-              ></v-text-field>
-            </v-card-title>
-          </v-col>
-          <v-col cols="1" class="align-self-lg-center" align="right">
-            <v-btn
-              class="mx-2"
-              fab
-              align="end"
-              x-small
-              outlined
-              @click="_addArsip()"
-              style="border-width: 3px"
-              color="cyan"
+          <v-col cols="4">
+            <img
+              class="rounded-circle"
+              min-height="1120"
+              max-width="1120"
+              src="https://cdn.vuetifyjs.com/images/john.jpg"
+              alt="John"
             >
-              <v-icon dark large> mdi-plus </v-icon>
-            </v-btn>
+          </v-col>
+          <v-col cols="8">
+            <template>
+              <v-simple-table>
+                <template #default>
+                  <tbody>
+                  <tr
+                    v-for="item in desserts"
+                    :key="item.name"
+                  >
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.calories }}</td>
+                  </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+              <v-btn elevation="2"
+                     @click="_editUser()"
+                     class="mt-5 cyan accent-3 text-capitalize white--text rounded-xl" >
+                Ubah
+              </v-btn>
+            </template>
           </v-col>
         </v-row>
-
-        <v-data-table
-          :loading="isLoading"
-          :headers="headerData"
-          :search="searchQuery"
-          :items="datas"
-          :sort-by.sync="config.table.sortBy"
-          :sort-desc.sync="config.table.sortDesc"
-          :items-per-page="config.table.itemsPerPage"
-          :page.sync="config.table.page"
-          :server-items-length="serverLength"
-          :options.sync="options"
-          height="350pt"
-          item-key="id"
-          class="elevation-2"
-          multi-sort
-          hide-default-footer
-          fixed-header
-          @page-count="config.table.pageCount = $event"
-          @pagination="pagination = $event"
-        >
-          <template v-slot:item.updated_at="{ item }">
-            {{ item.updated_at | moment("DD MMMM YYYY HH:mm") }}
-          </template>
-          <template v-slot:item.aksi="{ item }">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" @click="_edit(item)" v-on="on">
-                  <v-icon color="blue"> mdi-circle-edit-outline </v-icon>
-                </v-btn>
-              </template>
-              <span>Ubah</span>
-            </v-tooltip>
-            <v-tooltip v-if="canEdit(['admin'])" bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" icon @click="_delete(item)" v-on="on">
-                  <v-icon color="pink"> mdi-delete </v-icon>
-                </v-btn>
-              </template>
-              <span>Hapus</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" icon @click="_detail(item)" v-on="on">
-                  <v-icon color="green"> mdi-file-find </v-icon>
-                </v-btn>
-              </template>
-              <span>Detail</span>
-            </v-tooltip>
-          </template>
-        </v-data-table>
-      </v-card>
-      <div class="row align-center pb-3">
-        <div class="col-md-6 col-12 order-md-0 order-1 pt-0 pt-md-4">
-          <v-data-footer
-            class="float-left"
-            :pagination="pagination"
-            :prev-icon="null"
-            :next-icon="null"
-            :first-icon="null"
-            :last-icon="null"
-            :page-text="baris"
-            :items-per-page-text="smfbsm"
-            :items-per-page-options="[10, 15, 50, 100, -1]"
-            :options.sync="options"
-          />
-        </div>
-        <div class="col-md-6 col-12 order-md-1 order-0 mt-4 pb-0 pb-md-4">
-          <v-pagination
-            v-model="config.table.page"
-            :length="config.table.pageCount"
-            total-visible="7"
-            circle
-          />
-        </div>
-      </div>
+      </v-container>
     </v-container>
-    <delete-dialog-confirm
-      :show-dialog="showDC"
-      :negative-button="dcNegativeBtn"
-      :positive-button="dcPositiveBtn"
-      :disabled-negative-btn="dcdisabledNegativeBtn"
-      :disabled-positive-btn="dcdisabledPositiveBtn"
-      :progress="dcProgress"
-      :title="'Hapus'"
-      :message="dcMessages"
-    />
-    <v-navigation-drawer v-model="toggleFp" fixed width="350" temporary right>
-      <v-list-item class="grey lighten-4">
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-icon>mdi-filter-outline</v-icon> Filter
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-icon>
-          <v-btn icon @click="toggleFp = !toggleFp">
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-row class="px-4 py-4">
-        <v-col cols="12">
-          <v-text-field
-            v-model="searchQuery"
-            placeholder="ketikkan sesuatu untuk mencari"
-            label="Pencarian"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />
-        </v-col>
-      </v-row>
-      <div
-        class="text-right px-4 py-4"
-        style="position: absolute; bottom: 0; right: 0"
-      >
-        <v-btn
-          v-show="searchQuery"
-          text
-          color="primary"
-          @click="_clearFilter()"
-        >
-          Bersihkan filter
-        </v-btn>
-        <v-btn color="success" @click="_loadData(true)"> Terapkan </v-btn>
-      </div>
-    </v-navigation-drawer>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import Dialog from "@/components/Dialog";
-import { canEdit } from "@/plugins/supports";
+import {mapActions} from 'vuex'
+import Dialog from '@/components/Dialog'
+import {canEdit} from '@/plugins/supports'
 
 export default {
-  name: "Material",
+  name: 'Material',
   components: {
-    "delete-dialog-confirm": Dialog,
+    'delete-dialog-confirm': Dialog
   },
   data() {
     return {
-      searchQuery: "",
+
+      desserts: [
+        {
+          name: 'Username',
+          calories: 'trimueri'
+        },
+        {
+          name: 'Nama',
+          calories: 'Jhon doe'
+        },
+        {
+          name: 'E-mail',
+          calories: 'trimuerisandes@gmail.com'
+        },
+        {
+          name: 'No HP',
+          calories: '081314721408'
+        },
+        {
+          name: 'Alamat',
+          calories: 'Panam, Pekanbaru'
+        }
+      ],
+
+      searchQuery: '',
       toggleFp: false,
       isLoading: true,
       datas: [],
@@ -254,106 +151,106 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ["id"],
+          sortBy: ['id'],
           sortDesc: [true],
           itemsPerPage: 10,
-          itemKey: "id",
-        },
+          itemKey: 'id'
+        }
       },
 
       showDC: false,
-      deleteId: "",
-      dcMessages: "",
+      deleteId: '',
+      dcMessages: '',
       dcProgress: false,
       dcdisabledNegativeBtn: false,
       dcdisabledPositiveBtn: false,
       dcNegativeBtn: () => {
-        this.showDC = false;
+        this.showDC = false
       },
-      dcPositiveBtn: () => this._delete(true),
-    };
+      dcPositiveBtn: () => this._delete(true)
+    }
   },
   computed: {
     headerData() {
       return [
-        { text: "Nomor", value: "nama" },
-        { text: "Nomor Berkas", value: "satuan" },
-        { text: "Judul Berkas", value: "updated_at" },
-        { text: "Klasifikasi", value: "updated_at" },
-        { text: "Lokasi Fisik Berkas", value: "updated_at" },
-        { text: "Aksi", value: "aksi" },
-      ];
-    },
+        {text: 'Nomor', value: 'nama'},
+        {text: 'Nomor Berkas', value: 'satuan'},
+        {text: 'Judul Berkas', value: 'updated_at'},
+        {text: 'Klasifikasi', value: 'updated_at'},
+        {text: 'Lokasi Fisik Berkas', value: 'updated_at'},
+        {text: 'Aksi', value: 'aksi'}
+      ]
+    }
   },
   watch: {
     options(a, b) {
-      this._loadData(true);
-    },
+      this._loadData(true)
+    }
   },
   mounted() {
-    this._loadData(false); // loading data form server
+    this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(["getMaterial", "deleteMaterial"]),
+    ...mapActions(['getMaterial', 'deleteMaterial']),
     canEdit,
     _detail(value) {
-      this.$router.push({ name: "material_view", params: { id: value.id } });
+      this.$router.push({name: 'material_view', params: {id: value.id}})
     },
-    _addArsip() {
-      this.$router.push({ name: "arsip-surat_add" });
+    _editUser() {
+      this.$router.push({name: 'editUser'})
     },
     _edit(value) {
-      this.$router.push({ name: "material_edit", params: { id: value.id } });
+      this.$router.push({name: 'material_edit', params: {id: value.id}})
     },
     _delete(value) {
       if (value === true) {
-        this.dcProgress = true;
-        this.dcdisabledNegativeBtn = true;
-        this.dcdisabledPositiveBtn = true;
-        this.dcMessages = `Sedang menghapus material`;
+        this.dcProgress = true
+        this.dcdisabledNegativeBtn = true
+        this.dcdisabledPositiveBtn = true
+        this.dcMessages = 'Sedang menghapus material'
         this.deleteMaterial(this.deleteId)
           .then((res) => {
-            this._loadData(true);
-            this.dcProgress = false;
-            this.dcMessages = `Berhasil Menghapus Material`;
+            this._loadData(true)
+            this.dcProgress = false
+            this.dcMessages = 'Berhasil Menghapus Material'
             setTimeout(() => {
-              this.deleteId = "";
-              this.showDC = false;
-              this.dcdisabledNegativeBtn = false;
-              this.dcdisabledPositiveBtn = false;
-            }, 1500);
+              this.deleteId = ''
+              this.showDC = false
+              this.dcdisabledNegativeBtn = false
+              this.dcdisabledPositiveBtn = false
+            }, 1500)
           })
           .catch((err) => {
-            console.log(err);
-            this.dcdisabledNegativeBtn = false;
-            this.dcdisabledPositiveBtn = false;
-          });
+            console.log(err)
+            this.dcdisabledNegativeBtn = false
+            this.dcdisabledPositiveBtn = false
+          })
       } else {
-        this.deleteId = value.id;
-        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`;
-        this.showDC = true;
+        this.deleteId = value.id
+        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
+        this.showDC = true
       }
     },
     _clearFilter() {
-      this.searchQuery = null;
-      this._loadData(true);
+      this.searchQuery = null
+      this._loadData(true)
     },
     _loadData(abort) {
       if (this.datas.length === 0 || abort) {
-        this.isLoading = true;
-        this.getMaterial({ search: this.searchQuery, ...this.options }).then(
+        this.isLoading = true
+        this.getMaterial({search: this.searchQuery, ...this.options}).then(
           (data) => {
-            this.datas = data.items || [];
-            this.serverLength = data.total || 0;
-            this.isLoading = false;
+            this.datas = data.items || []
+            this.serverLength = data.total || 0
+            this.isLoading = false
           }
-        );
+        )
       } else {
-        this.isLoading = false;
+        this.isLoading = false
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style>
 .v-data-footer__icons-before,

@@ -96,17 +96,10 @@
           <v-row class="fill-height">
             <v-col>
               <v-sheet height="64">
-                <v-toolbar
+                <v-toolbar align="center"
                   flat
                 >
-                  <v-btn
-                    outlined
-                    class="mr-4"
-                    color="grey darken-2"
-                    @click="setToday"
-                  >
-                    Today
-                  </v-btn>
+                  <v-col></v-col>
                   <v-btn
                     fab
                     text
@@ -118,6 +111,9 @@
                       mdi-chevron-left
                     </v-icon>
                   </v-btn>
+                  <v-toolbar-title v-if="$refs.calendar">
+                    {{ $refs.calendar.title }}
+                  </v-toolbar-title>
                   <v-btn
                     fab
                     text
@@ -129,41 +125,32 @@
                       mdi-chevron-right
                     </v-icon>
                   </v-btn>
-                  <v-toolbar-title v-if="$refs.calendar">
-                    {{ $refs.calendar.title }}
-                  </v-toolbar-title>
+
                   <v-spacer/>
                   <v-menu
                     bottom
                     right
                   >
                     <template #activator="{ on, attrs }">
-                      <v-btn
-                        outlined
+                      <v-btn-toggle
+                        style="border-radius: 20px;"
+                        text-color="white"
                         color="grey darken-2"
+                        dense
                         v-bind="attrs"
                         v-on="on"
                       >
-                        <span>{{ typeToLabel[type] }}</span>
-                        <v-icon right>
-                          mdi-menu-down
-                        </v-icon>
-                      </v-btn>
+                          <v-btn value="left" color="primary" @click="type = 'month'">
+                            Bulan
+                          </v-btn>
+                          <v-btn value="center" color="buttons white--text" @click="type = 'week'">
+                            Minggu
+                          </v-btn>
+                          <v-btn value="right" color="buttons white--text" @click="type = 'day'">
+                            Hari
+                          </v-btn>
+                      </v-btn-toggle>
                     </template>
-                    <v-list>
-                      <v-list-item @click="type = 'day'">
-                        <v-list-item-title>Day</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="type = 'week'">
-                        <v-list-item-title>Week</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="type = 'month'">
-                        <v-list-item-title>Month</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="type = '4day'">
-                        <v-list-item-title>4 days</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
                   </v-menu>
                 </v-toolbar>
               </v-sheet>
@@ -235,9 +222,9 @@ export default {
   name: 'Home',
   data: () => ({
     items: [
-      { title: 'Profil' },
-      { title: 'Pengaturan' },
-      { title: 'Keluar' },
+      {title: 'Profil'},
+      {title: 'Pengaturan'},
+      {title: 'Keluar'},
     ],
     focus: '',
     type: 'month',

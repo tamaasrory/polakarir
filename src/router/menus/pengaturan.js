@@ -43,6 +43,17 @@ export default [
       requiresAuth: true,
       allowRole: ['Super Admin', 'Administrator']
     }
+  },
+  {
+    path: '/pengaturan/edit',
+    name: 'editUser',
+    component: () => import(/* webpackChunkName: "pengaturan.chunk" */ '@/views/pengaturan/Edit'),
+    props: true,
+    meta: {
+      title: 'Edit Profil',
+      requiresAuth: true,
+      allowRole: ['Super Admin', 'Administrator']
+    }
   }
   // END PARFUM
 ]
