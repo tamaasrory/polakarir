@@ -52,5 +52,16 @@ class SuratKeluar extends SelfModel
         'histori_surat',
     ];
 
+    public $appends = [
+        'jenis_surat'
+    ];
 
+    public function getJenisSuratAttribute()
+    {
+        return $this->belongsTo(
+            JenisSurat::class,
+            'id_jenis_surat',
+            'id_jenis_surat')
+            ->first('nama_jenis_surat')->nama_jenis_surat;
+    }
 }

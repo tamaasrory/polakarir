@@ -15,7 +15,8 @@ use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 
-class SuratKeluarController extends Controller {
+class SuratKeluarController extends Controller
+{
 
     public $title = 'Surat Keluar';
 
@@ -95,7 +96,7 @@ class SuratKeluarController extends Controller {
             $namasurat = 'SuratKeluar-' . $data['id_opd'] . '-' . time() . '.' . $file_ext;
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
-                $data->id_surat_keluar = KeyGen::randomKey();
+//                $data->id_surat_keluar = KeyGen::randomKey();
                 $data->status = 'Diajukan';
                 $data->lampiran = $namasurat;
 
@@ -123,7 +124,7 @@ class SuratKeluarController extends Controller {
      */
     public function show($id)
     {
-        $data = SuratKeluar::findOrFail($id);
+        $data = SuratKeluar::where('id_surat_keluar', $id)->first();
         if ($data) {
             return [
                 'value' => $data,
@@ -231,19 +232,19 @@ class SuratKeluarController extends Controller {
 
             //get nomor surat terakhir
             $nomorSuratTerakhir = new NomorSuratTerakhirController;
-            $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'],$data['id_jenis_surat']);
+            $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'], $data['id_jenis_surat']);
 
             //update template
-            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
-            $template->setValue('${nomorsurat}',$nomor_surat['nomor_selanjutnya']);
-            $template->setValue('${tanggal}',$tanggal);
-            $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
-            $template->setValue('${nip}',$pegawai['nip']);
+            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
+            $template->setValue('${nomorsurat}', $nomor_surat['nomor_selanjutnya']);
+            $template->setValue('${tanggal}', $tanggal);
+            $template->setValue('${namalengkap}', $pegawai['nama_pegawai']);
+            $template->setValue('${nip}', $pegawai['nip']);
 
             //update data nomor terakhir surat, nomor autonya berubah jadi nomor yang telah dipakai
-            $nomorSuratTerakhir->update($data['id_opd'],$data['id_jenis_surat'],$nomor_surat['nomor_auto_selanjutnya']);
+            $nomorSuratTerakhir->update($data['id_opd'], $data['id_jenis_surat'], $nomor_surat['nomor_auto_selanjutnya']);
 
-            if ($request->has('hash_tte')){
+            if ($request->has('hash_tte')) {
 
                 //dengan tte
                 $hash_tte = $request->input('hash_tte');

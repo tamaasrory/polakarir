@@ -6,73 +6,59 @@
 <template>
   <div>
     <v-app-bar
+      color="white"
       fixed
-      dark
-      color="primary"
-          >
+      app
+      light
+    >
       <v-btn
         icon
         dark
         @click="backButton"
       >
-        <v-icon color="primary">mdi-arrow-left</v-icon>
+        <v-icon color="primary">
+          mdi-arrow-left
+        </v-icon>
       </v-btn>
-      <v-toolbar-title style="line-height: 1.3">
-        Detail Surat Keluar
-        <div
-          v-if="!loadingData"
-          style="font-size: 11pt"
-        >
-          {{ surat_keluar.id }}
-        </div>
-        <v-skeleton-loader
-          v-else
-          ref="skeleton"
-          type="text"
-          max-width="100%"
-        />
-      </v-toolbar-title>
+      <v-toolbar-title>Surat Keluar</v-toolbar-title>
     </v-app-bar>
     <v-container class="white">
-      <v-row class="py-0 mx-1">
+      <v-row>
         <v-col
-          cols="12"
-          md="4"
-          class="mx-md-auto elevation-2 mt-md-3 mt-2"
-          style="border-radius: 10px"
+          cols="6"
+          md="3"
         >
-          <v-col
-            cols="12"
-            md="6"
-            class="d-flex"
-          >
-            <v-row>
-              <v-col
-                cols="12"
-                md="12"
-              >
-                <label
-                  class="v-label v-label--active theme--light"
-                  style="font-size: 9pt !important;"
-                >
-                  Nama Surat Keluar
-                </label>
-                <div v-text="surat_keluar.nama" />
-              </v-col>
-              <v-col
-                cols="12"
-                md="12"
-              >
-                <label
-                  class="v-label v-label--active theme--light"
-                  style="font-size: 9pt !important;"
-                >
-                  Satuan
-                </label>
-                <div v-text="surat_keluar.satuan" />
-              </v-col>
-            </v-row>
-          </v-col>
+          Perihal
+        </v-col>
+        <v-col
+          cols="6"
+          md="9"
+        >
+          {{ surat_keluar.perihal_surat }}
+        </v-col>
+        <v-col
+          cols="6"
+          md="3"
+        >
+          Jenis Surat
+        </v-col>
+        <v-col
+          cols="6"
+          md="9"
+        >
+          {{ surat_keluar.jenis_surat }}
+        </v-col>
+        <v-col
+          cols="6"
+          md="3"
+        >
+          Urgensi
+        </v-col>
+        <v-col
+          cols="6"
+          md="9"
+        >
+          {{ surat_keluar.derajat_surat }}
         </v-col>
       </v-row>
     </v-container>
@@ -89,7 +75,11 @@ export default {
   data () {
     return {
       loadingData: true,
-      surat_keluar: {}
+      surat_keluar: {
+        perihal_surat: null,
+        jenis_surat: null,
+        derajat_surat: null
+      }
     }
   },
   created () {

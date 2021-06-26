@@ -35,6 +35,7 @@ class ExtJwt
             return response()->json(['msg' => 'An error while decoding token.'], 400);
         }
 
+        $result = null;
         $sub = $credentials->sub;
         if ($sub->kdj != '-') { // hanya pegawai yang terdaftar di sinergi
             // tambahkan paramater baru yaitu nip ke request
@@ -43,6 +44,7 @@ class ExtJwt
             $result = ExtApi::getPegawaiByNip($request);
         }
 
+        /** @var User $resultLocal */
         $resultLocal = User::find($sub->id); // cari data di tabel user
         if (!$resultLocal) { // bila tidak ditemukan
             return response()->json([
@@ -60,6 +62,9 @@ class ExtJwt
             }
         }
 
+        if ($sub->kdj != '-') {
+            $resultLocal = array_merge($result, $resultLocal->toArray());
+        }
         // Now let's put the user in the request class so that you can grab it from there
         // bila user ditemukan maka simpan data user ke dalam resquest,
         // supaya bisa di pakai bila kebutuhan authorization di controller

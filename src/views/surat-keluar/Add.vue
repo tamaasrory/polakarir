@@ -706,19 +706,17 @@ export default {
       const formData = new FormData()
 
       /* Add the form data we need to submit */
-      // const type = this.surat_keluar.lampiran.dataBlob.type.split('/')[1]
-      // formData.append('lampiran', this.surat_keluar.lampiran, `file.${type}`)
-      console.log(this.surat_keluar.lampiran)
-
       const penerimaSurat = this.surat_keluar.penerima_surat.map(data => {
         return data.kode_jabatan
       })
-      console.log(JSON.stringify(penerimaSurat))
+
       formData.append('penerima_surat',
         new Blob([JSON.stringify(penerimaSurat)], { type: 'application/json' }))
 
       Object.keys(this.surat_keluar).forEach(d => {
-        if (!(['penerima_surat', 'lampiran'].includes(d))) {
+        if (!(['penerima_surat'].includes(d))) {
+          // masukkan ke formData dibawah ini kecuali penerima_surat
+          // karena sudah di tambahkan di atas
           formData.append(d, this.surat_keluar[d])
         }
       })
@@ -727,7 +725,7 @@ export default {
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
       this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Surat Keluar...'
-      this.addSuratKeluar(this.surat_keluar).then((res) => {
+      this.addSuratKeluar(formData).then((res) => {
         this.dcProgress = false
         this.dcMessages = res.msg
         setTimeout(() => {

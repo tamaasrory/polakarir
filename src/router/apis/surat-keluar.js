@@ -79,7 +79,11 @@ const SuratKeluar = {
   },
   addSuratKeluar ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post('/surat-keluar/baru', payload)
+      $axios.post('/surat-keluar/baru', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)

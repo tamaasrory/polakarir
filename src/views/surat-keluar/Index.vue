@@ -52,13 +52,14 @@
         :server-items-length="serverLength"
         :options.sync="options"
         height="350pt"
-        item-key="id"
+        item-key="id_surat_keluar"
         class="elevation-2"
         multi-sort
         hide-default-footer
         fixed-header
         @page-count="config.table.pageCount = $event"
         @pagination="pagination=$event"
+        @click:row="_detail"
       >
         <template #item.updated_at="{item}">
           {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
@@ -179,7 +180,7 @@
           cols="12"
         >
           <v-text-field
-            v-model="filterTask.search"
+            v-model="filterQuery.search"
             placeholder="ketikkan sesuatu"
             label="Pencarian"
             light
@@ -189,7 +190,7 @@
             class="mb-4"
           />
           <v-text-field
-            v-model="filterTask.nomor_surat"
+            v-model="filterQuery.nomor_surat"
             placeholder="ketikkan nomor surat"
             label="Nomor Surat"
             light
@@ -199,7 +200,7 @@
             class="mb-4"
           />
           <v-text-field
-            v-model="filterTask.penerima"
+            v-model="filterQuery.penerima"
             placeholder="ketikkan nama penerima"
             label="Penerima"
             light
@@ -218,7 +219,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                v-model="filterTask.tgl"
+                v-model="filterQuery.tgl"
                 label="Tanggal Surat"
                 outlined
                 clearable
@@ -229,7 +230,7 @@
               />
             </template>
             <v-date-picker
-              v-model="filterTask.tgl"
+              v-model="filterQuery.tgl"
               @input="booltmp.ft = false"
             />
           </v-menu>
@@ -270,7 +271,7 @@ export default {
   },
   data () {
     return {
-      filterTask: {
+      filterQuery: {
         nomor_surat: null,
         penerima: null,
         tgl: null
@@ -289,10 +290,10 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ['id'],
+          sortBy: ['id_surat_keluar'],
           sortDesc: [true],
           itemsPerPage: 10,
-          itemKey: 'id'
+          itemKey: 'id_surat_keluar'
         }
       },
 
@@ -312,19 +313,19 @@ export default {
         {
           text: 'Nomor',
           align: 'left',
-          value: 'id'
+          value: 'id_surat_keluar'
         },
-        { text: 'Perihal', value: 'perihal' },
+        { text: 'Perihal', value: 'perihal_surat' },
         { text: 'Jenis Surat', value: 'jenis_surat' },
-        { text: 'Penerima', value: 'penerima' },
-        { text: 'Tanggal Surat', value: 'tgl_surat' },
-        { text: 'Urgensi', value: 'urgensi' },
+        { text: 'Penerima', value: 'penerima_surat' },
+        { text: 'Tanggal Surat', value: 'tanggal_surat' },
+        { text: 'Urgensi', value: 'derajat_surat' },
         { text: 'Status', value: 'status' }
       ]
     },
     isClearSearch () {
-      for (const filterTaskKey in this.filterTask) {
-        if (!isEmpty(this.filterTask[filterTaskKey])) {
+      for (const filterTaskKey in this.filterQuery) {
+        if (!isEmpty(this.filterQuery[filterTaskKey])) {
           return true
         }
       }
@@ -343,13 +344,14 @@ export default {
     ...mapActions(['getSuratKeluar', 'deleteSuratKeluar']),
     can,
     _detail (value) {
-      this.$router.push({ name: 'surat_keluar_view', params: { id: value.id } })
+      console.log(value)
+      this.$router.push({ name: 'surat_keluar_view', params: { id: value.id_surat_keluar } })
     },
     _add () {
       this.$router.push({ name: 'surat_keluar_add' })
     },
     _edit (value) {
-      this.$router.push({ name: 'surat_keluar_edit', params: { id: value.id } })
+      this.$router.push({ name: 'surat_keluar_edit', params: { id: value.id_surat_keluar } })
     },
     _delete (value) {
       if (value === true) {
@@ -373,13 +375,13 @@ export default {
           this.dcdisabledPositiveBtn = false
         })
       } else {
-        this.deleteId = value.id
+        this.deleteId = value.id_surat_keluar
         this.dcMessages = `Hapus surat keluar <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }
     },
     _clearFilter () {
-      this.filterTask = {
+      this.filterQuery = {
         nomor_surat: null,
         penerima: null,
         tgl: null,
@@ -390,7 +392,7 @@ export default {
     _loadData (abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
-        this.getSuratKeluar({ add: this.filterTask, ...this.options })
+        this.getSuratKeluar({ add: this.filterQuery, ...this.options })
           .then((data) => {
             this.datas = data.items || []
             this.serverLength = data.total || 0
