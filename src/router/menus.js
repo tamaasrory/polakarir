@@ -9,7 +9,7 @@ import SuratKeluar from '@/router/menus/surat-keluar'
 import Agenda from '@/router/menus/agenda'
 import TemplateSurat from '@/router/menus/template-surat'
 import ArsipSurat from '@/router/menus/arsip-surat'
-import Pengaturan from '@/router/menus/pengaturan'
+import Profil from '@/router/menus/profil'
 
 const menus = [
   {
@@ -62,5 +62,5 @@ export default menus.concat(
   Agenda,
   TemplateSurat,
   ArsipSurat,
-  Pengaturan
+  Profil
 )
