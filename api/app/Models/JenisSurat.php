@@ -21,8 +21,8 @@ class JenisSurat extends SelfModel
      *
      * @var string
      */
-    protected $table = 'jenis_surat';
-
+    protected $table = 'tb_jenis_surat';
+    protected $primaryKey = 'id_jenis_surat';
     /**
      * The attributes that are mass assignable.
      *

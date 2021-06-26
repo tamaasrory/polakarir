@@ -19,9 +19,12 @@ class PermissionTableSeeder extends Seeder
         $models = [
             'surat-masuk',
             'surat-keluar',
+            'template-surat',
+            'arsip-surat',
+            'jenis-surat',
+            'agenda',
             'user',
             'role',
-            'jenis-surat'
         ];
         $actions = [
             'list',
@@ -42,5 +45,10 @@ class PermissionTableSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
         }
+
+        \App\Models\JenisSurat::create([
+            'nama_jenis_surat' => 'Surat Undangan',
+            'kode_surat' => '071'
+        ]);
     }
 }

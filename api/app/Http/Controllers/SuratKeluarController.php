@@ -15,8 +15,6 @@ use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\NomorSuratTerakhirController;
-
 class SuratKeluarController extends Controller {
 
     public $title = 'Surat Keluar';
@@ -60,7 +58,7 @@ class SuratKeluarController extends Controller {
     public function create()
     {
         $jenis_surat = JenisSurat::selectRaw(
-            "id as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
+            "id_jenis_surat as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
         $opd = collect(ExtApi::listOpd())->map(function ($data) {
             $tmp = [];
             $tmp['value'] = $data['id_opd'];
@@ -107,18 +105,7 @@ class SuratKeluarController extends Controller {
                         'msg' => "{$this->title} baru berhasil disimpan"
                     ];
                 }
-
-            } else {
-                return [
-                    'value' => [],
-                    'msg' => "{$this->title} baru gagal disimpan"
-                ];
             }
-        } else {
-            return [
-                'value' => [],
-                'msg' => "{$this->title} baru gagal disimpan"
-            ];
         }
 
 
