@@ -18,6 +18,7 @@ class CreateTbTemplateSuratTable extends Migration
             $table->string('nip_author', 22);
             $table->string('nama_template', 200);
             $table->text('url_berkas');
+            $table->text('sumber_hukum');
             $table->enum('status', ['draft', 'publish']);
             $table->timestamps();
         });

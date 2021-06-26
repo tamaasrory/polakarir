@@ -235,11 +235,11 @@ class SuratKeluarController extends Controller
             $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'], $data['id_jenis_surat']);
 
             //update template
-            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
-            $template->setValue('${nomorsurat}', $nomor_surat['nomor_selanjutnya']);
-            $template->setValue('${tanggal}', $tanggal);
-            $template->setValue('${namalengkap}', $pegawai['nama_pegawai']);
-            $template->setValue('${nip}', $pegawai['nip']);
+            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
+            $template->setValue('${nomorsurat}',$nomor_surat['nomor_selanjutnya']);
+
+            $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
+            $template->setValue('${nip}',$pegawai['nip']);
 
             //update data nomor terakhir surat, nomor autonya berubah jadi nomor yang telah dipakai
             $nomorSuratTerakhir->update($data['id_opd'], $data['id_jenis_surat'], $nomor_surat['nomor_auto_selanjutnya']);
@@ -249,10 +249,12 @@ class SuratKeluarController extends Controller
                 //dengan tte
                 $hash_tte = $request->input('hash_tte');
                 $template->setImageValue('ttdelektronik', "./qrcode/$output_file_qr.jpg");
+                $template->setValue('${tanggal}',$tanggal);
             } else {
 
                 //tanpa tte
                 $template->setValue('${ttdelektronik}', ' </w:t><w:br/><w:t> ');
+                $template->setValue('${tanggal}', ' </w:t><w:br/><w:t> ');
             }
 
             $template->saveAs($path_word_validasi);
