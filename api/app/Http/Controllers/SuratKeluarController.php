@@ -249,7 +249,7 @@ class SuratKeluarController extends Controller {
             //update template
             $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
             $template->setValue('${nomorsurat}',$nomor_surat['nomor_selanjutnya']);
-            $template->setValue('${tanggal}',$tanggal);
+
             $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
             $template->setValue('${nip}',$pegawai['nip']);
 
@@ -261,10 +261,12 @@ class SuratKeluarController extends Controller {
                 //dengan tte
                 $hash_tte = $request->input('hash_tte');
                 $template->setImageValue('ttdelektronik', "./qrcode/$output_file_qr.jpg");
+                $template->setValue('${tanggal}',$tanggal);
             } else {
 
                 //tanpa tte
                 $template->setValue('${ttdelektronik}', ' </w:t><w:br/><w:t> ');
+                $template->setValue('${tanggal}', ' </w:t><w:br/><w:t> ');
             }
 
             $template->saveAs($path_word_validasi);
