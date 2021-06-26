@@ -475,9 +475,9 @@ export default {
     return {
       loadingData: true,
       surat_keluar: {
-        id_jenis_surat: null,
         id_opd: 0,
-        data_terpilih: [],
+        id_jenis_surat: null,
+        penerima_surat: [],
         kategori_surat: null,
         karakteristik_surat: null,
         derajat_surat: null,
@@ -500,7 +500,7 @@ export default {
         id_jenis_surat: 'required',
         id_opd: 'required',
         kategori_surat: 'required',
-        data_terpilih: 'required',
+        penerima_surat: 'required',
         karakteristik_surat: 'required',
         derajat_surat: 'required',
         perihal_surat: 'required',
@@ -514,7 +514,7 @@ export default {
       },
 
       showDC: false,
-      dcMessages: 'Simpan Surat Keluar Baru Sekarang?',
+      dcMessages: 'Simpan Surat Keluar Sekarang?',
       dcProgress: false,
       dcdisabledNegativeBtn: false,
       dcdisabledPositiveBtn: false,
@@ -551,7 +551,7 @@ export default {
       return 'mdi-checkbox-blank-outline'
     },
     showDataTerpilih () {
-      return this.surat_keluar.data_terpilih
+      return this.surat_keluar.penerima_surat
     },
     headerDt () {
       return [
@@ -581,8 +581,8 @@ export default {
       if (index >= 0) this.tmp[key][this.surat_keluar.id_opd].splice(index, 1)
     },
     removeDt (key) {
-      const index = this.surat_keluar.data_terpilih.indexOf(key)
-      if (index >= 0) this.surat_keluar.data_terpilih.splice(index, 1)
+      const index = this.surat_keluar.penerima_surat.indexOf(key)
+      if (index >= 0) this.surat_keluar.penerima_surat.splice(index, 1)
     },
     togglejabatan () {
       this.$nextTick(() => {
@@ -644,8 +644,8 @@ export default {
               }
             }
             data.opd = o
-            if (this.surat_keluar.data_terpilih.indexOf(data) === -1) {
-              this.surat_keluar.data_terpilih.push(data)
+            if (this.surat_keluar.penerima_surat.indexOf(data) === -1) {
+              this.surat_keluar.penerima_surat.push(data)
             }
           }
         }
@@ -702,18 +702,39 @@ export default {
         })
     },
     postAdd () {
+      /* Initialize the form data */
+      const formData = new FormData()
+
+      /* Add the form data we need to submit */
+      // const type = this.surat_keluar.lampiran.dataBlob.type.split('/')[1]
+      // formData.append('lampiran', this.surat_keluar.lampiran, `file.${type}`)
+      console.log(this.surat_keluar.lampiran)
+
+      const penerimaSurat = this.surat_keluar.penerima_surat.map(data => {
+        return data.kode_jabatan
+      })
+      console.log(JSON.stringify(penerimaSurat))
+      formData.append('penerima_surat',
+        new Blob([JSON.stringify(penerimaSurat)], { type: 'application/json' }))
+
+      Object.keys(this.surat_keluar).forEach(d => {
+        if (!(['penerima_surat', 'lampiran'].includes(d))) {
+          formData.append(d, this.surat_keluar[d])
+        }
+      })
+
       this.dcProgress = true
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
-      this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Surat Keluar Baru...'
+      this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Surat Keluar...'
       this.addSuratKeluar(this.surat_keluar).then((res) => {
         this.dcProgress = false
-        this.dcMessages = 'Berhasil Menyimpan Surat Keluar Baru'
+        this.dcMessages = res.msg
         setTimeout(() => {
           this.showDC = false
           this.$router.push({ name: 'surat_keluar' })
-          this.dcMessages = 'Simpan Surat Keluar Baru Sekarang?'
-        }, 1500)
+          this.dcMessages = 'Simpan Surat Keluar Sekarang?'
+        }, 2000)
       })
     }
   }

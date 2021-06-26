@@ -82,14 +82,14 @@ const SuratKeluar = {
       $axios.post('/surat-keluar/baru', payload)
         .then((response) => {
           if (response.status === 200) {
-            resolve(response.data.value)
+            resolve(response.data)
           } else {
-            resolve(response.data.value)
+            resolve({ msg: 'Sepertinya ada masalah, silahkan coba lagi' })
           }
         })
         .catch((error) => {
           console.log(error)
-          resolve([])
+          resolve({ msg: error })
         })
     })
   },

@@ -267,10 +267,10 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ['id'],
+          sortBy: ['id_jenis_surat'],
           sortDesc: [true],
           itemsPerPage: 10,
-          itemKey: 'id'
+          itemKey: 'id_jenis_surat'
         }
       },
 
@@ -290,7 +290,7 @@ export default {
         {
           text: 'ID',
           align: 'left',
-          value: 'id'
+          value: 'id_jenis_surat'
         },
         { text: 'Kode Surat', value: 'kode_surat' },
         { text: 'Nama Jenis Surat', value: 'nama_jenis_surat' },
@@ -320,13 +320,13 @@ export default {
     ...mapActions(['getJenisSurat', 'deleteJenisSurat']),
     can,
     _detail (value) {
-      this.$router.push({ name: 'jenis_surat_view', params: { id: value.id } })
+      this.$router.push({ name: 'jenis_surat_view', params: { id: value.id_jenis_surat } })
     },
     _add () {
       this.$router.push({ name: 'jenis_surat_add' })
     },
     _edit (value) {
-      this.$router.push({ name: 'jenis_surat_edit', params: { id: value.id } })
+      this.$router.push({ name: 'jenis_surat_edit', params: { id: value.id_jenis_surat } })
     },
     _delete (value) {
       if (value === true) {
@@ -350,7 +350,7 @@ export default {
           this.dcdisabledPositiveBtn = false
         })
       } else {
-        this.deleteId = value.id
+        this.deleteId = value.id_jenis_surat
         this.dcMessages = `Hapus jenis surat <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }
