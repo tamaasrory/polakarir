@@ -29,6 +29,7 @@ $router->group(['prefix' => 'surat-keluar'], function () use ($router) {
     $router->put('update/{id}', [SuratKeluarController::class, 'update']);
     $router->delete('delete/{id}', [SuratKeluarController::class, 'destroy']);
     $router->post('tte', [SuratKeluarController::class, 'tte']);
+    $router->put('validasi-surat', [SuratKeluarController::class, 'validasiSurat']);
 });
 
 $router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {

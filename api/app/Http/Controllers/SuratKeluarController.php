@@ -14,6 +14,7 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class SuratKeluarController extends Controller
 {
@@ -210,7 +211,8 @@ class SuratKeluarController extends Controller
         if ($data['status'] != 'Selesai') {
 
             //data pegawai
-            $pegawai = ExtApi::getPegawaiByNip($request);
+//            $pegawai = ExtApi::getPegawaiByNip($request);
+            $pegawai = $request->auth;
 
 
             //Save into PDF
@@ -269,6 +271,7 @@ class SuratKeluarController extends Controller
             $data->lampiran = $file[0] . '.pdf';
             $data->update();
 
+            $this->updateHistori($id_surat,"Disetujui ".$pegawai['nama_jabatan'],$pegawai['nip'],$pegawai['nama_pegawai'],$pegawai['nama_jabatan'],$pegawai['kode_jabatan'],"");
 
             return [
                 'value' => $data,
@@ -323,6 +326,77 @@ class SuratKeluarController extends Controller
         );
         $split = explode('-', $tanggal);
         return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
+    }
+
+    public function validasiSurat(Request $request){
+        $dataValidator = $request->auth;
+        $dataSurat = SuratKeluar::find($request->id_surat_keluar);
+
+        if($request->ket=="Disetujui") {
+            //surat disetujui
+            $dataSurat->kode_jabatan_terusan = $request->kode_jabatan_terusan;
+            $dataSurat->status = 'Disetujui '.$dataValidator['nama_jabatan'];
+            $dataSurat->catatan = "";
+            $dataSurat->save();
+
+            //update histori
+            $this->updateHistori($dataSurat->id_surat_keluar,$dataSurat->status,$dataValidator['nip'],$dataValidator['nama_pegawai'],$dataValidator['nama_jabatan'],$dataValidator['kode_jabatan'],$dataSurat->catatan);
+            return "Berhasil disetujui";
+        }else{
+            //surat ditolak
+            $dataSurat->status = 'Ditolak '.$dataValidator['nama_jabatan'];
+            $dataSurat->catatan = $request->catatan;
+            $dataSurat->save();
+            return "Berhasil ditolak dengan catatan ".$request->catatan;
+        }
+    }
+
+    public function updateHistori($id_surat_keluar,$status_surat,$nip,$nama_pegawai,$nama_jabatan,$kode_jabatan,$catatan){
+        $dataSurat = SuratKeluar::find($id_surat_keluar);
+        $dataHistori = [];
+        if($dataSurat){
+            //ditemukan
+            if($dataSurat['histori_surat']==""){
+                //jika histori masih kosong, maka lgsung push histori
+                array_push($dataHistori, (object)[
+                    'nip' => $nip,
+                    'nama_pegawai' => $nama_pegawai,
+                    'jabatan' => $nama_jabatan,
+                    'kode_jabatan' => $kode_jabatan,
+                    'status_surat' => $status_surat,
+                    'catatan' => $catatan,
+                    'waktu' =>Carbon::now()
+                ]);
+                $dataSurat->histori_surat = $dataHistori;
+                $dataSurat->save();
+                return "histori berhasil ditambahkan";
+            }else{
+                //tampung dlu yang lama, setelah itu gabung dengan yang baru
+                array_push($dataHistori, (object)[
+                    'nip' => $nip,
+                    'nama_pegawai' => $nama_pegawai,
+                    'jabatan' => $nama_jabatan,
+                    'kode_jabatan' => $kode_jabatan,
+                    'status_surat' => $status_surat,
+                    'catatan' => $catatan,
+                    'waktu' =>Carbon::now()
+                ]);
+
+                //menggabungkan data histori sebelumnya dengan data histori terbaru
+                $array1 = json_decode($dataSurat['histori_surat'], true);
+                $array2 = json_decode(json_encode($dataHistori), true);
+
+                $res = array_merge( $array1, $array2);
+                $merged = json_encode($res);
+
+                $dataSurat->histori_surat = $merged;
+                $dataSurat->save();
+                return "histori berhasil ditambahkan";
+            }
+        }else{
+            //tidak ditemukan
+            return "surat keluar tidak ditemukan";
+        }
     }
 
 
