@@ -60,7 +60,7 @@ class ExtAuthController extends BaseController
     {
         $auth = $this->request->auth;
         if ($auth) {
-            return ['value' => $auth->perm];
+            return ['value' => $auth['perm']];
         }
         return ['value' => null];
     }
