@@ -33,11 +33,14 @@
       </v-list-item>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title">
+          <v-list-item-title
+            class="title"
+            style="font-size: 14px !important;"
+          >
             {{ user ? user.name : '' }}
           </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ user ? user.role[0] : '' }}
+          <v-list-item-subtitle style="word-wrap: normal;white-space: normal!important;font-size: 13px;text-transform: capitalize !important;">
+            {{ (user.sinergi ? user.sinergi.nama_jabatan : (user?user.role[0]:'')).toLowerCase() }}
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-menu
@@ -109,7 +112,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Dialog from './components/Dialog'
 import menus from './router/menus'
-import {isEmpty} from "@/plugins/supports";
+import { isEmpty } from '@/plugins/supports'
 
 export default {
   name: 'App',

@@ -20,6 +20,7 @@
       <v-toolbar-title>Surat Keluar</v-toolbar-title>
       <v-spacer />
       <v-btn
+        v-if="can(['surat-keluar-create'])"
         title="Tambah Surat Keluar"
         icon
         @click="_add()"

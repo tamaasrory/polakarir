@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Base;
 use App\Models\Base\Role;
 use App\Supports\ExtApi;
 use App\Models\Base\User;
+use App\Supports\Tools;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -83,41 +84,38 @@ class ExtAuthController extends BaseController
 
         if ($login['result']) { // login sinergi berhasil dan user ditemukan
 
+            $login['nama_pegawai'] = Tools::formatNameWithTitle($login['nama_pegawai']);
+
             // cek apakah user telah terdaftar di tabel user
-            /** @var User $findUser */
-            $findUser = User::find($login['nip']);
-            $dataUser = null;
+            /** @var User $userData */
+            $userData = User::find($login['nip']);
 
-            if ($findUser) { // sudah terdaftar dalam tabel user
+            $detail = [];
+
+            if ($userData) { // sudah terdaftar dalam tabel user
                 // rekam ip dan waktu akses
-                $detail = $findUser->detail;
-                $detail['lastAccess'] = date('Y-m-d H:i:s');
-                $detail['ip'] = $this->request->ip();
-                $findUser->detail = $detail;
-
-                // set role yang sesuai dengan jabatan
-                $this->giveRole($findUser, $login['kode_jabatan']);
-                $findUser->save();
-                $dataUser = $findUser;
+                $detail = $userData->detail;
             } else { // belum terdaftar dalam tabel user
                 // tambahkan user ke tabel user
-                $newUser = new User();
-                $newUser->id = $login['nip'];
-                $newUser->name = $login['nama_jabatan'];
-
-                // rekam ip dan waktu akses
-                $detail = [];
-                $detail['lastAccess'] = date('Y-m-d H:i:s');
-                $detail['ip'] = $this->request->ip();
-                $newUser->detail = $detail;
-                $newUser->save();
-
-                // set role yang sesuai dengan jabatan
-                /** @var User $newUser */
-                $newUser = User::find($login['nip']);
-                $this->giveRole($newUser, $login['kode_jabatan']);
-                $dataUser = $newUser;
+                $userData = new User();
+                $userData->id = $login['nip'];
+                $userData->name = $login['nama_pegawai'];
             }
+
+            $detail['lastAccess'] = date('Y-m-d H:i:s');
+            $detail['ip'] = $this->request->ip();
+            $userData->detail = $detail;
+
+            // set role yang sesuai dengan jabatan
+            $userData->save();
+
+            if (!isset($userData->id) && ($userData->id == null)) {
+                /** @var User $userData */
+                $userData = User::find($login['nip']);
+            }
+
+            // set role yang sesuai dengan jabatan
+            $this->giveRole($userData, $login['kode_jabatan']);
 
             // paramater untuk pembuatan token jwt
             $param = [
@@ -125,10 +123,12 @@ class ExtAuthController extends BaseController
                 'kdj' => $login['kode_jabatan']
             ];
 
+            $userData->sinergi = $login;
+
             return response()->json([
                 'token' => $this->jwt($param), // buat token untuk user ini
-                'value' => $dataUser,
-            ], 200);
+                'value' => $userData,
+            ]);
 
         } else {  // login sinergi tidak berhasil atau user tidak ditemukan
 
@@ -142,7 +142,7 @@ class ExtAuthController extends BaseController
                     'msg' => 'Username atau Password Salah',
                     'token' => null,
                     'value' => null,
-                ], 200);
+                ]);
             }
 
             // user ditemukan dan cek passwordnya
@@ -164,7 +164,7 @@ class ExtAuthController extends BaseController
                     return response()->json([
                         'token' => $this->jwt($param), // buat token untuk user ini
                         'value' => $user,
-                    ], 200);
+                    ]);
                 }
             }
         }
@@ -173,7 +173,7 @@ class ExtAuthController extends BaseController
             'msg' => 'Username atau Password Salah',
             'token' => null,
             'value' => null,
-        ], 200);
+        ]);
     }
 
     /**

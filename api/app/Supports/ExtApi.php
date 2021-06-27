@@ -22,6 +22,15 @@ class ExtApi
 
         if (isset($tmp['result'])) {
             if ($tmp['result'] === 'verified') {
+
+                $request->request->add(['nip' => $tmp['nip']]);
+                $pegawai = self::getPegawaiByNip($request);
+
+                if ($pegawai['result']) {
+                    $tmp['nama_pegawai'] = $pegawai['nama_pegawai'];
+                    return $tmp;
+                }
+
                 return $tmp;
             }
         }
@@ -101,6 +110,7 @@ class ExtApi
             ->run();
 
         if (!isset($tmp['result'])) {
+            $tmp['result'] = true;
             return $tmp;
         }
 
