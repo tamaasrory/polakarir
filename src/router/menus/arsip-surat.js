@@ -1,50 +1,53 @@
+const path = '/arsip-surat'
+const permission = 'arsip-surat-'
+const routeName = 'arsip_surat'
+const folder = 'arsip-surat'
+const title = 'Arsip Surat'
 const ArsipSurat = [
-  // ROUTES PARFUM START HERE
   {
-    path: '/arsip-surat',
-    name: 'arsip-surat',
-    component: () => import(/* webpackChunkName: "arsip-surat.chunk" */ '@/views/arsip-surat/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Arsip Surat',
+      title: title,
       icon: 'mdi-package-down',
-      // subheader: 'Data Master',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/arsip-surat/baru',
-    name: 'arsip-surat_add',
-    component: () => import(/* webpackChunkName: "arsip-surat.chunk" */ '@/views/arsip-surat/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Arsip Surat',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
-    path: '/arsip-surat/view/:id',
-    name: 'arsip-surat_view',
-    component: () => import(/* webpackChunkName: "arsip-surat.chunk" */ '@/views/arsip-surat/View'),
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
     props: true,
     meta: {
-      title: 'Detail Arsip Surat',
+      title: 'Detail' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/arsip-surat/edit/:id',
-    name: 'arsip-surat_edit',
-    component: () => import(/* webpackChunkName: "arsip-surat.chunk" */ '@/views/arsip-surat/Edit'),
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
-      title: 'Edit Arsip Surat',
+      title: 'Edit' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'edit'
     }
   }
-  // END PARFUM
 ]
 
 export default ArsipSurat

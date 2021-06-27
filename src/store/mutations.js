@@ -17,6 +17,9 @@ const $mutations = {
   SET_USER (state, payload) {
     state.user = payload
   },
+  SET_PERM (state, payload) {
+    state.perm = payload
+  },
   CLEAR_USER (state) {
     state.user = {}
   },

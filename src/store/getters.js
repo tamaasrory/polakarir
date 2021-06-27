@@ -8,7 +8,7 @@ const $getters = {
   // DIMANA GETTERS INI AKAN BERNILAI TRUE/FALSE DENGAN KONDISI BERDASARKAN
   // STATE token.
   isAuth: state => {
-    return state.token !== 'null' && state.token != null
+    return (state.token !== 'null' && state.token != null) && (!!state.user) && (!!state.perm)
   }
 }
 

@@ -1,0 +1,498 @@
+<!--
+  - Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
+  - Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
+  -->
+
+<template>
+  <div>
+    <v-app-bar
+      color="white"
+      fixed
+      app
+      light
+    >
+      <v-btn
+        icon
+        dark
+        @click="backButton"
+      >
+        <v-icon color="primary">
+          mdi-arrow-left
+        </v-icon>
+      </v-btn>
+      <v-toolbar-title>Buat Surat Keluar</v-toolbar-title>
+    </v-app-bar>
+    <v-container class="white">
+      <v-row class="py-0 py-md-8 px-2">
+        <v-col
+          cols="12"
+          md="4"
+          class="py-0"
+        >
+          <v-autocomplete
+            v-model="surat_keluar.id_jenis_surat"
+            :items="items.jenis_surat"
+            label="Jenis Surat"
+            outlined
+            :rules="[rules.required]"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          md="8"
+          class="py-0"
+        >
+          <v-autocomplete
+            v-model="surat_keluar.id_opd"
+            :items="items.opd"
+            label="OPD"
+            outlined
+            :rules="[rules.required]"
+            @change="onChangeOpd"
+          />
+        </v-col>
+        <v-col>
+          <v-btn
+            class="float-left"
+            x-small
+            text
+            absolute
+            right
+            style="margin-top: -36px;"
+            @click="colSize.expand?collapse():expand()"
+          >
+            {{ colSize.expand?'kecilkan&nbsp;':'perluas&nbsp;' }}
+            <v-icon
+              small
+              color="primary"
+            >
+              {{ 'mdi-arrow-'+(colSize.expand?'collapse':'expand') }}
+            </v-icon>
+          </v-btn>
+          <v-row>
+            <v-col
+              :cols="colSize.col"
+              :sm="colSize.sm"
+              :md="colSize.md"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.jabatan"
+                :items="items.jabatan"
+                label="Pilih Berdasarkan Jabatan"
+                outlined
+                multiple
+                @change="onChangeJabatan"
+              >
+                <template #prepend-item>
+                  <v-list-item
+                    ripple
+                    @click="togglejabatan()"
+                  >
+                    <v-list-item-action>
+                      <v-icon :color="surat_keluar.jabatan.length > 0 ? 'indigo darken-4' : ''">
+                        {{ toggleIconJabatan }}
+                      </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Select All
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="mt-2" />
+                </template>
+                <template #selection="{ item, index }">
+                  <v-chip v-if="index < colSize.show">
+                    <span>{{ colSize.expand?item.text:item.text.substring(0,20)+'...' }}</span>
+                  </v-chip>
+                  <span
+                    v-if="index === colSize.show"
+                    class="primary--text text-caption"
+                  >
+                    (+{{ surat_keluar.jabatan.length - colSize.show }})
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col
+              :cols="colSize.col"
+              :sm="colSize.sm"
+              :md="colSize.md"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.esselon"
+                :items="getEsselon"
+                label="Pilih Berdasarkan Esselon"
+                multiple
+                outlined
+                @change="onChangeEsselon"
+              >
+                <template #prepend-item>
+                  <v-list-item
+                    ripple
+                    @click="toggleesselon()"
+                  >
+                    <v-list-item-action>
+                      <v-icon :color="surat_keluar.esselon.length > 0 ? 'indigo darken-4' : ''">
+                        {{ toggleIconEsselon }}
+                      </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Select All
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="mt-2" />
+                </template>
+                <template #selection="{ item, index }">
+                  <v-chip v-if="index < colSize.show">
+                    <span>{{ item.text }}</span>
+                  </v-chip>
+                  <span
+                    v-if="index === colSize.show"
+                    class="primary--text text-caption"
+                  >
+                    (+{{ surat_keluar.esselon.length - colSize.show }})
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col
+              :cols="colSize.col"
+              :sm="colSize.sm"
+              :md="colSize.md"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.pegawai"
+                :items="getPegawai"
+                label="Pilih Berdasarkan Nama Pegawai"
+                multiple
+                outlined
+              >
+                <template #prepend-item>
+                  <v-list-item
+                    ripple
+                    @click="togglepegawai()"
+                  >
+                    <v-list-item-action>
+                      <v-icon :color="surat_keluar.pegawai.length > 0 ? 'indigo darken-4' : ''">
+                        {{ toggleIconPegawai }}
+                      </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Select All
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="mt-2" />
+                </template>
+                <template #selection="{ item, index }">
+                  <v-chip v-if="index < colSize.show">
+                    <span>{{ item.text }}</span>
+                  </v-chip>
+                  <span
+                    v-if="index === colSize.show"
+                    class="primary--text text-caption"
+                  >
+                    (+{{ surat_keluar.pegawai.length - colSize.show }})
+                  </span>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col
+          cols="12"
+          md="12"
+          class="py-0"
+        >
+          <v-simple-table fixed-header>
+            <template #default>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    Data Terpilih
+                  </th>
+                  <th class="text-left">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <!--                <tr-->
+                <!--                  v-for="item in desserts"-->
+                <!--                  :key="item.name"-->
+                <!--                >-->
+                <!--                  <td>{{ item.name }}</td>-->
+                <!--                  <td>{{ item.calories }}</td>-->
+                <!--                </tr>-->
+              </tbody>
+            </template>
+          </v-simple-table>
+          <v-text-field
+            v-model="surat_keluar.satuan"
+            label="Satuan"
+            outlined
+            :rules="[rules.required]"
+          />
+
+          <v-btn
+            color="green"
+            large
+            :dark="dataValidation"
+            :disabled="!dataValidation"
+            @click="showDC = true"
+          >
+            <v-icon color="white">
+              mdi-check
+            </v-icon>
+            SIMPAN
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <dialog-confirm
+      :show-dialog="showDC"
+      :negative-button="dcNegativeBtn"
+      :positive-button="dcPositiveBtn"
+      :disabled-negative-btn="dcdisabledNegativeBtn"
+      :disabled-positive-btn="dcdisabledPositiveBtn"
+      :progress="dcProgress"
+      :title="'Simpan'"
+      :message="dcMessages"
+    />
+  </div>
+</template>
+
+<script>
+import { mapActions } from 'vuex'
+import Dialog from '@/components/Dialog'
+import { isEmpty } from '@/plugins/supports'
+
+export default {
+  components: {
+    'dialog-confirm': Dialog
+  },
+  data () {
+    return {
+      loadingData: true,
+      dataValidation: true,
+      surat_keluar: {
+        id_jenis_surat: null,
+        id_opd: null,
+        jabatan: [],
+        esselon: [],
+        pegawai: []
+      },
+      items: {
+        jenis_surat: [],
+        opd: [],
+        jabatan: [],
+        esselon: [],
+        pegawai: [],
+        datas: []
+      },
+      colSize: {
+        col: 12,
+        sm: 12,
+        md: 4,
+        show: 1,
+        expand: false
+      },
+      rules: {
+        required: value => !!value || 'Tidak Boleh Kosong'
+      },
+      showDC: false,
+      dcMessages: 'Simpan Surat Keluar Baru Sekarang?',
+      dcProgress: false,
+      dcdisabledNegativeBtn: false,
+      dcdisabledPositiveBtn: false,
+      dcNegativeBtn: () => { this.showDC = false },
+      dcPositiveBtn: () => this.postAdd()
+    }
+  },
+  computed: {
+    getEsselon () {
+      const esselon = []
+      this.items.datas.filter((val) => {
+        // hanya esselon dengan jabatan yang di pilih yang akan tampil
+        if (JSON.stringify(this.surat_keluar.jabatan).includes(val.nama_jabatan) &&
+          !JSON.stringify(esselon).includes('esselon-' + val.esselon)) {
+          esselon.push({ value: 'esselon-' + val.esselon, text: 'Esselon ' + val.esselon })
+        }
+        return false
+      })
+      return esselon
+    },
+    getPegawai () {
+      const pegawai = []
+      this.items.datas.filter((val) => {
+        // hanya pegawai dengan jabatan dan esselon yang di pilih yang akan tampil
+        if (JSON.stringify(this.surat_keluar.jabatan).includes(val.nama_jabatan) &&
+          JSON.stringify(this.surat_keluar.esselon).includes('esselon-' + val.esselon)) {
+          pegawai.push({ value: val.nip, text: val.nama_pegawai })
+          return false
+        }
+        return false
+      })
+      return pegawai
+    },
+    selectedAllJabatan () {
+      return this.surat_keluar.jabatan.length === this.items.jabatan.length
+    },
+    selectedAllEsselon () {
+      return this.surat_keluar.esselon.length === this.getEsselon.length
+    },
+    selectedAllPegawai () {
+      return this.surat_keluar.pegawai.length === this.getPegawai.length
+    },
+    toggleIconJabatan () {
+      if (this.selectedAllJabatan) return 'mdi-close-box'
+      if (this.surat_keluar.jabatan.length > 0 && !this.selectedAllJabatan) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
+    toggleIconEsselon () {
+      if (this.selectedAllEsselon) return 'mdi-close-box'
+      if (this.surat_keluar.esselon.length > 0 && !this.selectedAllEsselon) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
+    toggleIconPegawai () {
+      if (this.selectedAllPegawai) return 'mdi-close-box'
+      if (this.surat_keluar.pegawai.length > 0 && !this.selectedAllPegawai) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    }
+  },
+  created () {
+    this.createSuratKeluar().then(data => {
+      this.items.jenis_surat = isEmpty(data.jenis_surat, [])
+      this.items.opd = isEmpty(data.opd, [])
+    })
+  },
+  methods: {
+    ...mapActions(['addSuratKeluar', 'createSuratKeluar', 'getPegawaiByOpd']),
+    togglejabatan () {
+      this.$nextTick(() => {
+        if (this.selectedAllJabatan) {
+          this.surat_keluar.jabatan = []
+        } else {
+          this.surat_keluar.jabatan = this.items.jabatan.slice()
+        }
+      })
+    },
+    toggleesselon () {
+      this.$nextTick(() => {
+        if (this.selectedAllEsselon) {
+          this.surat_keluar.esselon = []
+        } else {
+          this.surat_keluar.esselon = this.getEsselon.slice()
+        }
+      })
+    },
+    togglepegawai () {
+      this.$nextTick(() => {
+        if (this.selectedAllPegawai) {
+          this.surat_keluar.pegawai = []
+        } else {
+          this.surat_keluar.pegawai = this.getPegawai.slice()
+        }
+      })
+    },
+    onChangeJabatan () {
+      const selected = []
+      this.items.datas.filter((val) => {
+        console.log(JSON.stringify(this.surat_keluar.jabatan).includes(val.nama_jabatan),
+          JSON.stringify(this.surat_keluar.esselon).includes('esselon-' + val.esselon),
+          !JSON.stringify(selected).includes('esselon-' + val.esselon))
+        if (JSON.stringify(this.surat_keluar.jabatan).includes(val.nama_jabatan) &&
+          JSON.stringify(this.surat_keluar.esselon).includes('esselon-' + val.esselon) &&
+          !JSON.stringify(selected).includes('esselon-' + val.esselon)) {
+          selected.push({ value: 'esselon-' + val.esselon, text: 'Esselon ' + val.esselon })
+        }
+        return false
+      })
+      if (this.surat_keluar.esselon.length) {
+        this.surat_keluar.esselon = selected
+      }
+      console.log('this.surat_keluar.esselon => ', this.surat_keluar.esselon)
+    },
+    onChangeEsselon () {
+      const selected = []
+      this.items.datas.filter((val) => {
+        if (JSON.stringify(this.surat_keluar.jabatan).includes(val.nama_jabatan) &&
+          JSON.stringify(this.surat_keluar.esselon).includes('esselon-' + val.esselon) &&
+          JSON.stringify(this.surat_keluar.pegawai).includes(val.nip) &&
+          !JSON.stringify(selected).includes(val.nip)
+        ) {
+          selected.push({ value: val.nip, text: val.nama_pegawai })
+        }
+        return false
+      })
+      if (this.surat_keluar.pegawai.length) {
+        this.surat_keluar.pegawai = selected
+      }
+      console.log('this.surat_keluar.pegawai => ', this.surat_keluar.pegawai)
+    },
+    collapse () {
+      this.colSize = {
+        col: 12,
+        sm: 12,
+        md: 4,
+        show: 1,
+        expand: false
+      }
+    },
+    expand () {
+      this.colSize = {
+        col: 12,
+        sm: 12,
+        md: 12,
+        show: 10,
+        expand: true
+      }
+    },
+    backButton () {
+      this.$router.push({ name: 'surat_keluar' })
+    },
+    onChangeOpd () {
+      this.items.jabatan = []
+      this.getPegawaiByOpd({ id_opd: this.surat_keluar.id_opd })
+        .then(data => {
+          this.items.datas = isEmpty(data, [])
+          for (const data of this.items.datas) {
+            const tmp = data.nama_jabatan/* .split(' ')
+            tmp = tmp[0] + ' ' + (tmp[1] ?? '') */
+            if (JSON.stringify(this.items.jabatan).includes(tmp)) continue
+            this.items.jabatan.push({ value: tmp, text: tmp.toUpperCase() })
+          }
+        })
+      this.surat_keluar.jabatan = []
+      this.surat_keluar.esselon = []
+      this.surat_keluar.pegawai = []
+    },
+    postAdd () {
+      this.dcProgress = true
+      this.dcdisabledNegativeBtn = true
+      this.dcdisabledPositiveBtn = true
+      this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Surat Keluar Baru...'
+      this.addSuratKeluar(this.surat_keluar).then((res) => {
+        this.dcProgress = false
+        this.dcMessages = 'Berhasil Menyimpan Surat Keluar Baru'
+        setTimeout(() => {
+          this.showDC = false
+          this.$router.push({ name: 'surat_keluar' })
+          this.dcMessages = 'Simpan Surat Keluar Baru Sekarang?'
+        }, 1500)
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

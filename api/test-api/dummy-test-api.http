@@ -1,0 +1,39 @@
+### test page
+GET http://localhost:7000/test-page
+
+### uji coba login
+
+GET http://localhost:7000/api/test/index
+Content-Type: application/json
+
+### uji coba login
+
+POST http://localhost:7000/api/test/auth
+Content-Type: application/json
+
+{
+    "username": "198501062004121001",
+    "password": "tarmizi"
+}
+
+### uji coba login
+
+POST http://localhost:7000/api/test/auth
+Content-Type: application/json
+
+{
+    "username": "admin@tajriy.com",
+    "password": "123456"
+}
+
+### uji coba akses menggunakan token
+
+GET http://localhost:7000/api/test/dump-test
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiI1MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjIzMzcwNDQ4fQ.HhcGl4WYJhFmT51uTEWahmC8Hw9fAXjd9HmBKUbAQow
+
+### uji coba akses menggunakan token
+
+GET http://localhost:7000/api/test/dump-test
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTg1MDEwNjIwMDQxMjEwMDEiLCJrZGoiOiIwNS4wMS4ifSwiaWF0IjoxNjI0NjkxMDIwfQ.KWotftU1KppsVUMqxYCQgLaRZK1kQLKwUn8Igy3Vp58

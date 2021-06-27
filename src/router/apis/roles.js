@@ -4,7 +4,7 @@ export default {
   // START Roles API
   getRoles ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      let { page, itemsPerPage, sortBy, sortDesc, search } = payload
+      const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {
         search: search || '',
         page: page || 1,
@@ -16,7 +16,7 @@ export default {
       $axios.get(`/roles/all?${query}`)
         .then((response) => {
           if (response.status === 200) {
-            let items = response.data.value.data
+            const items = response.data.value.data
             const total = response.data.value.total
             resolve({ items, total })
           } else {
@@ -47,7 +47,7 @@ export default {
   },
   getPermissions ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/roles/permissions`)
+      $axios.get('/roles/permissions')
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
@@ -79,7 +79,7 @@ export default {
   },
   addRoles ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post(`/roles/baru`, payload)
+      $axios.post('/roles/baru', payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)

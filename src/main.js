@@ -16,6 +16,7 @@ import Viewer from 'v-viewer'
 
 import 'viewerjs/dist/viewer.css'
 import '@mdi/font/css/materialdesignicons.min.css'
+import { isEmpty } from '@/plugins/supports'
 
 const moment = require('moment')
 require('moment/locale/id')
@@ -35,13 +36,11 @@ router.beforeEach((to, from, next) => {
     if (!auth) {
       next({ name: 'login' })
     } else {
-      const roles = store.state.user.role
-      if (roles) {
+      const perm = store.state.perm || []
+      if (!isEmpty(perm)) {
         if (to.matched.some(record => {
-          for (let i = 0; i < roles.length; i++) {
-            if (record.meta.allowRole.includes(roles[i])) {
-              return true
-            }
+          if (perm.includes(record.meta.requirePermission)) {
+            return true
           }
           return false
         })) {

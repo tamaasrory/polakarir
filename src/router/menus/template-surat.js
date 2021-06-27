@@ -1,49 +1,53 @@
+const path = '/template-surat'
+const permission = 'template-surat-'
+const routeName = 'template_surat'
+const folder = 'template-surat'
+const title = 'Template Surat'
 const TemplateSurat = [
-  // ROUTES PARFUM START HERE
   {
-    path: '/template-surat',
-    name: 'template-surat',
-    component: () => import(/* webpackChunkName: "template-surat.chunk" */ '@/views/template-surat/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Template Surat',
+      title: title,
       icon: 'mdi-text-box-multiple',
-      // subheader: 'Data Master',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/template-surat/baru',
-    name: 'template-surat_add',
-    component: () => import(/* webpackChunkName: "template-surat.chunk" */ '@/views/template-surat/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Template Surat',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
-    path: '/template-surat/view/:id',
-    name: 'template-surat_view',
-    component: () => import(/* webpackChunkName: "template-surat.chunk" */ '@/views/template-surat/View'),
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
     props: true,
     meta: {
-      title: 'Detail Template Surat',
+      title: 'Detail' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/template-surat/edit/:id',
-    name: 'template-surat_edit',
-    component: () => import(/* webpackChunkName: "template-surat.chunk" */ '@/views/template-surat/Edit'),
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
-      title: 'Edit Template Surat',
+      title: 'Edit' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'edit'
     }
   }
-  // END PARFUM
 ]
+
 export default TemplateSurat

@@ -1,0 +1,33 @@
+### data jenis-surat
+GET http://localhost:7000/api/v1/jenis-surat/all
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8
+
+### detail jenis-surat
+GET http://localhost:7000/api/v1/jenis-surat/detail/1
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8
+
+### tambah jenis-surat
+POST http://localhost:7000/api/v1/jenis-surat/baru
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8
+
+{
+    "kode_surat": "071",
+    "nama_jenis_surat": "Surat Undangan"
+}
+
+### update jenis-surat
+PUT http://localhost:7000/api/v1/jenis-surat/update/1
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8
+
+{
+    "kode_surat": "077"
+}
+
+### delete jenis-surat
+DELETE http://localhost:7000/api/v1/jenis-surat/delete/1
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8

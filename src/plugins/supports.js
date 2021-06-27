@@ -5,33 +5,58 @@ import { asset } from '@/router/Path'
 import $axios from '@/router/server'
 import store from '../store'
 
-let { role } = store.state.user
+const perm = store.state.perm || []
 
+/**
+ * callBack function<br>
+ * r = result dari pemeriksaan bernilai true (bila value kosong) dan<br>
+ * bernilai false (bila value tidak kosong)<br>
+ *
+ * v = value original yang di periksa<br>
+ * <code>(r, v) => (r ? [] : v)</code><br>
+ */
 export const isEmpty = (v, callBack) => {
-  let result = (!v) || (v !== null && !Object.keys(v || {}).length && !v.length)
+  if (typeof callBack !== 'function' && typeof callBack !== 'undefined') {
+    callBack = (r, v) => (r ? callBack : v)
+  }
+  if (['undefined', null, 'null', ''].includes(v)) {
+    return true
+  }
+  let result = typeof v === 'string' ? !v.length : false
+  result = !Object.keys(v || {}).length && result
+  result = (!v) || result
   result = typeof callBack === 'function' ? callBack(result, v) : result
   return result
 }
 
+/**
+ * if "valid" return false,
+ * if "not valid" return true
+ * @param schema
+ * @param rules
+ * @param data
+ * @returns {boolean}
+ */
 export const inputValidator = (schema, rules, data) => {
   let notValid = false
   Object.keys(schema).map(value => {
-    let funs = schema[value].split('|')
+    const funs = schema[value].split('|')
     // console.log(funs)
     for (let i = 0; i < funs.length; i++) {
-      let valid = rules[funs[i]](data[value])
+      const valid = rules[funs[i]](data[value])
       // console.log(valid)
       if (typeof valid === 'string') {
         notValid = true
         break
       }
     }
+    return null
   })
   return notValid
 }
 
 export const imgUrlToBlob = (imgUrl, callback) => {
-  let tmp = new Promise((resolve, reject) => {
+  const tmp = new Promise((resolve, reject) => {
     $axios.get(asset(imgUrl))
       .then((response) => {
         if (response.status === 200) {
@@ -55,11 +80,12 @@ export const imgUrlToBlob = (imgUrl, callback) => {
 
 export const dataFilter = (word, datas, callback) => {
   if (!isEmpty(word)) {
-    let tmp = []
+    const tmp = []
     datas.map(v => {
       if (callback(v)) {
         tmp.push(v)
       }
+      return null
     })
     return tmp
   } else {
@@ -67,9 +93,9 @@ export const dataFilter = (word, datas, callback) => {
   }
 }
 
-export const canEdit = (actor) => {
-  for (const val of actor) {
-    if (role.includes(val)) {
+export const can = (permissions) => {
+  for (const permission of permissions) {
+    if (perm.includes(permission)) {
       return true
     }
   }

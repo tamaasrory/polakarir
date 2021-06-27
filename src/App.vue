@@ -76,26 +76,20 @@
       <v-divider />
 
       <v-list subheader>
-        <template v-for="(item, index) in items">
-          <v-subheader
-            v-if="!!item.subheader"
-            :key="item.subheader"
-            v-text="item.subheader"
-          />
-          <v-list-item
-            :key="index"
-            :to="item.link"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          :to="item.link"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
 
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-main :style="isAuth ? /*'margin-top:50pt;margin-bottom:50pt'*/'' : ''">
@@ -115,6 +109,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Dialog from './components/Dialog'
 import menus from './router/menus'
+import {isEmpty} from "@/plugins/supports";
 
 export default {
   name: 'App',
@@ -134,18 +129,26 @@ export default {
   watch: {
     $route (to, from) {
       this.toolbarTitle = to.meta.title
+      this.authRefresh().then(data => {
+        this.setupMenu(data || [])
+      })
+    }
+  },
+  created () {
+  },
+  methods: {
+    ...mapActions(['logout', 'authRefresh']),
+    setupMenu (perm) {
       this.items = []
       for (let i = 0; i < menus.length; i++) {
         const { path, meta } = menus[i]
-        const { allowRole, icon, title, subheader } = meta
-        if (this.user !== null) {
-          if (allowRole) {
+        const { requirePermission, icon, title, subheader } = meta
+
+        if (!isEmpty(this.user)) {
+          if (requirePermission && icon && !isEmpty(perm)) {
             let allow = false
-            const roles = this.user.role || []
-            for (let j = 0; j < roles.length; j++) {
-              if (allowRole.includes(roles[j])) {
-                allow = true
-              }
+            if (perm.includes(requirePermission)) {
+              allow = true
             }
 
             if (allow) {
@@ -168,20 +171,11 @@ export default {
           }
         }
       }
-    }
-  },
-  created () {
-    console.log(JSON.stringify(this.user))
-  },
-  methods: {
-    ...mapActions(['logout']),
+    },
     postLogout () {
-      // KEMUDIAN DI CEK VALUE DARI isAuth
-      // APABILA BERNILAI TRUE
       this.logout()
       this.showDialogLogout = false
       if (!this.isAuth) {
-        // MAKA AKAN DI-DIRECT KE ROUTE DENGAN NAME home
         this.$router.push({ name: 'login' })
       }
     },

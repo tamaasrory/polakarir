@@ -1,0 +1,17 @@
+### tambah jenis-surat
+GET http://localhost:7000/api/v1/surat-keluar/create
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8
+
+
+### validasi surat
+PUT http://localhost:7000/api/v1/surat-keluar/validasi-surat
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTc2MDMyODIwMDYwNDEwMDQiLCJrZGoiOiIwNS4wMS4wOS4ifSwiaWF0IjoxNjI0NzEyMzY2fQ.ac6HLLqWbWrwY27M5NUbLzGdPRzLHllCkbzD3aUelek
+
+{
+    "id_surat_keluar": "1",
+    "kode_jabatan_terusan": "01.01.",
+    "ket": "Disetujui",
+    "catatan": ""
+}

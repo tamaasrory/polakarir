@@ -2,6 +2,8 @@
 namespace {{namespace}};
 
 use App\{{model}};
+use Illuminate\Http\Request;
+use App\Http\Controllers\Base\Controller;
 
 class {{class}} extends Controller {
 
@@ -18,11 +20,12 @@ class {{class}} extends Controller {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response|array
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = {{model}}::paginate(20);
+        $data = {{model}}::search($request,new {{model}}());
 
         if ($data) {
             return [
@@ -78,7 +81,7 @@ class {{class}} extends Controller {
      */
     public function show($id)
     {
-        $data = {{model}}::findOrFail($id);
+        $data = {{model}}::find($id);
         if ($data) {
             return [
                 'value' => $data,
@@ -109,9 +112,8 @@ class {{class}} extends Controller {
      * @param int $id
      * @return \Illuminate\Http\Response|array
      */
-    public function update()
+    public function update($id)
     {
-        $id = request()->input('id');
         $data = {{model}}::find($id);
 
         if ($data->update(request()->all())) {
@@ -133,9 +135,8 @@ class {{class}} extends Controller {
      * @param int $id
      * @return \Illuminate\Http\Response|array
      */
-    public function destroy()
+    public function destroy($id)
     {
-        $id = request()->input('id');
         $data = {{model}}::find($id);
 
         if ($data->delete()) {

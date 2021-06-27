@@ -108,7 +108,7 @@
                 </template>
               </v-simple-table>
               <v-btn elevation="2"
-                     @click="_addTujuan()"
+                     @click="_editProfil()"
                      class="mt-5 cyan accent-3 text-capitalize white--text rounded-xl" >
                 Simpan
               </v-btn>
@@ -124,7 +124,6 @@
 import {mapActions} from 'vuex'
 import Dialog from '@/components/Dialog'
 import {canEdit} from '@/plugins/supports'
-
 export default {
   name: 'Material',
   components: {
@@ -217,8 +216,8 @@ export default {
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
     },
-    _addArsip() {
-      this.$router.push({name: 'arsip-surat_add'})
+    _editProfil() {
+      this.$router.push({name: 'profil_edit'})
     },
     _edit(value) {
       this.$router.push({name: 'material_edit', params: {id: value.id}})
@@ -272,6 +271,8 @@ export default {
     }
   }
 }
+
+
 </script>
 <style>
 .v-data-footer__icons-before,

@@ -15,18 +15,19 @@
     "compressorjs": "^1.0.7",
     "core-js": "^3.13.1",
     "css-loader": "^5.2.6",
+    "firebase": "^8.6.7",
     "mini-css-extract-plugin": "^1.6.0",
     "postcss-loader": "^5.3.0",
     "raw-loader": "^4.0.2",
     "register-service-worker": "^1.7.2",
     "secure-ls": "^1.2.6",
     "v-viewer": "^1.5.1",
-    "vue": "^2.6.12",
+    "vue": "^2.6.14",
     "vue-ctk-date-time-picker": "^2.5.0",
     "vue-moment": "^4.1.0",
     "vue-plugin-load-script": "^1.3.2",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.5.1",
+    "vuetify": "^2.5.3",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^2.7.1"
   },
@@ -43,10 +44,10 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-vue": "^7.10.0",
-    "sass": "^1.34.0",
-    "sass-loader": "^10",
-    "vue-cli-plugin-vuetify": "^2.4.0",
-    "vue-template-compiler": "^2.6.12",
+    "sass": "1.26.10",
+    "sass-loader": "8.0.2",
+    "vue-cli-plugin-vuetify": "^2.4.1",
+    "vue-template-compiler": "^2.6.14",
     "vuetify-loader": "^1.7.2"
   },
   "eslintConfig": {
@@ -62,40 +63,12 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "no-undef": "warn",
-      "no-unused-components": "warn",
-      "no-unused-vars": "warn",
-      "no-async-in-computed-properties": "warn",
-      "no-dupe-keys": "warn",
-      "no-duplicate-attributes": "warn",
-      "no-parsing-error": "warn",
-      "no-reserved-keys": "warn",
-      "no-shared-component-data": "warn",
-      "no-side-effects-in-computed-properties": "warn",
-      "no-template-key": "warn",
-      "no-textarea-mustache": "warn",
-      "no-use-v-if-with-v-for": "warn",
-      "require-component-is": "warn",
-      "require-prop-type-constructor": "warn",
-      "require-render-return": "warn",
-      "require-v-for-key": "warn",
-      "require-valid-default-prop": "warn",
-      "return-in-computed-property": "warn",
-      "use-v-on-exact": "warn",
-      "valid-template-root": "warn",
-      "valid-v-bind": "warn",
-      "valid-v-cloak": "warn",
-      "valid-v-else-if": "warn",
-      "valid-v-else": "warn",
-      "valid-v-for": "warn",
-      "valid-v-html": "warn",
-      "valid-v-if": "warn",
-      "valid-v-model": "warn",
-      "valid-v-on": "warn",
-      "valid-v-once": "warn",
-      "valid-v-pre": "warn",
-      "valid-v-show": "warn",
-      "valid-v-text": "warn"
+      "vue/valid-v-slot": [
+        "warn",
+        {
+          "allowModifiers": false
+        }
+      ]
     }
   },
   "browserslist": [

@@ -4,7 +4,7 @@
  */
 
 //LocalHost
-export const baseURL = 'http://localhost:7000/'
+export const baseURL = 'http://localhost:7000'
 export const asset = (v) => `http://localhost:7000/api/v1/images?f=${v}`
 
 // Server Development

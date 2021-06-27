@@ -1,50 +1,53 @@
+const path = '/surat-masuk'
+const permission = 'surat-masuk-'
+const routeName = 'surat_masuk'
+const folder = 'surat-masuk'
+const title = 'Surat Masuk'
 const SuratMasuk = [
-  // ROUTES PARFUM START HERE
   {
-    path: '/surat-masuk',
-    name: 'surat-masuk',
-    component: () => import(/* webpackChunkName: "surat-masuk.chunk" */ '@/views/surat-masuk/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Surat Masuk',
+      title: title,
       icon: 'mdi-email-receive',
-      // subheader: 'Data Master',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/surat-masuk/baru',
-    name: 'surat-masuk_add',
-    component: () => import(/* webpackChunkName: "surat-masuk.chunk" */ '@/views/surat-masuk/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Surat Masuk',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
-    path: '/surat-masuk/view/:id',
-    name: 'surat-masuk_view',
-    component: () => import(/* webpackChunkName: "surat-masuk.chunk" */ '@/views/surat-masuk/View'),
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
     props: true,
     meta: {
-      title: 'Detail Surat Masuk',
+      title: 'Detail' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/surat-masuk/edit/:id',
-    name: 'surat-masuk_edit',
-    component: () => import(/* webpackChunkName: "surat-masuk.chunk" */ '@/views/surat-masuk/Edit'),
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
-      title: 'Edit Surat Masuk',
+      title: 'Edit' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'edit'
     }
   }
-  // END PARFUM
 ]
 
 export default SuratMasuk

@@ -7,16 +7,18 @@
   <div>
     <v-app-bar
       fixed
-      dark
-      color="primary"
-      elevation="0"
+      light
+      color="white"
+      app
     >
       <v-btn
         icon
-        dark
+        light
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">
+          mdi-arrow-left
+        </v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
         Edit Roles
@@ -61,7 +63,26 @@
                 label="Izin"
                 multiple
                 :rules="[rules.required]"
-              />
+              >
+                <template #prepend-item>
+                  <v-list-item
+                    ripple
+                    @click="toggle"
+                  >
+                    <v-list-item-action>
+                      <v-icon :color="roles.permissions.length > 0 ? 'indigo darken-4' : ''">
+                        {{ icon }}
+                      </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Select All
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider class="mt-2" />
+                </template>
+              </v-autocomplete>
               <v-btn
                 color="green"
                 large
@@ -127,6 +148,14 @@ export default {
   computed: {
     dataValidation () {
       return !!(this.roles.name)
+    },
+    selectedAllPerm () {
+      return this.roles.permissions.length === this.permissions.length
+    },
+    icon () {
+      if (this.selectedAllPerm) return 'mdi-close-box'
+      if (this.roles.permissions.length > 0 && !this.selectedAllPerm) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
     }
   },
   created () {
@@ -144,6 +173,15 @@ export default {
   },
   methods: {
     ...mapActions(['getRolesById', 'updateRoles']),
+    toggle () {
+      this.$nextTick(() => {
+        if (this.selectedAllPerm) {
+          this.roles.permissions = []
+        } else {
+          this.roles.permissions = this.permissions.slice()
+        }
+      })
+    },
     backButton () {
       this.$router.push({ name: 'roles' })
     },

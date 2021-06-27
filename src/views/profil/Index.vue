@@ -91,7 +91,7 @@
                 </template>
               </v-simple-table>
               <v-btn elevation="2"
-                     @click="_editUser()"
+                     @click="_editProfil()"
                      class="mt-5 cyan accent-3 text-capitalize white--text rounded-xl" >
                 Ubah
               </v-btn>
@@ -196,8 +196,8 @@ export default {
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
     },
-    _editUser() {
-      this.$router.push({name: 'editUser'})
+    _editProfil() {
+      this.$router.push({name: 'edit_profil'})
     },
     _edit(value) {
       this.$router.push({name: 'material_edit', params: {id: value.id}})

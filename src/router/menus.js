@@ -2,14 +2,15 @@
  * Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
-import user from '@/router/menus/user'
-import roles from '@/router/menus/roles'
 import SuratMasuk from '@/router/menus/surat-masuk'
 import SuratKeluar from '@/router/menus/surat-keluar'
 import Agenda from '@/router/menus/agenda'
 import TemplateSurat from '@/router/menus/template-surat'
 import ArsipSurat from '@/router/menus/arsip-surat'
 import Profil from '@/router/menus/profil'
+import JenisSurat from '@/router/menus/jenis-surat'
+import User from '@/router/menus/user'
+import Roles from '@/router/menus/roles'
 
 const menus = [
   {
@@ -19,8 +20,8 @@ const menus = [
     meta: {
       title: 'Home',
       icon: 'mdi-home',
-      requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator', 'Staff']
+      requirePermission: 'home',
+      requiresAuth: true
     }
   },
   {
@@ -40,27 +41,15 @@ const menus = [
     }
   }
 ]
-const about = [
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import(/* webpackChunkName: "about.chunk" */ '@/views/About'),
-    meta: {
-      title: 'About',
-      icon: 'mdi-help-circle',
-      subheader: 'Lainnya',
-      requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
-    }
-  }
-]
+
 export default menus.concat(
-  user,
-  roles,
+  User,
+  Roles,
+  JenisSurat,
   SuratMasuk,
   SuratKeluar,
   Agenda,
+  Profil,
   TemplateSurat,
   ArsipSurat,
-  Profil
 )

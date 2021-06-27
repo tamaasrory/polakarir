@@ -9,6 +9,7 @@ const $states = {
   token: null,
   errors: [],
   user: {},
+  perm: [],
   toggleMainMenu: false,
   dataTmp: []
 }

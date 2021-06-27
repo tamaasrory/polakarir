@@ -7,8 +7,7 @@
   <div class="material">
     <v-app-bar
       color="white"
-      elevation="0"
-      fixed
+            fixed
       app
       light
     >
@@ -152,7 +151,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['template-surat-delete'])"
             bottom
           >
             <template v-slot:activator="{ on, attrs }">
@@ -289,7 +288,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can } from '@/plugins/supports'
 
 export default {
   name: 'Material',
@@ -350,13 +349,12 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
+    can,
     _detail (value) {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },
     _add () {
-      this.$router.push({ name: 'template-surat_add' })
+      this.$router.push({ name: 'template_surat_add' })
     },
     _edit (value) {
       this.$router.push({ name: 'material_edit', params: { id: value.id } })
@@ -367,21 +365,6 @@ export default {
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
         this.dcMessages = `Sedang menghapus material`
-        this.deleteMaterial(this.deleteId).then(res => {
-          this._loadData(true)
-          this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Material`
-          setTimeout(() => {
-            this.deleteId = ''
-            this.showDC = false
-            this.dcdisabledNegativeBtn = false
-            this.dcdisabledPositiveBtn = false
-          }, 1500)
-        }).catch(err => {
-          console.log(err)
-          this.dcdisabledNegativeBtn = false
-          this.dcdisabledPositiveBtn = false
-        })
       } else {
         this.deleteId = value.id
         this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
@@ -395,12 +378,6 @@ export default {
     _loadData (abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
-        this.getMaterial({ search: this.searchQuery, ...this.options })
-          .then((data) => {
-            this.datas = data.items || []
-            this.serverLength = data.total || 0
-            this.isLoading = false
-          })
       } else {
         this.isLoading = false
       }

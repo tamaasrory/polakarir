@@ -1,58 +1,63 @@
-export default [
-  // ROUTES PARFUM START HERE
+const path = '/agenda'
+const permission = 'agenda-'
+const routeName = 'agenda'
+const folder = 'agenda'
+const title = 'Agenda'
+const Agenda = [
   {
-    path: '/agenda',
-    name: 'agenda',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Agenda',
+      title: title,
       icon: 'mdi-calendar-month-outline',
-      // subheader: 'Data Master',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/agenda/baru',
-    name: 'agenda_add',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Agenda',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
     path: '/agenda/tujuan',
     name: 'tujuan_add',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/AddTujuan'),
+    component: () => import(/* webpackChunkName: "agenda.chunk" */ `@/views/${folder}/AddTujuan`),
     meta: {
       title: 'Tambah Tujuan',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
-    path: '/agenda/view/:id',
-    name: 'agenda_view',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/View'),
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
     props: true,
     meta: {
-      title: 'Detail Agenda',
+      title: 'Detail' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/agenda/edit/:id',
-    name: 'agenda_edit',
-    component: () => import(/* webpackChunkName: "agenda.chunk" */ '@/views/agenda/Edit'),
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
-      title: 'Edit Agenda',
+      title: 'Edit' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'edit'
     }
   }
-  // END PARFUM
 ]
+
+export default Agenda

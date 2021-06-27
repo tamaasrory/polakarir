@@ -7,16 +7,17 @@
   <div class="surat-masuk">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
     >
       <v-icon
         color="primary"
+        class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
+      <v-toolbar-title>Surat Masuk</v-toolbar-title>
       <v-spacer />
       <v-btn
         title="Tambah Surat Masuk"
@@ -40,9 +41,6 @@
       </v-btn>
     </v-app-bar>
     <v-container fluid>
-      <h1 class="my-2">
-        Surat Masuk
-      </h1>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
@@ -85,7 +83,7 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['surat-masuk-delete'])"
             bottom
           >
             <template #activator="{ on, attrs }">
@@ -219,10 +217,10 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can } from '@/plugins/supports'
 
 export default {
-  name: 'Surat Masuk',
+  name: 'SuratMasuk',
   components: {
     'delete-dialog-confirm': Dialog
   },
@@ -282,7 +280,7 @@ export default {
   },
   methods: {
     ...mapActions(['getSuratMasuk', 'deleteSuratMasuk']),
-    canEdit,
+    can,
     _detail (value) {
       this.$router.push({ name: 'surat_masuk_view', params: { id: value.id } })
     },

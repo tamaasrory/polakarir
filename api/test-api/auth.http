@@ -1,0 +1,22 @@
+### test login sebagai super admin
+POST http://localhost:7000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "superadmin@bpp.pekanbaru.go.id",
+    "password": "bpp1442"
+}
+
+### test login sebagai staff
+POST http://localhost:7000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "staff-only@bpp.pekanbaru.go.id",
+    "password": "123456"
+}
+
+### refresh permission dengan token super admin, supaya permission up to date
+GET http://localhost:7000/api/v1/auth/refresh
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjAyMjA0MzE2MzU4MSIsImtkaiI6Ii0ifSwiaWF0IjoxNjI0MjAxNDgxfQ.DQT-W7ikbw32lo-hx4MhQRtiy3ZsIepsfPDT8dQZZJ8

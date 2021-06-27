@@ -7,7 +7,6 @@
   <div class="home">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
@@ -24,7 +23,11 @@
     <v-container>
       <div class="mb-3">
         <v-row dense>
-          <v-col cols="4">
+          <v-col
+            cols="12"
+            sm="6"
+            md="4"
+          >
             <v-card
               color="#39D5CF"
               dark
@@ -58,7 +61,11 @@
               </v-card-actions>
             </v-card>
           </v-col>
-          <v-col cols="4">
+          <v-col
+            cols="12"
+            sm="6"
+            md="4"
+          >
             <v-card
               color="#FF007C"
               dark

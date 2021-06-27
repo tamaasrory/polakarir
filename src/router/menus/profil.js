@@ -1,59 +1,63 @@
-export default [
-  // ROUTES PARFUM START HERE
+const path = '/profil'
+const permission = 'profil-'
+const routeName = 'profil'
+const folder = 'profil'
+const title = 'Profil'
+const Profil = [
   {
-    path: '/profil',
-    name: 'profil',
-    component: () => import(/* webpackChunkName: "pengaturan.chunk" */ '@/views/profil/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Profil',
-      icon: 'mdi-cog',
-      // subheader: 'Data Master',
+      title: title,
+      icon: 'mdi-calendar-month-outline',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/profil/baru',
-    name: 'profil_add',
-    component: () => import(/* webpackChunkName: "pengaturan.chunk" */ '@/views/profil/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Profil',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
-    }
-  },
-  {
-    path: '/profil/view/:id',
-    name: 'profil_view',
-    component: () => import(/* webpackChunkName: "pengaturan.chunk" */ '@/views/profil/View'),
-    props: true,
-    meta: {
-      title: 'Detail Profil',
-      requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
-    }
-  },
-  {
-    path: '/profil/edit/:id',
-    name: 'profil_edit',
-    component: () => import(/* webpackChunkName: "pengaturan.chunk" */ '@/views/profil/Edit'),
-    props: true,
-    meta: {
-      title: 'Edit Profil',
-      requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'create'
     }
   },
   {
     path: '/profil/edit',
-    name: 'editUser',
-    component: () => import(/* webpackChunkName: "pengaturan.chunk" */ '@/views/profil/Edit'),
-    props: true,
+    name: 'edit_profil',
+    component: () => import(/* webpackChunkName: "agenda.chunk" */ `@/views/${folder}/Edit`),
     meta: {
       title: 'Edit Profil',
       requiresAuth: true,
-      allowRole: ['Super Admin', 'Administrator']
+      requirePermission: permission + 'edit'
+    }
+  },
+  {
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
+    props: true,
+    meta: {
+      title: 'Detail' + title,
+      requiresAuth: true,
+      requirePermission: permission + 'list'
+    }
+  },
+  {
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
+    props: true,
+    meta: {
+      title: 'Edit' + title,
+      requiresAuth: true,
+      requirePermission: permission + 'edit'
     }
   }
-  // END PARFUM
 ]
+
+export default Profil

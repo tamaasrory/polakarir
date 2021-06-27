@@ -7,16 +7,16 @@
   <div>
     <v-app-bar
       fixed
-      dark
-      color="primary"
-      elevation="0"
+      light
+      color="white"
+      app
     >
       <v-btn
         icon
-        dark
+        light
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
         Edit User
@@ -56,7 +56,7 @@
                 v-model="user.email"
                 label="email"
                 outlined
-                :rules="[rules.required,rules.email]"
+                :rules="[rules.email]"
               />
               <v-text-field
                 v-model="user.password"
@@ -156,7 +156,7 @@ export default {
         roles: []
       },
       schema: {
-        email: 'required|email',
+        email: 'email',
         name: 'required',
         roles: 'required'
       },
@@ -166,8 +166,11 @@ export default {
           return !v || 'Tidak Boleh Kosong'
         },
         email: v => {
-          v = /.+@.+\..+/.test(v)
-          return v || 'E-mail tidak valid'
+          if (v) {
+            v = /.+@.+\..+/.test(v)
+            return v || 'E-mail tidak valid'
+          }
+          return true
         },
         confirmPassword: (v) => {
           v = (this.user.password === this.user.confirmPassword)

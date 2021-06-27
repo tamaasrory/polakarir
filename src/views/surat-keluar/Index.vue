@@ -4,22 +4,23 @@
   -->
 
 <template>
-  <div class="material">
+  <div class="surat_keluar">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
     >
       <v-icon
         color="primary"
+        class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
+      <v-toolbar-title>Surat Keluar</v-toolbar-title>
       <v-spacer />
       <v-btn
-        title="Tambah Material"
+        title="Tambah Surat Keluar"
         icon
         @click="_add()"
       >
@@ -27,7 +28,7 @@
       </v-btn>
       <v-btn
         icon
-        @click="toggleFp = !toggleFp"
+        @click="booltmp.fp = !booltmp.fp"
       >
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
@@ -40,13 +41,9 @@
       </v-btn>
     </v-app-bar>
     <v-container fluid>
-      <h1 class="my-2">
-        Material
-      </h1>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
-        :search="searchQuery"
         :items="datas"
         :sort-by.sync="config.table.sortBy"
         :sort-desc.sync="config.table.sortDesc"
@@ -55,20 +52,21 @@
         :server-items-length="serverLength"
         :options.sync="options"
         height="350pt"
-        item-key="id"
+        item-key="id_surat_keluar"
         class="elevation-2"
         multi-sort
         hide-default-footer
         fixed-header
         @page-count="config.table.pageCount = $event"
         @pagination="pagination=$event"
+        @click:row="_detail"
       >
-        <template v-slot:item.updated_at="{item}">
+        <template #item.updated_at="{item}">
           {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
         </template>
-        <template v-slot:item.aksi="{item}">
+        <template #item.aksi="{item}">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 icon
                 v-bind="attrs"
@@ -85,10 +83,10 @@
             <span>Ubah</span>
           </v-tooltip>
           <v-tooltip
-            v-if="canEdit(['admin'])"
+            v-if="can(['surat-keluar-delete'])"
             bottom
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -103,7 +101,7 @@
             <span>Hapus</span>
           </v-tooltip>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
                 icon
@@ -155,7 +153,7 @@
       :message="dcMessages"
     />
     <v-navigation-drawer
-      v-model="toggleFp"
+      v-model="booltmp.fp"
       fixed
       width="350"
       temporary
@@ -164,13 +162,13 @@
       <v-list-item class="grey lighten-4">
         <v-list-item-content>
           <v-list-item-title>
-            <v-icon>mdi-filter-outline</v-icon> Filter
+            <v-icon>mdi-magnify</v-icon> Pencarian Surat
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-icon>
           <v-btn
             icon
-            @click="toggleFp=!toggleFp"
+            @click="booltmp.fp=!booltmp.fp"
           >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
@@ -182,8 +180,8 @@
           cols="12"
         >
           <v-text-field
-            v-model="searchQuery"
-            placeholder="ketikkan sesuatu untuk mencari"
+            v-model="filterQuery.search"
+            placeholder="ketikkan sesuatu"
             label="Pencarian"
             light
             clearable
@@ -191,6 +189,51 @@
             outlined
             class="mb-4"
           />
+          <v-text-field
+            v-model="filterQuery.nomor_surat"
+            placeholder="ketikkan nomor surat"
+            label="Nomor Surat"
+            light
+            clearable
+            hide-details
+            outlined
+            class="mb-4"
+          />
+          <v-text-field
+            v-model="filterQuery.penerima"
+            placeholder="ketikkan nama penerima"
+            label="Penerima"
+            light
+            clearable
+            hide-details
+            outlined
+            class="mb-4"
+          />
+          <v-menu
+            v-model="booltmp.ft"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template #activator="{ on, attrs }">
+              <v-text-field
+                v-model="filterQuery.tgl"
+                label="Tanggal Surat"
+                outlined
+                clearable
+                hide-details
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              />
+            </template>
+            <v-date-picker
+              v-model="filterQuery.tgl"
+              @input="booltmp.ft = false"
+            />
+          </v-menu>
         </v-col>
       </v-row>
       <div
@@ -198,7 +241,7 @@
         style="position: absolute;bottom: 0;right: 0"
       >
         <v-btn
-          v-show="searchQuery"
+          v-show="isClearSearch"
           text
           color="primary"
           @click="_clearFilter()"
@@ -219,17 +262,24 @@
 <script>
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
-import { canEdit } from '@/plugins/supports'
+import { can, isEmpty } from '@/plugins/supports'
 
 export default {
-  name: 'Material',
+  name: 'SuratKeluar',
   components: {
     'delete-dialog-confirm': Dialog
   },
   data () {
     return {
-      searchQuery: '',
-      toggleFp: false,
+      filterQuery: {
+        nomor_surat: null,
+        penerima: null,
+        tgl: null
+      },
+      booltmp: {
+        fp: false,
+        ft: false
+      },
       isLoading: true,
       datas: [],
 
@@ -240,10 +290,10 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ['id'],
+          sortBy: ['id_surat_keluar'],
           sortDesc: [true],
           itemsPerPage: 10,
-          itemKey: 'id'
+          itemKey: 'id_surat_keluar'
         }
       },
 
@@ -261,15 +311,25 @@ export default {
     headerData () {
       return [
         {
-          text: 'ID',
+          text: 'Nomor',
           align: 'left',
-          value: 'id'
+          value: 'id_surat_keluar'
         },
-        { text: 'Nama', value: 'nama' },
-        { text: 'Satuan', value: 'satuan' },
-        { text: 'Updated', value: 'updated_at' },
-        { text: '', value: 'aksi' }
+        { text: 'Perihal', value: 'perihal_surat' },
+        { text: 'Jenis Surat', value: 'jenis_surat' },
+        { text: 'Penerima', value: 'penerima_surat' },
+        { text: 'Tanggal Surat', value: 'tanggal_surat' },
+        { text: 'Urgensi', value: 'derajat_surat' },
+        { text: 'Status', value: 'status' }
       ]
+    },
+    isClearSearch () {
+      for (const filterTaskKey in this.filterQuery) {
+        if (!isEmpty(this.filterQuery[filterTaskKey])) {
+          return true
+        }
+      }
+      return false
     }
   },
   watch: {
@@ -281,27 +341,28 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getMaterial', 'deleteMaterial']),
-    canEdit,
+    ...mapActions(['getSuratKeluar', 'deleteSuratKeluar']),
+    can,
     _detail (value) {
-      this.$router.push({ name: 'material_view', params: { id: value.id } })
+      console.log(value)
+      this.$router.push({ name: 'surat_keluar_view', params: { id: value.id_surat_keluar } })
     },
     _add () {
-      this.$router.push({ name: 'material_add' })
+      this.$router.push({ name: 'surat_keluar_add' })
     },
     _edit (value) {
-      this.$router.push({ name: 'material_edit', params: { id: value.id } })
+      this.$router.push({ name: 'surat_keluar_edit', params: { id: value.id_surat_keluar } })
     },
     _delete (value) {
       if (value === true) {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus material`
-        this.deleteMaterial(this.deleteId).then(res => {
+        this.dcMessages = 'Sedang menghapus surat keluar'
+        this.deleteSuratKeluar(this.deleteId).then(res => {
           this._loadData(true)
           this.dcProgress = false
-          this.dcMessages = `Berhasil Menghapus Material`
+          this.dcMessages = 'Berhasil menghapus surat keluar'
           setTimeout(() => {
             this.deleteId = ''
             this.showDC = false
@@ -314,19 +375,24 @@ export default {
           this.dcdisabledPositiveBtn = false
         })
       } else {
-        this.deleteId = value.id
-        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
+        this.deleteId = value.id_surat_keluar
+        this.dcMessages = `Hapus surat keluar <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }
     },
     _clearFilter () {
-      this.searchQuery = null
+      this.filterQuery = {
+        nomor_surat: null,
+        penerima: null,
+        tgl: null,
+        search: null
+      }
       this._loadData(true)
     },
     _loadData (abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
-        this.getMaterial({ search: this.searchQuery, ...this.options })
+        this.getSuratKeluar({ add: this.filterQuery, ...this.options })
           .then((data) => {
             this.datas = data.items || []
             this.serverLength = data.total || 0

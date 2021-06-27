@@ -16,18 +16,39 @@ class PermissionTableSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $models = ['material', 'user', 'role'];
-        $actions = ['list', 'create', 'edit', 'delete',];
+        $models = [
+            'surat-masuk',
+            'surat-keluar',
+            'template-surat',
+            'arsip-surat',
+            'jenis-surat',
+            'agenda',
+            'user',
+            'role',
+        ];
+        $actions = [
+            'list',
+            'create',
+            'edit',
+            'delete',
+        ];
+
         $permissions = [];
         foreach ($models as $model) {
             foreach ($actions as $action) {
                 $permissions[] = $model . '-' . $action;
             }
         }
-        if (!Permission::query()->count()) {
-            foreach ($permissions as $permission) {
-                Permission::create(['name' => $permission]);
-            }
+
+        $permissions[] = 'home';
+
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
         }
+
+        \App\Models\JenisSurat::create([
+            'nama_jenis_surat' => 'Surat Undangan',
+            'kode_surat' => '071'
+        ]);
     }
 }

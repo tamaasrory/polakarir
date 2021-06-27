@@ -6,7 +6,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\User;
+use App\Models\Base\User;
 use Faker\Generator as Faker;
 
 /*

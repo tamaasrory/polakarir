@@ -7,16 +7,16 @@
   <div>
     <v-app-bar
       fixed
-      dark
-      color="primary"
-      elevation="0"
+      light
+      color="white"
+      app
     >
       <v-btn
         icon
-        dark
+        light
         @click="backButton"
       >
-        <v-icon>mdi-arrow-left</v-icon>
+        <v-icon color="primary">mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title style="line-height: 1.3">
         Tambah User

@@ -1,47 +1,53 @@
-export default [
-  // ROUTES roles START HERE
+const path = '/roles'
+const permission = 'role-'
+const routeName = 'roles'
+const folder = 'roles'
+const title = 'Roles'
+const Roles = [
   {
-    path: '/roles',
-    name: 'roles',
-    component: () => import(/* webpackChunkName: "roles.chunk" */ '@/views/roles/Index'),
+    path: path,
+    name: routeName,
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
-      title: 'Roles',
+      title: title,
       icon: 'mdi-key',
+      // subheader: '-',
       requiresAuth: true,
-      allowRole: ['Super Admin']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/roles/baru',
-    name: 'roles_add',
-    component: () => import(/* webpackChunkName: "roles.chunk" */ '@/views/roles/Add'),
+    path: path + '/baru',
+    name: routeName + '_add',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Add`),
     meta: {
-      title: 'Tambah Roles',
+      title: 'Tambah' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin']
+      requirePermission: permission + 'create'
     }
   },
   {
-    path: '/roles/view/:id',
-    name: 'roles_view',
-    component: () => import(/* webpackChunkName: "roles.chunk" */ '@/views/roles/View'),
+    path: path + '/view/:id',
+    name: routeName + '_view',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
     props: true,
     meta: {
-      title: 'Detail Roles',
+      title: 'Detail' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin']
+      requirePermission: permission + 'list'
     }
   },
   {
-    path: '/roles/edit/:id',
-    name: 'roles_edit',
-    component: () => import(/* webpackChunkName: "roles.chunk" */ '@/views/roles/Edit'),
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
-      title: 'Edit Roles',
+      title: 'Edit' + title,
       requiresAuth: true,
-      allowRole: ['Super Admin']
+      requirePermission: permission + 'edit'
     }
   }
-  // END roles
 ]
+
+export default Roles

@@ -4,7 +4,7 @@
   -->
 
 <template>
-  <div class="home">
+  <div class="agenda">
     <v-app-bar
       color="white"
       elevation="0"
@@ -140,13 +140,13 @@
                         v-bind="attrs"
                         v-on="on"
                       >
-                          <v-btn value="left" color="primary" @click="type = 'month'">
+                          <v-btn value="left" class="text-capitalize" color="primary" @click="type = 'month'">
                             Bulan
                           </v-btn>
-                          <v-btn value="center" color="buttons white--text" @click="type = 'week'">
+                          <v-btn value="center" class="text-capitalize" color="buttons white--text" @click="type = 'week'">
                             Minggu
                           </v-btn>
-                          <v-btn value="right" color="buttons white--text" @click="type = 'day'">
+                          <v-btn value="right" class="text-capitalize" color="buttons white--text" @click="type = 'day'">
                             Hari
                           </v-btn>
                       </v-btn-toggle>

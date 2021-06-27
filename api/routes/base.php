@@ -6,55 +6,58 @@
  * @var Illuminate\Support\Facades\Route $router
  */
 
+use App\Http\Controllers\Base\ExtAuthController;
+use App\Http\Controllers\Base\RoleController;
+use App\Http\Controllers\Base\SinergiController;
+use App\Http\Controllers\Base\UserController;
+
 $router->get('/', function () {
-    return response()->json(['value' => auth()], 200);
+    header('Location:bpp.pekanbaru.go.id');
 });
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
-    /** @see \App\Http\Controllers\ExtAuthController::authenticate() */
-    $router->post('auth/login', 'ExtAuthController@authenticate');
-
     $router->get('/', function () {
-        return response()->json(['value' => 'oke'], 200);
+        header('Location:bpp.pekanbaru.go.id');
     });
 
+    $router->post('auth/login', [ExtAuthController::class, 'authenticate']);
+
     $router->group(['prefix' => 'user'], function () use ($router) {
-        /** @see \App\Http\Controllers\UserController::forgotPassword() */
-        $router->post('forgot-password', 'UserController@forgotPassword');
+        $router->post('forgot-password', [UserController::class, 'forgotPassword']);
     });
 
     $router->group(['middleware' => ['extauth']], function () use ($router) {
 
         $router->group(['prefix' => 'user'], function () use ($router) {
-            $router->get('all', 'UserController@index');
-            $router->get('detail/{id}', 'UserController@show');
-            $router->get('edit/{id}', 'UserController@edit');
-            $router->get('create', 'UserController@create');
-            $router->post('baru', 'UserController@store');
-            $router->put('update/{id}', 'UserController@update');
-            $router->delete('delete/{id}', 'UserController@destroy');
-        });
-
-        $router->group(['prefix' => 'material'], function () use ($router) {
-
-            $router->get('all', 'MaterialController@index');
-            $router->get('detail/{id}', 'MaterialController@show');
-            $router->post('baru', 'MaterialController@store');
-            $router->put('update/{id}', 'MaterialController@update');
-            $router->delete('delete/{id}', 'MaterialController@destroy');
-
+            $router->get('all', [UserController::class, 'index']);
+            $router->get('detail/{id}', [UserController::class, 'show']);
+            $router->get('edit/{id}', [UserController::class, 'edit']);
+            $router->get('create', [UserController::class, 'create']);
+            $router->post('baru', [UserController::class, 'store']);
+            $router->put('update/{id}', [UserController::class, 'update']);
+            $router->delete('delete/{id}', [UserController::class, 'destroy']);
         });
 
         $router->group(['prefix' => 'roles'], function () use ($router) {
-
-            $router->get('all', 'RoleController@index');
-            $router->get('permissions', 'RoleController@permissions');
-            $router->get('detail/{id}', 'RoleController@show');
-            $router->post('baru', 'RoleController@store');
-            $router->put('update/{id}', 'RoleController@update');
-            $router->delete('delete/{id}', 'RoleController@destroy');
+            $router->get('all', [RoleController::class, 'index']);
+            $router->get('permissions', [RoleController::class, 'permissions']);
+            $router->get('detail/{id}', [RoleController::class, 'show']);
+            $router->post('baru', [RoleController::class, 'store']);
+            $router->put('update/{id}', [RoleController::class, 'update']);
+            $router->delete('delete/{id}', [RoleController::class, 'destroy']);
 
         });
+
+        $router->group(['prefix' => 'sinergi'], function () use ($router) {
+            $router->post('opd', [SinergiController::class, 'listOpd']);
+            $router->post('opd-by-id', [SinergiController::class, 'getOpdById']);
+            $router->post('pegawai-by-opd', [SinergiController::class, 'listPegawaiByOpd']);
+            $router->post('pegawai-by-nip', [SinergiController::class, 'getPegawaiByNip']);
+        });
+
+        $router->get('auth/refresh', [ExtAuthController::class, 'refresh']);
+
+        include "fitures.php";
     });
 });

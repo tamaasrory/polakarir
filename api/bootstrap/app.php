@@ -25,6 +25,9 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
+// custom Router
+$app->router = new \App\Supports\Router($app);
+
 $app->withFacades();
 
 $app->withEloquent();
@@ -64,6 +67,7 @@ $app->singleton(
 $app->configure('auth');
 $app->configure('datatables');
 $app->configure('permission');
+$app->configure('eloquent_model_generator');
 
 /*
 |--------------------------------------------------------------------------
@@ -101,7 +105,7 @@ $app->routeMiddleware([
 */
 
 $app->alias('cache', Illuminate\Cache\CacheManager::class);  // if you don't have this already
-$app->alias('DataTables', Yajra\DataTables\Facades\DataTables::class);  // if you don't have this already
+//$app->alias('DataTables', Yajra\DataTables\Facades\DataTables::class);  // if you don't have this already
 
 $app->register(Spatie\Permission\PermissionServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
@@ -109,7 +113,8 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(Intervention\Image\ImageServiceProvider::class);
 $app->register(Illuminate\Database\Eloquent\LegacyFactoryServiceProvider::class);
 $app->register(Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
-$app->register(Yajra\DataTables\DataTablesServiceProvider::class);
+//$app->register(Yajra\DataTables\DataTablesServiceProvider::class);
+$app->register(\App\Providers\GeneratorServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
