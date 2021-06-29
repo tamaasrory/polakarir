@@ -10,7 +10,6 @@ const Profil = [
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
       title: title,
-      icon: 'mdi-calendar-month-outline',
       // subheader: '-',
       requiresAuth: true,
       requirePermission: permission + 'list'

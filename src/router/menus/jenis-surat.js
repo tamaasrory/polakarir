@@ -30,7 +30,7 @@ const JenisSurat = [
     path: path + '/view/:id',
     name: routeName + '_view',
     component: () => import(/!* webpackChunkName: "[request].chunk" *!/ `@/views/${folder}/View`),
-    props: true,
+    props: true
     meta: {
       title: 'Detail' + title,
       requiresAuth: true,
