@@ -20,6 +20,7 @@
       <v-toolbar-title>Surat Masuk</v-toolbar-title>
       <v-spacer />
       <v-btn
+        v-if="can(['surat-masuk-create'])"
         title="Tambah Surat Masuk"
         icon
         @click="_add()"
@@ -53,7 +54,7 @@
         :server-items-length="serverLength"
         :options.sync="options"
         height="350pt"
-        item-key="id"
+        item-key="id_surat_masuk"
         class="elevation-2"
         multi-sort
         hide-default-footer
@@ -238,10 +239,10 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ['id'],
+          sortBy: ['id_surat_masuk'],
           sortDesc: [true],
           itemsPerPage: 10,
-          itemKey: 'id'
+          itemKey: 'id_surat_masuk'
         }
       },
 
@@ -259,14 +260,16 @@ export default {
     headerData () {
       return [
         {
-          text: 'ID',
+          text: 'Nomor',
           align: 'left',
-          value: 'id'
+          value: 'id_surat_masuk'
         },
-        { text: 'Nama', value: 'nama' },
-        { text: 'Satuan', value: 'satuan' },
-        { text: 'Updated', value: 'updated_at' },
-        { text: '', value: 'aksi' }
+        { text: 'Perihal', value: 'perihal_surat' },
+        { text: 'Jenis Surat', value: 'jenis_surat' },
+        { text: 'Pengirim', value: 'pengirim_surat' },
+        { text: 'Tanggal Surat', value: 'tanggal_surat' },
+        { text: 'Urgensi', value: 'derajat_surat' },
+        { text: 'Status', value: 'status' }
       ]
     }
   },
@@ -282,13 +285,13 @@ export default {
     ...mapActions(['getSuratMasuk', 'deleteSuratMasuk']),
     can,
     _detail (value) {
-      this.$router.push({ name: 'surat_masuk_view', params: { id: value.id } })
+      this.$router.push({ name: 'surat_masuk_view', params: { id: value.id_surat_masuk } })
     },
     _add () {
       this.$router.push({ name: 'surat_masuk_add' })
     },
     _edit (value) {
-      this.$router.push({ name: 'surat_masuk_edit', params: { id: value.id } })
+      this.$router.push({ name: 'surat_masuk_edit', params: { id: value.id_surat_masuk } })
     },
     _delete (value) {
       if (value === true) {
@@ -312,7 +315,7 @@ export default {
           this.dcdisabledPositiveBtn = false
         })
       } else {
-        this.deleteId = value.id
+        this.deleteId = value.id_surat_masuk
         this.dcMessages = `Hapus surat masuk <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }

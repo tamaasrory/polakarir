@@ -63,7 +63,7 @@ class ExtJwt
         }
 
         if ($sub->kdj != '-') {
-            $resultLocal = array_merge($result, $resultLocal->toArray());
+            $resultLocal->sinergi = $result;
         }
         // Now let's put the user in the request class so that you can grab it from there
         // bila user ditemukan maka simpan data user ke dalam resquest,

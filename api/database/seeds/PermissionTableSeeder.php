@@ -46,9 +46,6 @@ class PermissionTableSeeder extends Seeder
             Permission::create(['name' => $permission]);
         }
 
-        \App\Models\JenisSurat::create([
-            'nama_jenis_surat' => 'Surat Undangan',
-            'kode_surat' => '071'
-        ]);
+
     }
 }
