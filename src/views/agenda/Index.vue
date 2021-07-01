@@ -183,12 +183,12 @@
 </template>
 
 <script>
-import AppBar from "@/components/default/AppBar";
+
 import Account from "@/components/default/Account";
 
 export default {
   name: 'Home',
-  components: {Account, AppBar},
+  components: {Account},
   data: () => ({
     focus: '',
     type: 'month',

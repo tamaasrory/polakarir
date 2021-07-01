@@ -6,7 +6,6 @@
 <template>
   <div class="material">
     <v-app-bar color="white" fixed app light>
-
       <v-icon
         color="primary"
         class="mr-5"
@@ -23,9 +22,9 @@
         <v-row dense>
           <v-col>
             <v-tabs centered slider-size="5">
-              <v-tab dense><p class="font-weight-bold mb-n2">Unit Kerja</p>
+              <v-tab dense><p class="font-weight-bold mb-n2 text-capitalize">Surat Keluar</p>
               </v-tab>
-              <v-tab dense><p class="font-weight-bold mb-n2">Pengguna</p></v-tab>
+              <v-tab dense><p class="font-weight-bold mb-n2 text-capitalize">Surat Masuk</p></v-tab>
             </v-tabs>
             <v-divider class="mt-2"/>
           </v-col>
@@ -210,13 +209,11 @@ import { mapActions } from "vuex";
 import Dialog from "@/components/Dialog";
 import { can } from "@/plugins/supports";
 import Account from "@/components/default/Account";
-import AppBar from "@/components/default/AppBar";
 
 
 export default {
   name: "Material",
   components: {
-    AppBar,
     Account,
     "delete-dialog-confirm": Dialog,
   },
