@@ -104,7 +104,7 @@ class Curl
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
         $result = curl_exec($this->ch);
         if (curl_errno($this->ch)) {
-            return curl_error($this->ch);
+            return ['error'=>curl_error($this->ch)];
         }
 
         curl_close($this->ch);

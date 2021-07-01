@@ -6,14 +6,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Supports\ExtApi;
 use App\Models\Base\User;
+use App\Supports\ExtApi;
 use Closure;
 use Exception;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ExtJwt
 {
@@ -42,6 +41,11 @@ class ExtJwt
             $request->request->add(['nip' => $sub->id]);
             // get data user yang memiliki token ini, dari sinergi
             $result = ExtApi::getPegawaiByNip($request);
+            if (!$result['result']) {
+                return response()->json([
+                    'msg' => 'Session anda tidak valid, silahkan login ulang'],
+                    400);
+            }
         }
 
         /** @var User $resultLocal */
@@ -54,7 +58,7 @@ class ExtJwt
             ], 200);
         }
 
-        if (!isset($result['result']) && ($sub->kdj != '-')) { // bila data tidak ditemukan
+        if ($sub->kdj != '-') { // bila data tidak ditemukan
             if ($sub->kdj != $result['kode_jabatan']) {
                 return response()->json([
                     'msg' => 'Session anda tidak valid, silahkan login ulang'],

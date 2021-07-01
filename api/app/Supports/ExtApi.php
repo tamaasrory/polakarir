@@ -20,7 +20,7 @@ class ExtApi
             ->addField($request->all())
             ->run();
 
-        if (isset($tmp['result'])) {
+        if (!isset($tmp['error']) && isset($tmp['result'])) {
             if ($tmp['result'] === 'verified') {
 
                 $request->request->add(['nip' => $tmp['nip']]);
@@ -46,10 +46,16 @@ class ExtApi
     public static function listOpd()
     {
         $curl = new Curl();
-        return $curl->route('api_opd')
+        $tmp = $curl->route('api_opd')
             ->method('GET')
             ->addField(['all' => 'yes'])
             ->run();
+
+        if (!isset($tmp['error'])) {
+            return $tmp;
+        }
+
+        return ['result' => false];
     }
 
     /**
@@ -65,10 +71,11 @@ class ExtApi
             ->method('GET')
             ->addField(['id_opd' => $request->input('id_opd')])
             ->run();
-        if (is_array($tmp)) {
+
+        if (!isset($tmp['error']) && is_array($tmp)) {
             return $tmp[0];
         }
-        return $tmp;
+        return ['result' => false];
     }
 
     /**
@@ -83,14 +90,16 @@ class ExtApi
         $curl = new Curl();
         $tmp = $curl->route('api_pegawai')
             ->method('GET')
-            ->addField(['id_opd' => $id_opd])
+            ->addField(['id_opd' => $id_opd > 0 ? $id_opd : 'all'])
             ->run();
-        if ($tmp) {
-            return array_values(array_filter($tmp, function ($data) use ($id_opd) {
-                if ((((int)substr($data['kode_jabatan'], 0, 2)) == $id_opd) || ($id_opd == '-1')) {
-                    return $data;
-                }
-            }));
+
+        if (!isset($tmp['error']) && $tmp) {
+//            return array_values(array_filter($tmp, function ($data) use ($id_opd) {
+//                if ((((int)substr($data['kode_jabatan'], 0, 2)) == $id_opd) || ($id_opd == '-1')) {
+//                    return $data;
+//                }
+//            }));
+            return $tmp;
         }
         return [];
     }
@@ -109,7 +118,7 @@ class ExtApi
             ->addField(['nip' => $request->input('nip')])
             ->run();
 
-        if (!isset($tmp['result'])) {
+        if (!isset($tmp['error']) && !isset($tmp['result'])) {
             $tmp['result'] = true;
             return $tmp;
         }

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
-use App\Models\Base\KeyGen;
 use App\Models\JenisSurat;
 use App\Models\SuratKeluar;
 use App\Supports\ExtApi;
+use App\Supports\Tools;
+use Carbon\Carbon;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
@@ -14,7 +15,6 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class SuratKeluarController extends Controller
 {
@@ -125,6 +125,7 @@ class SuratKeluarController extends Controller
      */
     public function show($id)
     {
+        /** @var SuratKeluar $data */
         $data = SuratKeluar::where('id_surat_keluar', $id)->first();
         if ($data) {
             return [
@@ -204,14 +205,12 @@ class SuratKeluarController extends Controller
 
         $id_surat = $request->input('id_surat_keluar');
 
-
-        //data surat keluar
+        /** @var SuratKeluar $data data surat keluar */
         $data = SuratKeluar::find($id_surat);
 
         if ($data['status'] != 'Selesai') {
 
             //data pegawai
-//            $pegawai = ExtApi::getPegawaiByNip($request);
             $pegawai = $request->auth;
 
 
@@ -237,11 +236,11 @@ class SuratKeluarController extends Controller
             $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'], $data['id_jenis_surat']);
 
             //update template
-            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/'.$data['lampiran'].'');
-            $template->setValue('${nomorsurat}',$nomor_surat['nomor_selanjutnya']);
+            $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
+            $template->setValue('${nomorsurat}', $nomor_surat['nomor_selanjutnya']);
 
-            $template->setValue('${namalengkap}',$pegawai['nama_pegawai']);
-            $template->setValue('${nip}',$pegawai['nip']);
+            $template->setValue('${namalengkap}', $pegawai['nama_pegawai']);
+            $template->setValue('${nip}', $pegawai['nip']);
 
             //update data nomor terakhir surat, nomor autonya berubah jadi nomor yang telah dipakai
             $nomorSuratTerakhir->update($data['id_opd'], $data['id_jenis_surat'], $nomor_surat['nomor_auto_selanjutnya']);
@@ -251,7 +250,7 @@ class SuratKeluarController extends Controller
                 //dengan tte
                 $hash_tte = $request->input('hash_tte');
                 $template->setImageValue('ttdelektronik', "./qrcode/$output_file_qr.jpg");
-                $template->setValue('${tanggal}',$tanggal);
+                $template->setValue('${tanggal}', $tanggal);
             } else {
 
                 //tanpa tte
@@ -261,17 +260,33 @@ class SuratKeluarController extends Controller
 
             $template->saveAs($path_word_validasi);
 
+            $public_path = Tools::publicPath();
+
             //convert to pdf
-            $cmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to pdf /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_validasi/' . $data['lampiran'] . '/ --outdir /Users/mrifqiaufaabdika/PhpstormProjects/eoffice/api/public/suratkeluar_pdf/';
-            shell_exec($cmd);
+            $cmd = [
+                '/Applications/LibreOffice.app/Contents/MacOS/soffice',
+                '--headless',
+                '--convert-to pdf',
+                $public_path . 'suratkeluar_validasi/' . $data['lampiran'] . '/',
+                '--outdir ' . $public_path . 'suratkeluar_pdf/'
+            ];
+
+            shell_exec(implode(' ', $cmd));
 
             //update surat keluar
             $data->status = 'Selesai';
             $file = explode('.', $data['lampiran']);
             $data->lampiran = $file[0] . '.pdf';
-            $data->update();
+            $data->save();
 
-            $this->updateHistori($id_surat,"Disetujui ".$pegawai['nama_jabatan'],$pegawai['nip'],$pegawai['nama_pegawai'],$pegawai['nama_jabatan'],$pegawai['kode_jabatan'],"");
+            $this->updateHistori($id_surat,
+                "Disetujui " . $pegawai['nama_jabatan'],
+                $pegawai['nip'],
+                $pegawai['nama_pegawai'],
+                $pegawai['nama_jabatan'],
+                $pegawai['kode_jabatan'],
+                ""
+            );
 
             return [
                 'value' => $data,
@@ -280,7 +295,7 @@ class SuratKeluarController extends Controller
         } else {
             return [
                 'value' => $data,
-                'msg' => "Gagal,Status Surat Keluar Telah Selesai"
+                'msg' => "Gagal, Status Surat Keluar Telah Selesai"
             ];
         }
     }
@@ -328,35 +343,49 @@ class SuratKeluarController extends Controller
         return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
     }
 
-    public function validasiSurat(Request $request){
+    public function validasiSurat(Request $request)
+    {
         $dataValidator = $request->auth;
+        /** @var SuratKeluar $dataSurat */
         $dataSurat = SuratKeluar::find($request->id_surat_keluar);
 
-        if($request->ket=="Disetujui") {
+        if ($request->ket == "Disetujui") {
             //surat disetujui
             $dataSurat->kode_jabatan_terusan = $request->kode_jabatan_terusan;
-            $dataSurat->status = 'Disetujui '.$dataValidator['nama_jabatan'];
+            $dataSurat->status = 'Disetujui ' . $dataValidator['nama_jabatan'];
             $dataSurat->catatan = "";
             $dataSurat->save();
 
             //update histori
-            $this->updateHistori($dataSurat->id_surat_keluar,$dataSurat->status,$dataValidator['nip'],$dataValidator['nama_pegawai'],$dataValidator['nama_jabatan'],$dataValidator['kode_jabatan'],$dataSurat->catatan);
+            $this->updateHistori(
+                $dataSurat->id_surat_keluar,
+                $dataSurat->status,
+                $dataValidator['nip'],
+                $dataValidator['nama_pegawai'],
+                $dataValidator['nama_jabatan'],
+                $dataValidator['kode_jabatan'],
+                $dataSurat->catatan
+            );
+
             return "Berhasil disetujui";
-        }else{
+        } else {
             //surat ditolak
-            $dataSurat->status = 'Ditolak '.$dataValidator['nama_jabatan'];
+            $dataSurat->status = 'Ditolak ' . $dataValidator['nama_jabatan'];
             $dataSurat->catatan = $request->catatan;
             $dataSurat->save();
-            return "Berhasil ditolak dengan catatan ".$request->catatan;
+
+            return "Berhasil ditolak dengan catatan " . $request->catatan;
         }
     }
 
-    public function updateHistori($id_surat_keluar,$status_surat,$nip,$nama_pegawai,$nama_jabatan,$kode_jabatan,$catatan){
+    public function updateHistori($id_surat_keluar, $status_surat, $nip, $nama_pegawai, $nama_jabatan, $kode_jabatan, $catatan)
+    {
+        /** @var SuratKeluar $dataSurat */
         $dataSurat = SuratKeluar::find($id_surat_keluar);
         $dataHistori = [];
-        if($dataSurat){
+        if ($dataSurat) {
             //ditemukan
-            if($dataSurat['histori_surat']==""){
+            if ($dataSurat['histori_surat'] == "") {
                 //jika histori masih kosong, maka lgsung push histori
                 array_push($dataHistori, (object)[
                     'nip' => $nip,
@@ -365,12 +394,12 @@ class SuratKeluarController extends Controller
                     'kode_jabatan' => $kode_jabatan,
                     'status_surat' => $status_surat,
                     'catatan' => $catatan,
-                    'waktu' =>Carbon::now()
+                    'waktu' => Carbon::now()
                 ]);
                 $dataSurat->histori_surat = $dataHistori;
                 $dataSurat->save();
                 return "histori berhasil ditambahkan";
-            }else{
+            } else {
                 //tampung dlu yang lama, setelah itu gabung dengan yang baru
                 array_push($dataHistori, (object)[
                     'nip' => $nip,
@@ -379,21 +408,22 @@ class SuratKeluarController extends Controller
                     'kode_jabatan' => $kode_jabatan,
                     'status_surat' => $status_surat,
                     'catatan' => $catatan,
-                    'waktu' =>Carbon::now()
+                    'waktu' => Carbon::now()
                 ]);
 
                 //menggabungkan data histori sebelumnya dengan data histori terbaru
                 $array1 = json_decode($dataSurat['histori_surat'], true);
                 $array2 = json_decode(json_encode($dataHistori), true);
 
-                $res = array_merge( $array1, $array2);
+                $res = array_merge($array1, $array2);
                 $merged = json_encode($res);
 
                 $dataSurat->histori_surat = $merged;
                 $dataSurat->save();
+
                 return "histori berhasil ditambahkan";
             }
-        }else{
+        } else {
             //tidak ditemukan
             return "surat keluar tidak ditemukan";
         }

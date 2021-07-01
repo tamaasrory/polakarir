@@ -6,6 +6,10 @@ namespace App\Supports;
 
 class Tools
 {
+    /**
+     * @param $string
+     * @return string
+     */
     public static function formatNameWithTitle($string): string
     {
         $pos = strpos($string, ',');
@@ -17,5 +21,14 @@ class Tools
         }
 
         return $string;
+    }
+
+    /**
+     * @param null $path
+     * @return string
+     */
+    public static function publicPath($path = null)
+    {
+        return app()->basePath('public/' . $path);
     }
 }
