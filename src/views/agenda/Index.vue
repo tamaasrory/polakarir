@@ -7,7 +7,6 @@
   <div class="agenda">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
@@ -19,63 +18,24 @@
         v-text="'mdi-menu'"
       />
       <v-spacer/>
-      <v-avatar class="mx-3">
-        <img
-          src="https://cdn.vuetifyjs.com/images/john.jpg"
-          alt="John"
-        >
-      </v-avatar>
-      <div class="mt-5">
-        <h4 class="mr-5 light-blue--text accent-4">
-          Tri Mueri Sandess
-        </h4>
-        <p class="mr-5 light-blue--text accent-1">
-          Kasubag umum
-        </p>
-      </div>
-      <div class="text-center">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              fab
-              text
-              small
-              color="light-blue accent-4"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon
-                large
-              >
-                mdi-chevron-down
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item>
-              <v-list-item-title
-                style="cursor: pointer" @click="profil">Profile</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title style="cursor: pointer">Logout</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+      <Account/>
     </v-app-bar>
-    <v-container>
+
+    <v-container class="px-10 pb-10">
       <h1 class="my-2">
         Agenda
       </h1>
       <v-card
         color="#fff"
         elevation="2"
-        class="px-3 pa-3"
+        class="px-0 pa-3"
         style=""
+
       >
-        <v-row>
+        <v-row dense
+               elevation="5">
           <v-col>
-            <h3>Agenda / Informasi Dinas</h3>
+            <h3 class=" px-3 font-weight-light">Agenda / Informasi Dinas</h3>
           </v-col>
           <v-col lg="8" align="right">
             <v-btn
@@ -93,14 +53,16 @@
             </v-btn>
           </v-col>
         </v-row>
+        <v-divider class="mt-2"/>
         <template>
-          <v-row class="fill-height">
+          <v-row class="mt-n3 px-3">
             <v-col>
-              <v-sheet height="64">
+              <v-sheet height="54">
                 <v-toolbar align="center"
                            flat
+                           dense
                 >
-                  <v-col></v-col>
+                  <v-spacer class="ml-16"/>
                   <v-btn
                     fab
                     text
@@ -134,6 +96,7 @@
                   >
                     <template #activator="{ on, attrs }">
                       <v-btn-toggle
+                        class="mr-n4"
                         style="border-radius: 20px;"
                         text-color="white"
                         color="grey darken-2"
@@ -220,14 +183,13 @@
 </template>
 
 <script>
+import AppBar from "@/components/default/AppBar";
+import Account from "@/components/default/Account";
+
 export default {
   name: 'Home',
+  components: {Account, AppBar},
   data: () => ({
-    items: [
-      {title: 'Profil', action: 'test'},
-
-      {title: 'Keluar', action: 'logout'},
-    ],
     focus: '',
     type: 'month',
     typeToLabel: {
@@ -244,109 +206,89 @@ export default {
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
   }),
 
-mounted()
-{
-  this.$refs.calendar.checkChange()
-}
-,
-methods: {
-  menuActionClick(action)
-  {
-    if (action === 'test') {
-      this.$router.push({name:'profil_edit'})
-      alert('TEST!!')
-    } else if (action === 'logout') {
-      alert('LOGOUT!!')
+  mounted() {
+    this.$refs.calendar.checkChange()
+  }
+  ,
+  methods: {
+
+    viewDay({date}) {
+      this.focus = date
+      this.type = 'day'
+    }
+    ,
+    _add() {
+      this.$router.push({name: 'agenda_add'})
+    }
+    ,
+    profil() {
+      this.$router.push({name: 'profil'})
+    }
+    ,
+    getEventColor(event) {
+      return event.color
+    }
+    ,
+    setToday() {
+      this.focus = ''
+    }
+    ,
+    prev() {
+      this.$refs.calendar.prev()
+    }
+    ,
+    next() {
+      this.$refs.calendar.next()
+    }
+    ,
+    showEvent({nativeEvent, event}) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+      }
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        requestAnimationFrame(() => requestAnimationFrame(() => open()))
+      } else {
+        open()
+      }
+
+      nativeEvent.stopPropagation()
+    }
+    ,
+    updateRange({start, end}) {
+      const events = []
+
+      const min = new Date(`${start.date}T00:00:00`)
+      const max = new Date(`${end.date}T23:59:59`)
+      const days = (max.getTime() - min.getTime()) / 86400000
+      const eventCount = this.rnd(days, days + 20)
+
+      for (let i = 0; i < eventCount; i++) {
+        const allDay = this.rnd(0, 3) === 0
+        const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+        const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+        const second = new Date(first.getTime() + secondTimestamp)
+
+        events.push({
+          name: this.names[this.rnd(0, this.names.length - 1)],
+          start: first,
+          end: second,
+          color: this.colors[this.rnd(0, this.colors.length - 1)],
+          timed: !allDay
+        })
+      }
+
+      this.events = events
+    }
+    ,
+    rnd(a, b) {
+      return Math.floor((b - a + 1) * Math.random()) + a
     }
   }
-,
-  viewDay({date})
-  {
-    this.focus = date
-    this.type = 'day'
-  }
-,
-  _add()
-  {
-    this.$router.push({name: 'agenda_add'})
-  }
-,
-  profil()
-  {
-    this.$router.push({name: 'profil'})
-  }
-,
-  getEventColor(event)
-  {
-    return event.color
-  }
-,
-  setToday()
-  {
-    this.focus = ''
-  }
-,
-  prev()
-  {
-    this.$refs.calendar.prev()
-  }
-,
-  next()
-  {
-    this.$refs.calendar.next()
-  }
-,
-  showEvent({nativeEvent, event})
-  {
-    const open = () => {
-      this.selectedEvent = event
-      this.selectedElement = nativeEvent.target
-      requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
-    }
-
-    if (this.selectedOpen) {
-      this.selectedOpen = false
-      requestAnimationFrame(() => requestAnimationFrame(() => open()))
-    } else {
-      open()
-    }
-
-    nativeEvent.stopPropagation()
-  }
-,
-  updateRange({start, end})
-  {
-    const events = []
-
-    const min = new Date(`${start.date}T00:00:00`)
-    const max = new Date(`${end.date}T23:59:59`)
-    const days = (max.getTime() - min.getTime()) / 86400000
-    const eventCount = this.rnd(days, days + 20)
-
-    for (let i = 0; i < eventCount; i++) {
-      const allDay = this.rnd(0, 3) === 0
-      const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-      const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-      const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-      const second = new Date(first.getTime() + secondTimestamp)
-
-      events.push({
-        name: this.names[this.rnd(0, this.names.length - 1)],
-        start: first,
-        end: second,
-        color: this.colors[this.rnd(0, this.colors.length - 1)],
-        timed: !allDay
-      })
-    }
-
-    this.events = events
-  }
-,
-  rnd(a, b)
-  {
-    return Math.floor((b - a + 1) * Math.random()) + a
-  }
-}
 }
 </script>
 <style scoped>
