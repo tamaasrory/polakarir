@@ -15,6 +15,7 @@ import LoadScript from 'vue-plugin-load-script'
 import Viewer from 'v-viewer'
 
 import 'viewerjs/dist/viewer.css'
+import '@/assets/bpp-style.css'
 import '@mdi/font/css/materialdesignicons.min.css'
 import { isEmpty } from '@/plugins/supports'
 

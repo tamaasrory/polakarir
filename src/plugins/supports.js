@@ -23,7 +23,11 @@ export const isEmpty = (v, callBack) => {
   } else {
     switch (typeof v) {
       case 'object':
-        result = !Object.keys(v || {}).length
+        if (v.constructor.name === 'Object') {
+          result = !Object.keys(v).length
+        } else {
+          result = false
+        }
         break
       case 'string':
         result = !v.length
@@ -33,6 +37,7 @@ export const isEmpty = (v, callBack) => {
         break
     }
   }
+
   if (typeof callBack === 'function') {
     result = callBack(result, v)
   }

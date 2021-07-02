@@ -148,7 +148,28 @@ class SuratKeluarController extends Controller
      */
     public function edit($id)
     {
-        //
+        /** @var SuratKeluar $data */
+        $surat_keluar = SuratKeluar::where('id_surat_keluar', $id)->first();
+
+        $jenis_surat = JenisSurat::selectRaw(
+            "id_jenis_surat as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
+        $opd = collect(ExtApi::listOpd())->map(function ($data) {
+            $tmp = [];
+            $tmp['value'] = $data['id_opd'];
+            $tmp['text'] = $data['nama'];
+
+            return $tmp;
+        })->toArray();
+
+        $opd = array_merge([['value' => '-1', 'text' => 'Seluruh OPD']], $opd);
+
+        return [
+            'value' => compact(
+                'jenis_surat',
+                'opd',
+                'surat_keluar'
+            )
+        ];
     }
 
     /**
