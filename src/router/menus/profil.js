@@ -1,16 +1,15 @@
-const path = '/jenis-surat'
-const permission = 'jenis-surat-'
-const routeName = 'jenis_surat'
-const folder = 'jenis-surat'
-const title = 'Jenis Surat'
-const JenisSurat = [
+const path = '/profil'
+const permission = 'profil-'
+const routeName = 'profil'
+const folder = 'profil'
+const title = 'Profil'
+const Profil = [
   {
     path: path,
     name: routeName,
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
       title: title,
-      icon: 'mdi-shape',
       // subheader: '-',
       requiresAuth: true,
       requirePermission: permission + 'list'
@@ -26,21 +25,30 @@ const JenisSurat = [
       requirePermission: permission + 'create'
     }
   },
-  /*{
+  {
+    path: '/profil/edit',
+    name: 'edit_profil',
+    component: () => import(/* webpackChunkName: "agenda.chunk" */ `@/views/${folder}/Edit`),
+    meta: {
+      title: 'Edit Profil',
+      requiresAuth: true,
+      requirePermission: permission + 'edit'
+    }
+  },
+  {
     path: path + '/view/:id',
     name: routeName + '_view',
-    component: () => import(/!* webpackChunkName: "[request].chunk" *!/ `@/views/${folder}/View`),
-    props: true
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
+    props: true,
     meta: {
       title: 'Detail' + title,
       requiresAuth: true,
       requirePermission: permission + 'list'
     }
-  },*/
-
+  },
   {
-    path: path + '/edit',
-    name: routeName + 'edit',
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
@@ -49,7 +57,6 @@ const JenisSurat = [
       requirePermission: permission + 'edit'
     }
   }
-
 ]
 
-export default JenisSurat
+export default Profil

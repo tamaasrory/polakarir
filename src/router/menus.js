@@ -7,6 +7,7 @@ import SuratKeluar from '@/router/menus/surat-keluar'
 import Agenda from '@/router/menus/agenda'
 import TemplateSurat from '@/router/menus/template-surat'
 import ArsipSurat from '@/router/menus/arsip-surat'
+import Profil from '@/router/menus/profil'
 import JenisSurat from '@/router/menus/jenis-surat'
 import User from '@/router/menus/user'
 import Roles from '@/router/menus/roles'
@@ -48,6 +49,7 @@ export default menus.concat(
   SuratMasuk,
   SuratKeluar,
   Agenda,
+  Profil,
   TemplateSurat,
-  ArsipSurat
+  ArsipSurat,
 )

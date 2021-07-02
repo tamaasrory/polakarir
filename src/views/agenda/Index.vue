@@ -7,7 +7,6 @@
   <div class="agenda">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light
@@ -19,62 +18,24 @@
         v-text="'mdi-menu'"
       />
       <v-spacer/>
-      <v-avatar class="mx-3">
-        <img
-          src="https://cdn.vuetifyjs.com/images/john.jpg"
-          alt="John"
-        >
-      </v-avatar>
-      <div class="mt-5">
-        <h4 class="mr-5 light-blue--text accent-4">
-          Tri Mueri Sandess
-        </h4>
-        <p class="mr-5 light-blue--text accent-1">
-          Kasubag umum
-        </p>
-      </div>
-      <div class="text-center">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              fab
-              text
-              small
-              color="light-blue accent-4"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon
-                large
-              >
-                mdi-chevron-down
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in items"
-              :key="index"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+      <Account/>
     </v-app-bar>
-    <v-container>
+
+    <v-container class="px-10 pb-10">
       <h1 class="my-2">
         Agenda
       </h1>
       <v-card
         color="#fff"
         elevation="2"
-        class="px-3 pa-3"
+        class="px-0 pa-3"
         style=""
+
       >
-        <v-row>
+        <v-row dense
+               elevation="5">
           <v-col>
-            <h3>Agenda / Informasi Dinas</h3>
+            <h3 class=" px-3 font-weight-light">Agenda / Informasi Dinas</h3>
           </v-col>
           <v-col lg="8" align="right">
             <v-btn
@@ -92,21 +53,16 @@
             </v-btn>
           </v-col>
         </v-row>
+        <v-divider class="mt-2"/>
         <template>
-          <v-row class="fill-height">
+          <v-row class="mt-n3 px-3">
             <v-col>
-              <v-sheet height="64">
-                <v-toolbar
-                  flat
+              <v-sheet height="54">
+                <v-toolbar align="center"
+                           flat
+                           dense
                 >
-                  <v-btn
-                    outlined
-                    class="mr-4"
-                    color="grey darken-2"
-                    @click="setToday"
-                  >
-                    Today
-                  </v-btn>
+                  <v-spacer class="ml-16"/>
                   <v-btn
                     fab
                     text
@@ -118,6 +74,9 @@
                       mdi-chevron-left
                     </v-icon>
                   </v-btn>
+                  <v-toolbar-title v-if="$refs.calendar">
+                    {{ $refs.calendar.title }}
+                  </v-toolbar-title>
                   <v-btn
                     fab
                     text
@@ -129,41 +88,34 @@
                       mdi-chevron-right
                     </v-icon>
                   </v-btn>
-                  <v-toolbar-title v-if="$refs.calendar">
-                    {{ $refs.calendar.title }}
-                  </v-toolbar-title>
+
                   <v-spacer/>
                   <v-menu
                     bottom
                     right
                   >
                     <template #activator="{ on, attrs }">
-                      <v-btn
-                        outlined
+                      <v-btn-toggle
+                        class="mr-n4"
+                        style="border-radius: 20px;"
+                        text-color="white"
                         color="grey darken-2"
+                        dense
                         v-bind="attrs"
                         v-on="on"
                       >
-                        <span>{{ typeToLabel[type] }}</span>
-                        <v-icon right>
-                          mdi-menu-down
-                        </v-icon>
-                      </v-btn>
+                        <v-btn value="left" class="text-capitalize" color="primary" @click="type = 'month'">
+                          Bulan
+                        </v-btn>
+                        <v-btn value="center" class="text-capitalize" color="buttons white--text"
+                               @click="type = 'week'">
+                          Minggu
+                        </v-btn>
+                        <v-btn value="right" class="text-capitalize" color="buttons white--text" @click="type = 'day'">
+                          Hari
+                        </v-btn>
+                      </v-btn-toggle>
                     </template>
-                    <v-list>
-                      <v-list-item @click="type = 'day'">
-                        <v-list-item-title>Day</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="type = 'week'">
-                        <v-list-item-title>Week</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="type = 'month'">
-                        <v-list-item-title>Month</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="type = '4day'">
-                        <v-list-item-title>4 days</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
                   </v-menu>
                 </v-toolbar>
               </v-sheet>
@@ -231,14 +183,13 @@
 </template>
 
 <script>
+
+import Account from "@/components/default/Account";
+
 export default {
   name: 'Home',
+  components: {Account},
   data: () => ({
-    items: [
-      { title: 'Profil' },
-      { title: 'Pengaturan' },
-      { title: 'Keluar' },
-    ],
     focus: '',
     type: 'month',
     typeToLabel: {
@@ -254,29 +205,42 @@ export default {
     colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
   }),
+
   mounted() {
     this.$refs.calendar.checkChange()
-  },
+  }
+  ,
   methods: {
+
     viewDay({date}) {
       this.focus = date
       this.type = 'day'
-    },
+    }
+    ,
     _add() {
       this.$router.push({name: 'agenda_add'})
-    },
+    }
+    ,
+    profil() {
+      this.$router.push({name: 'profil'})
+    }
+    ,
     getEventColor(event) {
       return event.color
-    },
+    }
+    ,
     setToday() {
       this.focus = ''
-    },
+    }
+    ,
     prev() {
       this.$refs.calendar.prev()
-    },
+    }
+    ,
     next() {
       this.$refs.calendar.next()
-    },
+    }
+    ,
     showEvent({nativeEvent, event}) {
       const open = () => {
         this.selectedEvent = event
@@ -292,7 +256,8 @@ export default {
       }
 
       nativeEvent.stopPropagation()
-    },
+    }
+    ,
     updateRange({start, end}) {
       const events = []
 
@@ -318,7 +283,8 @@ export default {
       }
 
       this.events = events
-    },
+    }
+    ,
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a
     }
