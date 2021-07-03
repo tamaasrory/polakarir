@@ -35,4 +35,12 @@ Content-Type: application/json
     "nip": "198501069004121001"
 }
 
+### uji coba akses langsung ke server sinergi, untuk get detail pegawai by kode jabatan
+POST http://localhost:7000/api/test/pegawai-by-kj
+Content-Type: application/json
+
+{
+    "kj": "05.01."
+}
+
 ###

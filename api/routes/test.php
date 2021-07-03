@@ -30,6 +30,8 @@ $router->group(['prefix' => 'api/test'], function () use ($router) {
 
     $router->post('pegawai-by-nip', [TestController::class, 'getPegawaiByNip']);
 
+    $router->post('pegawai-by-kj', [TestController::class, 'getPegawaiByKj']);
+
     // test penerapan TOKEN JWT
     $router->group(['middleware' => ['extauth']], function () use ($router) {
         $router->get('dump-test', function (Request $request) {

@@ -36,4 +36,9 @@ class TestController extends Controller
     {
         return ExtApi::getPegawaiByNip($request);
     }
+
+    public function getPegawaiByKj(Request $request)
+    {
+        return ExtApi::getPegawaiByKodeJabatan($request);
+    }
 }

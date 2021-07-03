@@ -15,10 +15,7 @@ class ExtApi
     public static function login(Request $request)
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_login')
-            ->method('GET')
-            ->addField($request->all())
-            ->run();
+        $tmp = $curl->get('api_login', $request->all());
 
         if (!isset($tmp['error']) && isset($tmp['result'])) {
             if ($tmp['result'] === 'verified') {
@@ -46,10 +43,7 @@ class ExtApi
     public static function listOpd()
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_opd')
-            ->method('GET')
-            ->addField(['all' => 'yes'])
-            ->run();
+        $tmp = $curl->get('api_opd', ['all' => 'yes']);
 
         if (!isset($tmp['error'])) {
             return $tmp;
@@ -67,10 +61,9 @@ class ExtApi
     public static function getOpdById(Request $request)
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_opd')
-            ->method('GET')
-            ->addField(['id_opd' => $request->input('id_opd')])
-            ->run();
+        $tmp = $curl->get('api_opd',
+            ['id_opd' => $request->input('id_opd')]
+        );
 
         if (!isset($tmp['error']) && is_array($tmp)) {
             return $tmp[0];
@@ -88,17 +81,11 @@ class ExtApi
     {
         $id_opd = $request->input('id_opd');
         $curl = new Curl();
-        $tmp = $curl->route('api_pegawai')
-            ->method('GET')
-            ->addField(['id_opd' => $id_opd > 0 ? $id_opd : 'all'])
-            ->run();
+        $tmp = $curl->get('api_pegawai',
+            ['id_opd' => $id_opd > 0 ? $id_opd : 'all']
+        );
 
         if (!isset($tmp['error']) && $tmp) {
-//            return array_values(array_filter($tmp, function ($data) use ($id_opd) {
-//                if ((((int)substr($data['kode_jabatan'], 0, 2)) == $id_opd) || ($id_opd == '-1')) {
-//                    return $data;
-//                }
-//            }));
             return $tmp;
         }
         return [];
@@ -113,10 +100,30 @@ class ExtApi
     public static function getPegawaiByNip(Request $request)
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_pegawai')
-            ->method('GET')
-            ->addField(['nip' => $request->input('nip')])
-            ->run();
+        $tmp = $curl->get('api_pegawai',
+            ['nip' => $request->input('nip')]
+        );
+
+        if (!isset($tmp['error']) && !isset($tmp['result'])) {
+            $tmp['result'] = true;
+            return $tmp;
+        }
+
+        return ['result' => false];
+    }
+
+    /**
+     * Get Pegawai by Kode Jabatan
+     *
+     * @param Request $request
+     * @return array|bool|mixed|string
+     */
+    public static function getPegawaiByKodeJabatan(Request $request)
+    {
+        $curl = new Curl();
+        $tmp = $curl->get('api_pegawai',
+            ['kode_jabatan' => $request->input('kj')]
+        );
 
         if (!isset($tmp['error']) && !isset($tmp['result'])) {
             $tmp['result'] = true;
