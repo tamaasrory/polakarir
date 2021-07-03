@@ -7,7 +7,6 @@
   <div class="material">
     <v-app-bar
       color="white"
-      elevation="0"
       fixed
       app
       light

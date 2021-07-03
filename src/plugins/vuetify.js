@@ -12,6 +12,7 @@ const vuetify = new Vuetify({
         primary: '#2d62ed',
         secondary: '#b0bec5',
         anchor: '#8c9eff',
+        buttons: '#00CCF2',
       },
     },
   },

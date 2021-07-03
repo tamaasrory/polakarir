@@ -10,10 +10,12 @@ import app from '@/router/apis/app'
 import SuratMasuk from '@/router/apis/surat-masuk'
 import SuratKeluar from '@/router/apis/surat-keluar'
 import Agenda from '@/router/apis/agenda'
+import Profil from '@/router/apis/profil'
 import TemplateSurat from '@/router/apis/template-surat'
 import ArsipSurat from '@/router/apis/arsip-surat'
 import JenisSurat from '@/router/apis/jenis-surat'
 import Sinergi from '@/router/apis/sinergi'
+
 
 const $api = {
   ...auth,
@@ -26,7 +28,8 @@ const $api = {
   ...TemplateSurat,
   ...ArsipSurat,
   ...JenisSurat,
-  ...Sinergi
+  ...Sinergi,
+  ...Profil
 }
 
 export default $api

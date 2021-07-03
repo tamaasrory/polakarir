@@ -5,58 +5,32 @@
 
 <template>
   <div class="material">
-    <v-app-bar color="white" elevation="0" fixed app light>
+    <v-app-bar color="white" fixed app light>
       <v-icon
         color="primary"
         class="mr-5"
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
-      <v-spacer />
-      <v-avatar class="mx-3">
-        <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
-      </v-avatar>
-      <div class="mt-5">
-        <h4 class="mr-5 light-blue--text accent-4">Tri Mueri Sandes</h4>
-        <p class="mr-5 light-blue--text accent-1">Kasubag umum</p>
-      </div>
-      <div class="text-center">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              fab
-              text
-              small
-              color="light-blue accent-4"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon large> mdi-chevron-down </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item v-for="(item, index) in items" :key="index">
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+      <v-spacer/>
+      <Account/>
+
     </v-app-bar>
-    <v-container fluid>
+    <v-container class="px-10 pb-10">
       <h1 class="my-2">Daftar Arsip</h1>
       <v-card>
-        <v-row>
+        <v-row dense>
           <v-col>
             <v-tabs centered slider-size="5">
-              <v-tabs v-model="tabs" align-with-title
-              <v-tab><p class="font-weight-bold mb-n2">Unit Kerja</p>
+              <v-tab dense><p class="font-weight-bold mb-n2 text-capitalize">Surat Keluar</p>
               </v-tab>
-              <v-tab><p class="font-weight-bold mb-n2">Pengguna</p></v-tab>
+              <v-tab dense><p class="font-weight-bold mb-n2 text-capitalize">Surat Masuk</p></v-tab>
             </v-tabs>
+            <v-divider class="mt-2"/>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="3" class="align-self-center mr-auto">
+        <v-row dense>
+          <v-col cols="3" class="align-self-center mr-auto ">
             <v-data-footer
               :pagination="pagination"
               :prev-icon="null"
@@ -68,19 +42,19 @@
               :options.sync="options"
             />
           </v-col>
-          <v-col cols="3" align="right" class="ml-auto">
-            <v-card-title>
+          <v-col lg="3" align="right" class="align-self-center">
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
                 label="Search"
                 single-line
                 rounded
+                dense
                 class="shrink"
                 outlined
                 hide-details
               ></v-text-field>
-            </v-card-title>
+
           </v-col>
           <v-col cols="1" class="align-self-lg-center" align="right">
             <v-btn
@@ -234,10 +208,13 @@
 import { mapActions } from "vuex";
 import Dialog from "@/components/Dialog";
 import { can } from "@/plugins/supports";
+import Account from "@/components/default/Account";
+
 
 export default {
   name: "Material",
   components: {
+    Account,
     "delete-dialog-confirm": Dialog,
   },
   data() {

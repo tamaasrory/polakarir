@@ -9,6 +9,7 @@
 use App\Http\Controllers\JenisSuratController;
 use App\Http\Controllers\NomorSuratTerakhirController;
 use App\Http\Controllers\SuratKeluarController;
+use App\Http\Controllers\TemplateSuratController;
 
 $router->group(['prefix' => 'jenis-surat'], function () use ($router) {
     $router->get('all', [JenisSuratController::class, 'index']);
@@ -39,5 +40,16 @@ $router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {
     $router->post('baru', [NomorSuratTerakhirController::class, 'store']);
     $router->put('edit', [NomorSuratTerakhirController::class, 'edit']);
     $router->delete('delete/{id_nomor_surat_terakhir}', [NomorSuratTerakhirController::class, 'destroy']);
+});
+
+$router->group(['prefix' => 'template-surat'], function () use ($router) {
+    $router->get('all', [TemplateSuratController::class, 'index']);
+    $router->get('detail/{id}', [TemplateSuratController::class, 'show']);
+    $router->get('create', [TemplateSuratController::class, 'create']);
+    $router->post('baru', [TemplateSuratController::class, 'store']);
+    $router->get('edit/{id}', [TemplateSuratController::class, 'edit']);
+    $router->put('update/{id}', [TemplateSuratController::class, 'update']);
+    $router->delete('delete/{id}', [TemplateSuratController::class, 'destroy']);
+    $router->get('download/{id}', [TemplateSuratController::class, 'download_template']);
 });
 

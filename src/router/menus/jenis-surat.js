@@ -26,20 +26,21 @@ const JenisSurat = [
       requirePermission: permission + 'create'
     }
   },
-  {
+  /*{
     path: path + '/view/:id',
     name: routeName + '_view',
-    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
-    props: true,
+    component: () => import(/!* webpackChunkName: "[request].chunk" *!/ `@/views/${folder}/View`),
+    props: true
     meta: {
       title: 'Detail' + title,
       requiresAuth: true,
       requirePermission: permission + 'list'
     }
-  },
+  },*/
+
   {
-    path: path + '/edit/:id',
-    name: routeName + '_edit',
+    path: path + '/edit',
+    name: routeName + 'edit',
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
     props: true,
     meta: {
@@ -48,6 +49,7 @@ const JenisSurat = [
       requirePermission: permission + 'edit'
     }
   }
+
 ]
 
 export default JenisSurat
