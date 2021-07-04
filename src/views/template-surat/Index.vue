@@ -4,7 +4,7 @@
   -->
 
 <template>
-  <div class="material">
+  <div class="template_surat">
     <v-app-bar
       color="white"
       fixed
@@ -40,7 +40,7 @@
           </v-col>
           <v-col lg="3" align="right" class="align-self-center">
             <v-text-field
-              v-model="search"
+              v-model="searchQuery"
               append-icon="mdi-magnify"
               label="Search"
               single-line
@@ -156,8 +156,6 @@
             :next-icon="null"
             :first-icon="null"
             :last-icon="null"
-            :page-text="baris"
-            :items-per-page-text="smfbsm"
             :items-per-page-options="[10,15,50,100,-1]"
             :options.sync="options"
           />
@@ -252,7 +250,7 @@ import {can} from '@/plugins/supports'
 import Account from "@/components/default/Account";
 
 export default {
-  name: 'Material',
+  name: 'TemplateSurat',
   components: {
     Account,
     'delete-dialog-confirm': Dialog
@@ -293,13 +291,13 @@ export default {
   computed: {
     headerData() {
       return [
-        {text: 'Nomor', value: 'nama'},
-        {text: 'Nama Template', value: 'satuan'},
-        {text: 'Jenis Surat', value: 'updated_at'},
-        {text: 'Pembuat', value: 'updated_at'},
-        {text: 'Tanggal Pembuatan', value: 'updated_at'},
-        {text: 'Validator', value: 'updated_at'},
-        {text: 'Status', value: 'updated_at'},
+        {text: 'Nomor', value: 'id_template_surat'},
+        {text: 'Nama Template', value: 'nama_template'},
+        {text: 'Jenis Surat', value: 'jenis_surat'},
+        {text: 'Pembuat', value: 'nip_author'},
+        {text: 'Tanggal Pembuatan', value: 'created_at'},
+        {text: 'Validator', value: 'nip_author'},
+        {text: 'Status', value: 'status'},
         {text: 'Aksi', value: 'aksi'}
       ]
     }
@@ -313,6 +311,7 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
+    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat']),
     can,
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
@@ -321,7 +320,7 @@ export default {
       this.$router.push({name: 'template_surat_add'})
     },
     _edit(value) {
-      this.$router.push({name: 'material_edit', params: {id: value.id}})
+      this.$router.push({name: 'template_surat_edit', params: {id: value.id_template_surat}})
     },
     _delete(value) {
       if (value === true) {
@@ -342,6 +341,12 @@ export default {
     _loadData(abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
+        this.getTemplateSurat({ add: this.filterTask, ...this.options })
+          .then((data) => {
+            this.datas = data.items || []
+            this.serverLength = data.total || 0
+            this.isLoading = false
+          })
       } else {
         this.isLoading = false
       }

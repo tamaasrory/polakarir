@@ -77,6 +77,24 @@ const TemplateSurat = {
         })
     })
   },
+
+  getTemplateSuratEdit ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.get(`/template-surat/edit/${payload.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve([])
+        })
+    })
+  },
+
   updateTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       $axios.put(`/template-surat/update/${payload.id}`, payload)

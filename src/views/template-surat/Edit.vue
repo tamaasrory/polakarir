@@ -6,74 +6,109 @@
 <template>
   <div>
     <v-app-bar
+      color="white"
       fixed
-      dark
-      color="primary"
-          >
-      <v-btn
-        icon
-        dark
-        @click="backButton"
-      >
-        <v-icon color="primary">mdi-arrow-left</v-icon>
-      </v-btn>
-      <v-toolbar-title style="line-height: 1.3">
-        Edit Material
-        <div
-          v-if="!loadingData"
-          style="font-size: 11pt"
-        >
-          {{ material.id }}
-        </div>
-        <v-skeleton-loader
-          v-else
-          ref="skeleton"
-          type="text"
-          max-width="100%"
-        />
-      </v-toolbar-title>
+      app
+      light
+    >
+      <v-icon
+        color="primary"
+        class="mr-5"
+        @click="$emit('toggle-drawer')"
+        v-text="'mdi-menu'"
+      />
+      <v-spacer/>
+      <Account/>
     </v-app-bar>
-    <v-container class="white">
-      <v-row class="py-0 py-md-3">
-        <v-col
-          cols="12"
-          md="6"
-          class="mx-auto"
-        >
-          <v-row>
-            <v-col
-              cols="12"
-              md="12"
-            >
-              <v-text-field
-                v-model="material.nama"
-                label="Nama Material"
-                outlined
-                :rules="[rules.required]"
-              />
-              <v-text-field
-                v-model="material.satuan"
-                label="Satuan"
-                outlined
-                :rules="[rules.required]"
-              />
-
-              <v-btn
-                color="green"
-                large
-                :dark="dataValidation"
-                :disabled="!dataValidation"
-                @click="showDC = true"
-              >
-                <v-icon color="white">
-                  mdi-check
-                </v-icon>
-                SIMPAN
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+    <v-container fluid>
+      <h1 class="my-2">
+        Ubah Draft Template
+      </h1>
+      <div
+        v-if="!loadingData"
+        style="font-size: 11pt"
+      >
+        {{ template_surat.id }}
+      </div>
+      <div class="mt-lg-10">
+        <v-row>
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Jenis Surat
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.id"
+              class="outline yellow--text"
+              outlined
+              :rules="[rules.required]"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Nama Template
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.nama_template"
+              class="outline yellow--text"
+              outlined
+              :rules="[rules.required]"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Nama Template
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.jenis_surat"
+              class="outline yellow--text"
+              outlined
+              :rules="[rules.required]"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >File Template
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-file-input
+              prepend-icon=""
+              outlined
+              solo>
+              <template v-slot:label>
+                <v-btn depressed x-small rounded class="text-capitalize">Choose File</v-btn>
+                No File Chosen
+              </template>
+            </v-file-input>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col sm="12" lg="7" md="12" align="right">
+            <v-btn
+              elevation="2"
+              large
+              class=" cyan accent-3 text-capitalize white--text rounded-xl"
+            >Simpan
+            </v-btn>
+          </v-col>
+        </v-row>
+      </div>
     </v-container>
     <update-dialog-confirm
       :show-dialog="showDC"
@@ -89,22 +124,29 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import {mapActions} from 'vuex'
 import Dialog from '@/components/Dialog'
+import Account from "@/components/default/Account";
 
 export default {
   components: {
+    Account,
     'update-dialog-confirm': Dialog
   },
   props: {
-    id: { type: [String, Number], required: true }
+    id: {type: [String, Number], required: true}
   },
-  data () {
+  data() {
     return {
       loadingData: true,
-      material: {
-        nama: null,
-        satuan: null
+      template_surat: {
+        id: this.id,
+        nama_template: null,
+        nip_author: null,
+        url_berkas: null,
+        sumber_hukum:null,
+        jenis_surat:null,
+        status: null,
       },
       rules: {
         required: value => !!value || 'Tidak Boleh Kosong'
@@ -114,22 +156,41 @@ export default {
       dcProgress: false,
       dcdisabledNegativeBtn: false,
       dcdisabledPositiveBtn: false,
-      dcNegativeBtn: () => { this.showDC = false },
+      dcNegativeBtn: () => {
+        this.showDC = false
+      },
       dcPositiveBtn: () => this.postUpdate()
     }
   },
   computed: {
-    dataValidation () {
-      return !!(this.material.nama)
+    dataValidation() {
+      return !!(this.template_surat.nama_template)
     }
   },
-  created () {
+  created() {
+    this.getTemplateSuratById( {id: this.id})
+      .then(data => {
+        this.template_surat.nama_template = data.template_surat.nama_template ?? ''
+        this.template_surat.jenis_surat = data.template_surat.jenis_surat ?? ''
+        this.loadingData = false
+      })
+    .catch((error) => {
+      this.template_surat = {
+        id_template_surat: null,
+        jenis_surat: null,
+        nama_template: null,
+
+      }
+      console.log('Error template: ' + nama_template)
+
+    })
   },
   methods: {
-    backButton () {
-      this.$router.push({ name: 'material' })
+    ...mapActions(['getTemplateSuratEdit', 'updateTemplateSurat']),
+    backButton() {
+      this.$router.push({name: 'template_surat'})
     },
-    postUpdate () {
+    postUpdate() {
       this.dcProgress = true
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
