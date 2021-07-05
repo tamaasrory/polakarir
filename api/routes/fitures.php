@@ -31,6 +31,7 @@ $router->group(['prefix' => 'surat-keluar'], function () use ($router) {
     $router->delete('delete/{id}', [SuratKeluarController::class, 'destroy']);
     $router->post('tte', [SuratKeluarController::class, 'tte']);
     $router->put('validasi-surat', [SuratKeluarController::class, 'validasiSurat']);
+    $router->get('get-atasan', [SuratKeluarController::class, 'getAtasan']);
 });
 
 $router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {

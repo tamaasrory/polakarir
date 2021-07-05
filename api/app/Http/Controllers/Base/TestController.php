@@ -41,4 +41,46 @@ class TestController extends Controller
     {
         return ExtApi::getPegawaiByKodeJabatan($request);
     }
+
+    public function getAtasanByKj(Request $request)
+    {
+        $dataUser = ExtApi::getPegawaiByKodeJabatan($request);
+        $dataAtasan = [];
+
+        if($dataUser['result']==true){
+            //cek limit panjang kode jabatan (batasnya 6)
+            if(strlen($dataUser["kode_jabatan_atasan"])<=6){
+                //jika kode atasannya dibawah sama dengan 6 karakter
+                $request->request->add(['kj' => $dataUser["kode_jabatan_atasan"]]);
+                $tampungAtasan = ExtApi::getPegawaiByKodeJabatan($request);
+                array_push($dataAtasan, [
+                    "kode_jabatan" => $tampungAtasan['kode_jabatan'],
+                    "nip" => $tampungAtasan['nip'],
+                    "nama_pegawai" => $tampungAtasan['nama_pegawai']
+                ]);
+                return $dataAtasan;
+            }else{
+                //jika kode atasannya masih diatas 6
+                $kode_jabatan_atasan = $dataUser["kode_jabatan_atasan"];
+
+                while(1){
+                    $request->request->add(['kj' => $kode_jabatan_atasan]);
+                    $tampungAtasan = ExtApi::getPegawaiByKodeJabatan($request);
+                    array_push($dataAtasan, [
+                        "kode_jabatan" => $tampungAtasan['kode_jabatan'],
+                        "nip" => $tampungAtasan['nip'],
+                        "nama_pegawai" => $tampungAtasan['nama_pegawai']
+                    ]);
+                    if(strlen($kode_jabatan_atasan)<=6){
+                        break;
+                    }
+                    $kode_jabatan_atasan = $tampungAtasan['kode_jabatan_atasan'];
+                }
+
+                return $dataAtasan;
+            }
+        }else{
+            return "kode jabatan tidak ditemukan";
+        }
+    }
 }
