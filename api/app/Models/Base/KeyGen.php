@@ -41,7 +41,7 @@ class KeyGen
 
         $randomKey = implode('', $collection->random($length)->all());
         if (!$prefix) {
-            $prefix = date('ymdHis');
+            $prefix = date('ymdHi');
         }
         return $prefix . $randomKey . $suffix;
     }

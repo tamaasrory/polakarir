@@ -53,7 +53,7 @@ class FieldProcessor implements ProcessorInterface
 
         $columnNames = [];
         $_type = [
-            'json' => 'array'
+            'json' => 'array',
         ];
 
         $casting = [];
@@ -68,7 +68,7 @@ class FieldProcessor implements ProcessorInterface
                 $typeData = $this->typeRegistry->resolveType($column->getType()->getName());
             }
 
-            $model->addProperty(new VirtualPropertyModel($column->getName(), $typeData));
+            $model->addProperty(new VirtualPropertyModel($column->getName() . (isset($detail->format) ? ' ' . json_encode($detail->format) : ''), $typeData));
 
             if (!in_array($column->getName(), $primaryColumnNames)) {
                 $columnNames[] = $column->getName();

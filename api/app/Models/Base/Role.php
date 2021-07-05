@@ -4,7 +4,6 @@ namespace App\Models\Base;
 
 use App\Traits\Searchable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Role as BaseRole;
 
 /**

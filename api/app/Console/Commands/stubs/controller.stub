@@ -1,7 +1,7 @@
 <?php
 namespace {{namespace}};
 
-use App\{{model}};
+use App\Models\{{model}};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Base\Controller;
 
@@ -47,18 +47,22 @@ class {{class}} extends Controller {
      */
     public function create()
     {
-
+        return [
+            'value' => [],
+            'msg' => "Data for create {$this->title}"
+        ];
     }
 
     /**
      * Store a newly created resource in storage.
-     *
+     * @param Request $request
      * @return \Illuminate\Http\Response|array
      */
-    public function store()
+    public function store(Request $request)
     {
         $data = new {{model}}();
-        $data->fill(request()->all());
+
+        {{table_property}}
 
         if ($data->save()) {
             return [
@@ -81,7 +85,9 @@ class {{class}} extends Controller {
      */
     public function show($id)
     {
+        /** @var {{model}} $data */
         $data = {{model}}::find($id);
+
         if ($data) {
             return [
                 'value' => $data,
@@ -103,20 +109,37 @@ class {{class}} extends Controller {
      */
     public function edit($id)
     {
-        //
+        /** @var {{model}} $data */
+        $data = {{model}}::find($id);
+
+        if ($data) {
+            return [
+                'value' => $data,
+                'msg' => "{$this->title} #{$id} ditemukan"
+            ];
+        }
+
+        return [
+            'value' => [],
+            'msg' => "{$this->title} #{$id} tidak ditemukan"
+        ];
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
+     * @param Request $request
      * @return \Illuminate\Http\Response|array
      */
-    public function update($id)
+    public function update(Request $request)
     {
+        $id = $request->input('{{pkey}}');
+        /** @var {{model}} $data */
         $data = {{model}}::find($id);
 
-        if ($data->update(request()->all())) {
+        {{table_property}}
+
+        if ($data->save()) {
             return [
                 'value' => $data,
                 'msg' => "{$this->title} #{$id} berhasil diperbarui"
@@ -137,6 +160,7 @@ class {{class}} extends Controller {
      */
     public function destroy($id)
     {
+        /** @var {{model}} $data */
         $data = {{model}}::find($id);
 
         if ($data->delete()) {

@@ -1,12 +1,13 @@
 <?php
 /**
  * Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
- * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
+ * License ini tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
 
 namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\InputOption;
 
 class ControllerMakeCommand extends GeneratorCommand
@@ -55,10 +56,10 @@ class ControllerMakeCommand extends GeneratorCommand
         // Next, We will check to see if the class already exists. If it does, we don't want
         // to create the class and overwrite the user's code. So, we will bail out so the
         // code is untouched. Otherwise, we will continue generating this class' files.
-        if ((! $this->hasOption('force') ||
-                ! $this->option('force')) &&
+        if ((!$this->hasOption('force') ||
+                !$this->option('force')) &&
             $this->alreadyExists($this->getNameInput())) {
-            $this->error($this->type.' already exists!');
+            $this->error($this->type . ' already exists!');
 
             return false;
         }
@@ -70,16 +71,56 @@ class ControllerMakeCommand extends GeneratorCommand
 
         $this->files->put($path, $this->sortImports($this->buildClass($name)));
 
-        $this->info($this->type.' created successfully.');
+        $this->info($this->type . ' created successfully.');
     }
 
     protected function buildClass($name)
     {
+        $db = env('DB_DATABASE');
+        $tables = array_column(
+            DB::select('SHOW TABLES'), 'Tables_in_' . $db
+        );
+        $table = $this->option('table');
+        $table_property = [];
+        $pkey = '_id';
+        if (in_array($table, $tables)) {
+            $pkeyquery = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS "
+                . "WHERE table_name = '{$table}' AND table_schema='{$db}' AND COLUMN_KEY='PRI'";
+            $ex = DB::selectOne($pkeyquery);
+            if (isset($ex->COLUMN_NAME)) {
+                $pkey = $ex->COLUMN_NAME;
+            }
+            $query = "SELECT COLUMN_NAME,COLUMN_COMMENT,IS_NULLABLE,COLUMN_KEY FROM INFORMATION_SCHEMA.COLUMNS "
+                . "WHERE table_name = '{$table}' AND table_schema='{$db}'";
+            $ex = DB::select($query);
+            $column = array_column($ex, 'COLUMN_NAME');
+            $comment = array_column($ex, 'COLUMN_COMMENT');
+            $isnullable = array_column($ex, 'IS_NULLABLE');
+            $nullable = array_combine($column, $isnullable);
+            $column = array_combine($column, $comment);
+
+            foreach ($column as $key => $val) {
+                if (!in_array($key, ['id', 'created_at', 'updated_at'])) {
+                    $val = json_decode($val, true);
+                    if (isset($val['format'])) {
+                        if ($val['type'] == 'json') {
+                            $table_property[] = '$data->' . $key . " = json_decode(\$request->file('{$key}')->get());";
+                        }
+                    } else {
+                        $table_property[] = '$data->' . $key . " = \$request->input('{$key}');";
+                    }
+                }
+            }
+        }
+
         $search = [
             '{{role}}' => $this->option('role'),
             '{{title}}' => $this->option('title'),
             '{{model}}' => $this->option('model'),
+            '{{pkey}}' => $pkey,
+            '{{table_property}}' => implode("\n        ", $table_property),
         ];
+
         $stub = $this->files->get($this->getStub());
         $stub = str_replace(array_keys($search), array_values($search), $stub);
         return $this->replaceNamespace($stub, $name)->replaceClass($stub, $name);
@@ -119,6 +160,7 @@ class ControllerMakeCommand extends GeneratorCommand
         return [
             ['resource', 'rs', InputOption::VALUE_NONE, 'Generate a resource controller class.'],
             ['role', 'r', InputOption::VALUE_REQUIRED, 'Set permission on middleware for controller class.'],
+            ['table', 'table', InputOption::VALUE_REQUIRED, 'Set table for controller class.'],
             ['title', 't', InputOption::VALUE_REQUIRED, 'Set title for controller class.'],
             ['model', 'm', InputOption::VALUE_REQUIRED, 'Set model for controller class.'],
             ['force', 'f', InputOption::VALUE_NONE, 'overwrite controller class.'],
