@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call('CreateAdminUserSeeder');
         $this->call(\Database\Seeders\JenisSuratTableSeeder::class);
         $this->call(\Database\Seeders\TemplateSuratTableSeeder::class);
+        $this->call(\Database\Seeders\KlasifikasiSuratTebleSeeder::class);
         Model::reguard();
     }
 }

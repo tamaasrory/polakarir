@@ -170,7 +170,7 @@ class NomorSuratTerakhirController extends Controller
             ->where(['id_opd'=>$id_opd,'id_jenis_surat'=>$id_jenis_surat])
             ->update([
                 'nomor_auto' => $nomor_auto,
-                'modified_at' => Carbon::now()
+                'updated_at' => Carbon::now()
             ]);
         if ($edit) {
             return response()->json(['msg' => 'Berhasil update']);

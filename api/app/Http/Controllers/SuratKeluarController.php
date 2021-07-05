@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
+use App\Models\Base\KeyGen;
 use App\Models\JenisSurat;
 use App\Models\SuratKeluar;
 use App\Supports\ExtApi;
@@ -97,7 +98,7 @@ class SuratKeluarController extends Controller
             $namasurat = 'SuratKeluar-' . $data['id_opd'] . '-' . time() . '.' . $file_ext;
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
-//                $data->id_surat_keluar = KeyGen::randomKey();
+                $data->id_surat_keluar = KeyGen::randomKey();
                 $data->status = 'Diajukan';
                 $data->lampiran = $namasurat;
 
@@ -232,7 +233,7 @@ class SuratKeluarController extends Controller
         if ($data['status'] != 'Selesai') {
 
             //data pegawai
-            $pegawai = $request->auth['sinergi'];
+            $pegawai = ExtApi::getPegawaiByNip($request);
 
 
             //Save into PDF
@@ -272,11 +273,15 @@ class SuratKeluarController extends Controller
                 $hash_tte = $request->input('hash_tte');
                 $template->setImageValue('ttdelektronik', "./qrcode/$output_file_qr.jpg");
                 $template->setValue('${tanggal}', $tanggal);
+                $template->setValue('${catatan_tte}','-UU ITE No 11 Tahun 2008 Pasal 5 Ayat 1 </w:t><w:br/><w:t>
+                                                                        "Informasi Elektronik dan/atau Dokumen Elektronik dan/atau hasil cetaknya merupakan alat bukti hukum yang sah ." </w:t><w:br/><w:t>
+                                                                     -Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE');
             } else {
 
                 //tanpa tte
-                $template->setValue('${ttdelektronik}', ' </w:t><w:br/><w:t> ');
+                $template->setValue('${ttdelektronik}', '');
                 $template->setValue('${tanggal}', ' </w:t><w:br/><w:t> ');
+                $template->setValue('${catatan_tte}', '');
             }
 
             $template->saveAs($path_word_validasi);
@@ -366,7 +371,7 @@ class SuratKeluarController extends Controller
 
     public function validasiSurat(Request $request)
     {
-        $dataValidator = $request->auth['sinergi'];
+        $dataValidator = $request->auth;
         /** @var SuratKeluar $dataSurat */
         $dataSurat = SuratKeluar::find($request->id_surat_keluar);
 
