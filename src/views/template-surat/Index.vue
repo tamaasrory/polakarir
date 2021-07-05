@@ -328,9 +328,24 @@ export default {
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
         this.dcMessages = `Sedang menghapus template surat`
+        this.deleteTemplateSurat(this.deleteId).then(res => {
+          this._loadData(true)
+          this.dcProgress = false
+          this.dcMessages = 'Berhasil menghapus template surat'
+          setTimeout(() => {
+            this.deleteId = ''
+            this.showDC = false
+            this.dcdisabledNegativeBtn = false
+            this.dcdisabledPositiveBtn = false
+          }, 1500)
+        }).catch(err => {
+          console.log(err)
+          this.dcdisabledNegativeBtn = false
+          this.dcdisabledPositiveBtn = false
+        })
       } else {
-        this.deleteId = value.id
-        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
+        this.deleteId = value.id_template_surat
+        this.dcMessages = `Hapus template <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }
     },
