@@ -141,6 +141,7 @@ export default {
       loadingData: true,
       template_surat: {
         id: this.id,
+        id_template_surat: this.id_template_surat,
         nama_template: null,
         nip_author: null,
         url_berkas: null,
@@ -164,12 +165,13 @@ export default {
   },
   computed: {
     dataValidation() {
-      return !!(this.template_surat.nama_template)
+      return !!(this.template_surat.id)
     }
   },
   created() {
     this.getTemplateSuratById( {id: this.id})
       .then(data => {
+        /*console.log('Error template: ' + data.nama_template)*/
         this.template_surat.nama_template = data.template_surat.nama_template ?? ''
         this.template_surat.jenis_surat = data.template_surat.jenis_surat ?? ''
         this.loadingData = false
@@ -181,7 +183,7 @@ export default {
         nama_template: null,
 
       }
-      console.log('Error template: ' + nama_template)
+      console.log('Error template: ' + error)
 
     })
   },

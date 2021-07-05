@@ -18,7 +18,7 @@
         v-text="'mdi-menu'"
       />
       <v-spacer/>
-      <Account/>
+      <account/>
     </v-app-bar>
     <v-container class="px-10 pb-10">
       <h1 class="my-2">
@@ -252,7 +252,7 @@ import Account from "@/components/default/Account";
 export default {
   name: 'TemplateSurat',
   components: {
-    Account,
+    'account': Account,
     'delete-dialog-confirm': Dialog
   },
   data() {
@@ -327,7 +327,7 @@ export default {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus material`
+        this.dcMessages = `Sedang menghapus template surat`
       } else {
         this.deleteId = value.id
         this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`

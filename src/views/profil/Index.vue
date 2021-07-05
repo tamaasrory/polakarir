@@ -26,13 +26,13 @@
       </h1>
       <v-container class="mt-16">
         <v-row>
-          <v-col cols="4">
+          <v-col cols="4" class="ml-10">
             <avatar size="200" username="H i"></avatar>
           </v-col>
-          <v-col cols="8" class="align-self-center">
+          <v-col cols="6" class="align-self-center">
             <template>
               <v-card>
-              <v-simple-table >
+              <v-simple-table>
                 <template #default>
                   <tbody>
                   <tr>
@@ -81,33 +81,6 @@ export default {
   },
   data() {
     return {
-
-        innitialName: 'tri',
-
-
-      desserts: [
-        {
-          name: 'Username',
-          calories: 'trimueri'
-        },
-        {
-          name: 'Nama',
-          calories: 'Jhon doe'
-        },
-        {
-          name: 'E-mail',
-          calories: 'trimuerisandes@gmail.com'
-        },
-        {
-          name: 'No HP',
-          calories: '081314721408'
-        },
-        {
-          name: 'Alamat',
-          calories: 'Panam, Pekanbaru'
-        }
-      ],
-
       searchQuery: '',
       toggleFp: false,
       isLoading: true,
@@ -145,11 +118,7 @@ export default {
     headerData() {
       return [
         {text: 'Nomor', value: 'nama'},
-        {text: 'Nomor Berkas', value: 'satuan'},
-        {text: 'Judul Berkas', value: 'updated_at'},
-        {text: 'Klasifikasi', value: 'updated_at'},
-        {text: 'Lokasi Fisik Berkas', value: 'updated_at'},
-        {text: 'Aksi', value: 'aksi'}
+        {text: 'Nomor Berkas', value: 'satuan'}
       ]
     }
   },
@@ -228,8 +197,25 @@ export default {
 }
 </script>
 <style>
+.v-simple-table tr:hover:not(.v-table__expanded__content) {
+  background: red !important;
+}
 .v-data-footer__icons-before,
 .v-data-footer__icons-after {
   display: none !important;
+
 }
+
+.v-table tr:hover:not(.v-table__expanded__content) {
+  background: red !important;
+}
+
+.v-data-table
+/deep/
+tbody
+/deep/
+tr:hover:not(.v-data-table__expanded__content) {
+  background: #ffffff !important;
+}
+
 </style>

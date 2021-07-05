@@ -18,48 +18,7 @@
         v-text="'mdi-menu'"
       />
       <v-spacer/>
-      <v-avatar class="mx-3">
-        <img
-          src="https://cdn.vuetifyjs.com/images/john.jpg"
-          alt="John"
-        >
-      </v-avatar>
-      <div class="mt-5">
-        <h4 class="mr-5 light-blue--text accent-4">
-          Tri Mueri Sandess
-        </h4>
-        <p class="mr-5 light-blue--text accent-1">
-          Kasubag umum
-        </p>
-      </div>
-      <div class="text-center">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              fab
-              text
-              small
-              color="light-blue accent-4"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon
-                large
-              >
-                mdi-chevron-down
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in items"
-              :key="index"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+      <account/>
     </v-app-bar>
     <v-container fluid>
       <h1 class="my-2">
@@ -70,11 +29,27 @@
           <v-col cols="2">
             <v-subheader
               class="font-weight-black black--text"
-            >Jenis Surat
+            >NIP Author
             </v-subheader>
           </v-col>
           <v-col cols="5">
             <v-text-field
+              v-model="template_surat.nip_author"
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="2" class="mt-n7">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Jenis Surat
+            </v-subheader>
+          </v-col>
+          <v-col cols="5" class="mt-n7">
+            <v-text-field
+              v-model="template_surat.nama_jenis_surat"
               class="outline yellow--text"
               outlined
             ></v-text-field>
@@ -89,6 +64,37 @@
           </v-col>
           <v-col cols="5">
             <v-text-field
+              v-model="template_surat.nama_template"
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Sumber Hukum
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.sumber_hukum"
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Status
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.status"
               class="outline yellow--text"
               outlined
             ></v-text-field>
@@ -103,8 +109,11 @@
           </v-col>
           <v-col cols="5">
             <v-file-input
+              v-model="template_surat.file_template"
               prepend-icon=""
               outlined
+              ref="file"
+              @change="handleFileObject()"
               solo>
               <template v-slot:label >
                 <v-btn depressed x-small rounded class="text-capitalize">Choose File</v-btn>
@@ -117,6 +126,7 @@
         <v-row>
           <v-col sm="12" lg="7" md="12" align="right">
             <v-btn
+              @click="showDC = true"
               elevation="2"
               large
               class=" cyan accent-3 text-capitalize white--text rounded-xl"
@@ -126,7 +136,17 @@
         </v-row>
       </div>
     </v-container>
-    <delete-dialog-confirm
+    <dialog-confirm
+      :show-dialog="showDC"
+      :negative-button="dcNegativeBtn"
+      :positive-button="dcPositiveBtn"
+      :disabled-negative-btn="dcdisabledNegativeBtn"
+      :disabled-positive-btn="dcdisabledPositiveBtn"
+      :progress="dcProgress"
+      :title="'Simpan'"
+      :message="dcMessages"
+    />
+<!--    <delete-dialog-confirm
       :show-dialog="showDC"
       :negative-button="dcNegativeBtn"
       :positive-button="dcPositiveBtn"
@@ -135,7 +155,7 @@
       :progress="dcProgress"
       :title="'Hapus'"
       :message="dcMessages"
-    />
+    />-->
     <v-navigation-drawer
       v-model="toggleFp"
       fixed
@@ -192,7 +212,7 @@
           color="success"
           @click="_loadData(true)"
         >
-          Terapkan
+          Terapkanf
         </v-btn>
       </div>
     </v-navigation-drawer>
@@ -203,11 +223,13 @@
 import {mapActions} from 'vuex'
 import Dialog from '@/components/Dialog'
 import {can} from '@/plugins/supports'
+import Account from "@/components/default/Account";
 
 export default {
   name: 'Material',
   components: {
-    'delete-dialog-confirm': Dialog
+    'account': Account,
+    'dialog-confirm': Dialog
   },
   data() {
     return {
@@ -215,6 +237,15 @@ export default {
       toggleFp: false,
       isLoading: true,
       datas: [],
+
+      template_surat:{
+        nip_author:null,
+        nama_jenis_surat: null,
+        nama_template: null,
+        sumber_hukum: null,
+        status: null,
+        file_template: null
+      },
 
       options: {},
       pagination: {},
@@ -232,14 +263,14 @@ export default {
 
       showDC: false,
       deleteId: '',
-      dcMessages: '',
+      dcMessages: 'Simpan Template Surat Baru Sekarang?',
       dcProgress: false,
       dcdisabledNegativeBtn: false,
       dcdisabledPositiveBtn: false,
       dcNegativeBtn: () => {
         this.showDC = false
       },
-      dcPositiveBtn: () => this._delete(true)
+      dcPositiveBtn: () => this.postAdd()
     }
   },
   computed: {
@@ -266,12 +297,25 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
+    ...mapActions(['addTemplateSurat']),
     can,
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
     },
-    _addTujuan() {
-      this.$router.push({name: 'tujuan_add'})
+    postAdd(){
+      this.dcProgress = true
+      this.dcdisabledNegativeBtn = true
+      this.dcdisabledPositiveBtn = true
+      this.dcMessages = 'Tunggu Sebentar, Sedang Menyimpan Template Surat Baru...'
+      this.addTemplateSurat(this.template_surat).then((res) =>{
+        this.dcProgress = false
+        this.dcMessages = 'Berhasil Menyimpan Template Surat Baru'
+        setTimeout(() => {
+          this.showDC = false
+          this.$router.push({name: 'template_surat'})
+          this.dcMessage = 'Simpan Jenis Surat Baru Sekarang?'
+        }, 1500)
+      })
     },
     _add() {
       this.$router.push({name: 'material_add'})
@@ -301,7 +345,11 @@ export default {
       } else {
         this.isLoading = false
       }
-    }
+    },
+    handleFileObject() {
+      this.avatar = this.$refs.file.files[0]
+      this.avatarName = this.avatar.name
+    },
   }
 }
 </script>
