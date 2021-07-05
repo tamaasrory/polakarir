@@ -25,6 +25,15 @@ Content-Type: application/json
     "password": "tarmizi"
 }
 
+### test login sebagai staff kasubag
+POST http://localhost:7000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "198012102006042018",
+    "password": "rusdi"
+}
+
 ### refresh permission dengan token super admin, supaya permission up to date
 GET http://localhost:7000/api/v1/auth/refresh
 Content-Type: application/json

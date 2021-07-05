@@ -24,7 +24,7 @@ class SuratKeluarController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:surat-keluar-list|surat-keluar-create|surat-keluar-edit|surat-keluar-delete', ['only' => 'index', 'show']);
+        $this->middleware('permission:surat-keluar-list|surat-keluar-create|surat-keluar-edit|surat-keluar-delete', ['only' => 'index', 'show','getAtasan']);
         $this->middleware('permission:surat-keluar-create', ['only' => 'create', 'store']);
         $this->middleware('permission:surat-keluar-edit', ['only' => 'edit', 'update']);
         $this->middleware('permission:surat-keluar-delete', ['only' => 'destroy']);
@@ -455,5 +455,40 @@ class SuratKeluarController extends Controller
         }
     }
 
+    public function getAtasan(Request $request){
+        $dataUser = $request->auth['sinergi'];
+        //membuat request dengan parameter 'kj'
+
+        $dataAtasan = [];
+        if(strlen($dataUser["kode_jabatan_atasan"])<=6){
+            //jika kode atasannya dibawah sama dengan 6 karakter
+            $request->request->add(['kj' => $dataUser["kode_jabatan_atasan"]]);
+            $tampungAtasan = ExtApi::getPegawaiByKodeJabatan($request);
+            array_push($dataAtasan, [
+                "kode_jabatan" => $tampungAtasan['kode_jabatan'],
+                "nip" => $tampungAtasan['nip'],
+                "nama_pegawai" => $tampungAtasan['nama_pegawai']
+            ]);
+            return $dataAtasan;
+        }else{
+            $kode_jabatan_atasan = $dataUser["kode_jabatan_atasan"];
+
+            while(1) {
+                $request->request->add(['kj' => $kode_jabatan_atasan]);
+                $tampungAtasan = ExtApi::getPegawaiByKodeJabatan($request);
+                array_push($dataAtasan, [
+                    "kode_jabatan" => $tampungAtasan['kode_jabatan'],
+                    "nip" => $tampungAtasan['nip'],
+                    "nama_pegawai" => $tampungAtasan['nama_pegawai']
+                ]);
+                if (strlen($kode_jabatan_atasan) <= 6) {
+                    break;
+                }
+                $kode_jabatan_atasan = $tampungAtasan['kode_jabatan_atasan'];
+            }
+        }
+
+        return $dataAtasan;
+    }
 
 }
