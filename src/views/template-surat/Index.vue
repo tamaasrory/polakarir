@@ -97,6 +97,23 @@
                 <v-btn
                   icon
                   v-bind="attrs"
+                  @click="_download(item)"
+                  v-on="on"
+                >
+                  <v-icon
+                    color="blue"
+                  >
+                    mdi-download
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Download</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
                   @click="_edit(item)"
                   v-on="on"
                 >
@@ -170,6 +187,16 @@
         </div>
       </div>
     </v-container>
+    <download-dialog-confirm
+      :show-dialog="showDW"
+      :negative-button="dwNegativeBtn"
+      :positive-button="dwPositiveBtn"
+      :disabled-negative-btn="dwdisabledNegativeBtn"
+      :disabled-positive-btn="dwdisabledPositiveBtn"
+      :progress="dwProgress"
+      :title="'Download'"
+      :message="dwMessages"
+    />
     <delete-dialog-confirm
       :show-dialog="showDC"
       :negative-button="dcNegativeBtn"
@@ -253,7 +280,8 @@ export default {
   name: 'TemplateSurat',
   components: {
     'account': Account,
-    'delete-dialog-confirm': Dialog
+    'delete-dialog-confirm': Dialog,
+    'download-dialog-confirm': Dialog,
   },
   data() {
     return {
@@ -275,6 +303,18 @@ export default {
           itemKey: 'id'
         }
       },
+
+      showDW: false,
+      downloadId: '',
+      dwMessages: '',
+      dwProgress: false,
+      dwdisabledNegativeBtn: false,
+      dwdisabledPositiveBtn: false,
+      dwNegativeBtn:() => {
+        this.showDW = false
+      },
+      dwPositiveBtn: () => this._download(true),
+
 
       showDC: false,
       deleteId: '',
@@ -311,13 +351,44 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat']),
+    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat']),
     can,
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
     },
     _add() {
       this.$router.push({name: 'template_surat_add'})
+    },
+    _downloa(value){
+      this.$router.push({name: ' template_surat_download', params: {id: value.id}})
+    },
+    _download(value){
+      //this.$router.push({name: ' template_surat', params: {id: value.id}})
+      if (value === true) {
+        this.dwProgress = true
+        this.dwdisabledNegativeBtn = true
+        this.dwdisabledPositiveBtn = true
+        this.dwMessages = `Sedang mendownload template surat`
+        this.downloadTemplateSurat(this.downloadId).then(res => {
+          this._loadData(true)
+          this.dwProgress = false
+          this.dwMessages = 'Berhasil mendownload template surat'
+          setTimeout(() => {
+            this.downloadId = ''
+            this.showDW = false
+            this.dwdisabledNegativeBtn = false
+            this.dwdisabledPositiveBtn = false
+          }, 1500)
+        }).catch(err => {
+          console.log(err)
+          this.dwdisabledNegativeBtn = false
+          this.dwdisabledPositiveBtn = false
+        })
+      } else {
+        this.downloadId = value.id_template_surat
+        this.dwMessages = `Download template <span class="pink--text">#${this.downloadId}</span> ?`
+        this.showDW = true
+      }
     },
     _edit(value) {
       this.$router.push({name: 'template_surat_edit', params: {id: value.id_template_surat}})

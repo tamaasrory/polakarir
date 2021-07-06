@@ -47,7 +47,7 @@ const TemplateSurat = [
       requiresAuth: true,
       requirePermission: permission + 'list'
     }
-  }
+  },
 ]
 
 export default TemplateSurat
