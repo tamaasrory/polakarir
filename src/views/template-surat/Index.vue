@@ -359,11 +359,7 @@ export default {
     _add() {
       this.$router.push({name: 'template_surat_add'})
     },
-    _downloa(value){
-      this.$router.push({name: ' template_surat_download', params: {id: value.id}})
-    },
     _download(value){
-      //this.$router.push({name: ' template_surat', params: {id: value.id}})
       if (value === true) {
         this.dwProgress = true
         this.dwdisabledNegativeBtn = true
