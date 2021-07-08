@@ -85,39 +85,26 @@ const TemplateSurat = {
         })
     })
   },
-  downloaTemplateSurat ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.get(`/template-surat/download/${payload.id}`)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve(response.data.value)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
   addTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post('/template-surat/baru', payload)
+      $axios.post('/template-surat/baru', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
         .then((response) => {
           if (response.status === 200) {
-            resolve(response.data.value)
+            resolve(response.data)
           } else {
-            resolve(response.data.value)
+            resolve({ msg: 'Sepertinya ada masalah, silahkan coba lagi' })
           }
         })
         .catch((error) => {
           console.log(error)
-          resolve([])
+          resolve({ msg: error })
         })
     })
   },
-
   getTemplateSuratEdit ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       $axios.get(`/template-surat/edit/${payload.id}`)
