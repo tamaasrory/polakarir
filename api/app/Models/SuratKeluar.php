@@ -39,6 +39,7 @@ class SuratKeluar extends SelfModel
         'nomor_surat',
         'created_at',
         'updated_at',
+        'id_opd',
     ];
 
     /**
