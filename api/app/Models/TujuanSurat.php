@@ -19,7 +19,7 @@ class TujuanSurat extends SelfModel
 
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'tb_tujuan_surat';
@@ -27,14 +27,17 @@ class TujuanSurat extends SelfModel
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = ['id_surat_keluar', 'id_opd', 'tujuan', 'created_at', 'updated_at'];
 
+    protected $casts = [
+        'tujuan' => 'json'
+    ];
     /**
      * The attributes that are searchable.
-     * 
+     *
      * @var array
      */
     public $searchable = ['id_surat_keluar', 'id_opd', 'tujuan', 'created_at', 'updated_at'];

@@ -51,44 +51,73 @@
               />
             </v-col>
           </v-row>
-          <v-row class="pt-0 pt-md-0 px-2">
+          <v-slide-y-transition>
+            <v-row
+              v-show="surat_keluar.kategori_surat !=='eksternal'"
+              class="pt-0 pt-md-0 px-2"
+            >
+              <v-col
+                cols="12"
+                md="4"
+                class="py-0"
+              >
+                <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                  Tujuan Surat
+                </h4>
+              </v-col>
+              <v-col
+                cols="12"
+                md="5"
+                class="py-0"
+              >
+                <v-text-field
+                  v-model="showTujuanSurat"
+                  readonly
+                  outlined
+                  class="bpp-input-md bpp-rounded-12"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
+                class="py-0"
+              >
+                <v-btn
+                  color="#2d62ed"
+                  dark
+                  block
+                  large
+                  min-height="50"
+                  class="bpp-rounded-12"
+                  @click="tmp.showDialogTujuan=true"
+                >
+                  Pilih Tujuan
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-slide-y-transition>
+          <v-row class="pt-6 pt-md-0 px-2">
             <v-col
               cols="12"
               md="4"
               class="py-0"
             >
               <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Tujuan Surat
+                Kepada
               </h4>
             </v-col>
             <v-col
               cols="12"
-              md="5"
+              md="8"
               class="py-0"
             >
-              <v-text-field
-                v-model="showTujuanSurat"
-                readonly
+              <v-select
+                v-model="surat_keluar.kode_jabatan_terusan"
                 outlined
                 class="bpp-input-md bpp-rounded-12"
+                :items="items.kepada"
+                :rules="[rules.required]"
               />
-            </v-col>
-            <v-col
-              cols="12"
-              md="3"
-              class="py-0"
-            >
-              <v-btn
-                color="#2d62ed"
-                dark
-                block
-                large
-                min-height="50"
-                class="bpp-rounded-12"
-                @click="tmp.showDialogTujuan=true"
-              >
-                Pilih Tujuan
-              </v-btn>
             </v-col>
           </v-row>
           <v-row class="pt-6 pt-md-0 px-2">
@@ -601,7 +630,15 @@ export default {
         loadingOpd: false,
         showDialogTujuan: false
       },
-      items: { jenis_surat: [], opd: [], jabatan: [], esselon: [], pegawai: [], datas: [] },
+      items: {
+        jenis_surat: [],
+        opd: [],
+        jabatan: [],
+        esselon: [],
+        pegawai: [],
+        datas: [],
+        kepada: []
+      },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
@@ -707,6 +744,7 @@ export default {
     this.createSuratKeluar().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.items.opd = isEmpty(data.opd, [])
+      this.items.kepada = isEmpty(data.kepada, [])
     })
   },
   methods: {
@@ -841,12 +879,22 @@ export default {
       const formData = new FormData()
 
       /* Add the form data we need to submit */
-      const penerimaSurat = this.surat_keluar.penerima_surat.map(data => {
-        return data.kode_jabatan
-      })
+      // let penerimaSurat = {}
+
+      // this.surat_keluar.penerima_surat.forEach(data => {
+      //   const opd = data.kode_jabatan.substring(0, 2)
+      //   if (typeof penerimaSurat[opd] !== 'undefined') {
+      //     penerimaSurat[opd].tujuan.push(data.kode_jabatan)
+      //   } else {
+      //     penerimaSurat[opd] = { id_opd: opd, tujuan: [data.kode_jabatan] }
+      //   }
+      // })
+
+      // penerimaSurat = Object.values(penerimaSurat)
 
       formData.append('penerima_surat',
-        new Blob([JSON.stringify(penerimaSurat)], { type: 'application/json' }))
+        new Blob([JSON.stringify(this.surat_keluar.penerima_surat)],
+          { type: 'application/json' }))
 
       Object.keys(this.surat_keluar).forEach(d => {
         if (!(['penerima_surat'].includes(d))) {

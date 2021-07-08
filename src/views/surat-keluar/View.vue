@@ -45,9 +45,10 @@
           md="8"
           class="mx-auto"
         >
-          <div class="pt-2 pb-5">
+          <div>
             <v-btn
-              class="mr-2"
+              v-if="showBtnTeruskan"
+              class="mr-2 mt-2 mb-3"
               color="#2d62ed"
               :dark="!disableActions"
               :disabled="disableActions"
@@ -55,17 +56,50 @@
             >
               teruskan <v-icon>mdi-share</v-icon>
             </v-btn>
+            <v-menu
+              v-if="showBtnTte"
+              offset-y
+            >
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  class="mr-2 mt-2 mb-3"
+                  color="#2d62ed"
+                  :dark="!disableActions"
+                  :disabled="disableActions"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Setujui <v-icon class="ml-1">
+                    mdi-draw
+                  </v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="">
+                  <v-list-item-title>
+                    Hanya Setujui
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="showDialog.tte=true">
+                  <v-list-item-title>
+                    Setujui & Tanda Tangani
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
             <v-btn
+              v-if="showBtnMemo"
               color="green"
+              class="mt-2 mb-3"
               :dark="!disableActions"
               :disabled="disableActions"
               @click="showDialog.memo=!showDialog.memo"
             >
-              memo <v-icon>mdi-pen</v-icon>
+              Revisi <v-icon>mdi-pen</v-icon>
             </v-btn>
           </div>
           <v-card
-            class="px-md-3"
+            class="px-md-3 mt-3"
           >
             <v-card-text class="px-md-0">
               <v-row class="px-1">
@@ -237,6 +271,77 @@
       </v-row>
     </v-container>
     <v-dialog
+      v-model="showToast"
+      persistent
+      max-width="360"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Info
+        </v-card-title>
+        <v-card-text
+          style="font-size: 14pt"
+          v-text="toastMsg"
+        />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="green darken-1"
+            text
+            @click="closeInfo()"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+      v-model="showDialog.tte"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title
+          class="py-3"
+          style="border-bottom: 2px solid #eee;"
+        >
+          Setujui & Tanda Tangani
+        </v-card-title>
+        <v-card-text class="pt-5 pb-0">
+          <v-text-field
+            v-model="tte.hash_tte"
+            label="Passparse"
+            outlined
+            placeholder="Masukkan Passparse"
+            :append-icon="showPassparse ? 'mdi-eye-off':'mdi-eye'"
+            :type="showPassparse ? 'text' : 'password'"
+            @click:append="showPassparse = !showPassparse"
+          />
+        </v-card-text>
+        <v-card-actions style="background: #eee">
+          <v-spacer />
+          <v-btn
+            :loading="loading.tte"
+            :disabled="loading.tte || !(tte.hash_tte)"
+            color="primary"
+            class="mr-1 my-2 px-10 text-capitalize"
+            large
+            @click="tteSurat()"
+          >
+            Proses
+          </v-btn>
+          <v-btn
+            color="error"
+            class="mr-2 my-2 px-10 text-capitalize"
+            large
+            :disabled="loading.tte"
+            @click="showDialog.tte=false"
+          >
+            Kembali
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
       v-model="showDialog.teruskan"
       max-width="600"
     >
@@ -249,14 +354,14 @@
         </v-card-title>
         <v-card-text class="pt-5 pb-0">
           <v-select
-            v-model="teruskan.kepada"
+            v-model="teruskan.kode_jabatan_terusan"
             :items="items.teruskan"
             label="Kepada"
             outlined
             placeholder="Pilih kepada siapa akan disampaikan"
           />
           <v-textarea
-            v-model="teruskan.pesan"
+            v-model="teruskan.catatan"
             rows="2"
             label="Pesan"
             outlined
@@ -266,9 +371,12 @@
         <v-card-actions style="background: #eee">
           <v-spacer />
           <v-btn
+            :loading="loading.teruskan"
+            :disabled="loading.teruskan || !(teruskan.kode_jabatan_terusan)"
             color="primary"
             class="mr-1 my-2 px-10 text-capitalize"
             large
+            @click="teruskanSurat()"
           >
             Proses
           </v-btn>
@@ -276,6 +384,7 @@
             color="error"
             class="mr-2 my-2 px-10 text-capitalize"
             large
+            :disabled="loading.teruskan"
             @click="showDialog.teruskan=false"
           >
             Kembali
@@ -286,36 +395,40 @@
     <v-dialog
       v-model="showDialog.memo"
       max-width="600"
+      persistent
     >
       <v-card>
         <v-card-title
           class="py-3"
           style="border-bottom: 2px solid #eee;"
         >
-          Memo
+          Revisi
         </v-card-title>
         <v-card-text class="pt-5 pb-0">
           <v-select
-            v-model="memo.kepada"
+            v-model="memo.kode_jabatan_terusan"
             :items="items.memo"
             label="Kepada"
             outlined
             placeholder="Pilih kepada siapa akan disampaikan"
           />
           <v-textarea
-            v-model="memo.pesan"
+            v-model="memo.catatan"
             rows="2"
-            label="Pesan"
+            label="Catatan Revisi"
             outlined
-            placeholder="tuliskan pesan bila dibutuhkan"
+            placeholder="tuliskan revisi"
           />
         </v-card-text>
         <v-card-actions style="background: #eee">
           <v-spacer />
           <v-btn
+            :loading="loading.kembalikan"
+            :disabled="loading.kembalikan || !(memo.kode_jabatan_terusan && memo.catatan)"
             color="primary"
             class="mr-1 my-2 px-10 text-capitalize"
             large
+            @click="kembalikanSurat()"
           >
             Proses
           </v-btn>
@@ -323,6 +436,7 @@
             color="error"
             class="mr-2 my-2 px-10 text-capitalize"
             large
+            :disabled="loading.kembalikan"
             @click="showDialog.memo=false"
           >
             Kembali
@@ -334,8 +448,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { urlSuratKeluar } from '@/router/Path'
+import { isEmpty } from '@/plugins/supports'
 
 export default {
   props: {
@@ -349,28 +464,43 @@ export default {
         jenis_surat: null,
         derajat_surat: null,
         isi_surat_ringkas: null,
-        lampiran: null
+        lampiran: null,
+        nip_author: null
       },
       teruskan: {
-        kepada: null,
-        pesan: null,
-        ket: null,
+        id_surat_keluar: this.id,
+        ket: 'Disetujui',
         kode_jabatan_terusan: null,
         catatan: null
       },
       memo: {
-        kepada: null,
-        pesan: null,
-        ket: null,
+        id_surat_keluar: this.id,
+        ket: 'Ditolak',
         kode_jabatan_terusan: null,
         catatan: null
       },
+      tte: {
+        id_surat_keluar: this.id,
+        hash_tte: null
+      },
       items: { teruskan: [], memo: [] },
-      showDialog: { teruskan: false, memo: false, lampiran: false },
-      errorResponse: false
+      showDialog: { teruskan: false, memo: false, tte: false },
+      errorResponse: false,
+      loading: {
+        tte: false,
+        teruskan: false,
+        kembalikan: false
+      },
+      showBtnTeruskan: false,
+      showBtnMemo: false,
+      showBtnTte: false,
+      showPassparse: false,
+      showToast: false,
+      toastMsg: ''
     }
   },
   computed: {
+    ...mapState(['user']),
     disableActions () {
       return this.loadingData || this.errorResponse
     }
@@ -379,20 +509,57 @@ export default {
     this._loadData()
   },
   methods: {
-    ...mapActions(['getSuratKeluarById']),
+    ...mapActions(['getSuratKeluarById', 'validasiSuratKeluar', 'tteSuratKeluar']),
     urlSuratKeluar,
     backButton () {
-      this.$router.push({ name: 'surat_keluar' })
+      this.$router.back()
+    },
+    closeInfo () {
+      this.backButton()
+    },
+    tteSurat () {
+      this.loading.tte = true
+      this.tteSuratKeluar(this.tte).then(d => {
+        this.loading.tte = false
+        this.showToast = true
+        this.toastMsg = d
+        this.showDialog.tte = false
+      })
+    },
+    teruskanSurat () {
+      this.loading.teruskan = true
+      this.validasiSuratKeluar(this.teruskan).then(d => {
+        this.loading.teruskan = false
+        this.showToast = true
+        this.toastMsg = d
+        this.showDialog.teruskan = false
+      })
+    },
+    kembalikanSurat () {
+      this.loading.kembalikan = true
+      this.validasiSuratKeluar(this.memo).then(d => {
+        this.loading.kembalikan = false
+        this.showToast = true
+        this.toastMsg = d
+        this.showDialog.memo = false
+      })
     },
     _loadData () {
       this.loadingData = true
       this.getSuratKeluarById({ id: this.id })
         .then(data => {
-          this.surat_keluar = data || {}
+          this.surat_keluar = data.surat_keluar || {}
+          this.items.teruskan = isEmpty(data.teruskan, [])
+          this.items.memo = isEmpty(data.memo, [])
+          this.showBtnTeruskan = isEmpty(data.showBtnTeruskan, false)
+          this.showBtnMemo = isEmpty(data.showBtnMemo, false)
+          this.showBtnTte = isEmpty(data.showBtnTte, false)
           this.loadingData = false
         })
         .catch(() => {
           this.surat_keluar = {}
+          this.items.teruskan = []
+          this.items.memo = []
           this.loadingData = false
           this.errorResponse = true
         })

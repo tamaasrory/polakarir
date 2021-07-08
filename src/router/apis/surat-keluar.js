@@ -133,6 +133,40 @@ const SuratKeluar = {
           resolve([])
         })
     })
+  },
+  validasiSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.put('/surat-keluar/validasi-surat', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            resolve(response.data)
+          }
+          resolve(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve('Sepertinya ada masalah, silahkan coba lagi')
+        })
+    })
+  },
+  tteSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.post('/surat-keluar/tte', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            resolve(response.data)
+          }
+          resolve(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve('Sepertinya ada masalah, silahkan coba lagi')
+        })
+    })
   }
   // END SuratKeluar API
 }

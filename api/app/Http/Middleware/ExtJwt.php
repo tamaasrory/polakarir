@@ -38,9 +38,9 @@ class ExtJwt
         $sub = $credentials->sub;
         if ($sub->kdj != '-') { // hanya pegawai yang terdaftar di sinergi
             // tambahkan paramater baru yaitu nip ke request
-            $request->request->add(['nip' => $sub->id]);
+            //$request->request->add(['nip' => $sub->id]);
             // get data user yang memiliki token ini, dari sinergi
-            $result = ExtApi::getPegawaiByNip($request);
+            $result = ExtApi::getPegawaiByNip($sub->id);
             if (!$result['result']) {
                 return response()->json([
                     'msg' => 'Session anda tidak valid, silahkan login ulang'],

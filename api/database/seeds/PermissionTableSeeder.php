@@ -41,6 +41,10 @@ class PermissionTableSeeder extends Seeder
         }
 
         $permissions[] = 'home';
+        // permission untuk munculkan seluruh surat keluar seluruh opd
+        $permissions[] = 'surat-keluar-list-all';
+        // permission untuk munculkan hanya surat keluar yang sesuai dengan "id_opd" user yang mengakses
+        $permissions[] = 'surat-keluar-list-opd';
 
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
