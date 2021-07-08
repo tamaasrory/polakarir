@@ -88,11 +88,12 @@
             </v-subheader>
           </v-col>
           <v-col cols="5">
-            <v-text-field
+            <v-select
               v-model="template_surat.status"
+              :items="statusItems"
               class="outline yellow--text"
               outlined
-            ></v-text-field>
+            ></v-select>
           </v-col>
         </v-row>
         <v-row class="mt-n7">
@@ -173,9 +174,12 @@ export default {
         id_template_surat: null
       },
 
+      statusItems:['publish','draft'],
+
       schema: {
         nip_author: 'required',
         nama_template: 'required'
+
       },
       rules: {
         required: v => {
