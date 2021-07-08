@@ -6,8 +6,10 @@ use App\Http\Controllers\Base\Controller;
 use App\Models\Base\KeyGen;
 use App\Models\JenisSurat;
 use App\Models\SuratKeluar;
+use App\Models\TujuanSurat;
 use App\Supports\ExtApi;
 use App\Supports\Tools;
+use App\Traits\Searchable;
 use Carbon\Carbon;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
@@ -38,10 +40,38 @@ class SuratKeluarController extends Controller
      */
     public function index(Request $request)
     {
-        $data = SuratKeluar::search($request, new SuratKeluar());
+
+        $auth =  $request->auth;
+        $auth_sinergi = $auth['sinergi'];
+        $data=null;
+
+        //role kasubag
+        if (in_array("Kasubag",$auth['role'])){
+            //data surat keluar berdasarkan opd
+            $data = SuratKeluar::where('id_opd',$auth_sinergi['id_opd']);
+
+        //role super admin
+        }elseif (in_array("Super Admin",$auth['role'])){
+            //seluruh surat keluar
+            $data = SuratKeluar::select();
+
+            //role staf/sekre/kabid/pimpinan
+        }else {
+            //data berdasarkan terusan atau nip author dalam suatu opd
+            $data = SuratKeluar::where('id_opd',$auth_sinergi['id_opd'])
+                                ->where('nip_author',$auth_sinergi['nip'])
+
+                                ->orWhere('kode_jabatan_terusan',$auth_sinergi['kode_jabatan']);
+
+
+        }
+
+        $data=Searchable::simplePaginate($request,$data,new SuratKeluar());
+
 
         if ($data) {
             return [
+
                 'value' => $data,
                 'msg' => "Data {$this->title} Ditemukan"
             ];
@@ -89,18 +119,25 @@ class SuratKeluarController extends Controller
         $data = new SuratKeluar();
         $data->fill(request()->all());
 
+        $auth_sinergi = $request->auth['sinergi'];
+
+
+        $penerima =$request->file('penerima_surat')->get();
+        $penerima_arr =  json_decode($penerima,true);
 
         if ($request->hasFile('lampiran')) {
             $original_filename = $request->file('lampiran')->getClientOriginalName();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
             $destination_path = './suratkeluar/';
-            $namasurat = 'SuratKeluar-' . $data['id_opd'] . '-' . time() . '.' . $file_ext;
+            $namasurat = 'SuratKeluar-' . $auth_sinergi['id_opd'] . '-' . time() . '.' . $file_ext;
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
                 $data->id_surat_keluar = KeyGen::randomKey();
                 $data->status = 'Diajukan';
                 $data->lampiran = $namasurat;
+                $data->id_opd = $auth_sinergi['id_opd'];
+                $data->nip_author = $auth_sinergi['nip'];
 
                 if ($data->save()) {
                     return [
@@ -233,7 +270,7 @@ class SuratKeluarController extends Controller
         if ($data['status'] != 'Selesai') {
 
             //data pegawai
-            $pegawai = ExtApi::getPegawaiByNip($request);
+            $pegawai = $request->auth['sinergi'];
 
 
             //Save into PDF

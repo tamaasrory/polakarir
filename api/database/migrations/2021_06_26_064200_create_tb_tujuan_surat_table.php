@@ -16,7 +16,7 @@ class CreateTbTujuanSuratTable extends Migration
         Schema::create('tb_tujuan_surat', function (Blueprint $table) {
             $table->id('id_tujuan_surat');
             $table->bigInteger('id_surat_keluar');
-            $table->smallInteger('id_opd');
+            $table->string('id_opd',5);
             $table->json('tujuan');
             $table->timestamps();
         });
