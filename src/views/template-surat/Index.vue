@@ -4,7 +4,7 @@
   -->
 
 <template>
-  <div class="material">
+  <div class="template_surat">
     <v-app-bar
       color="white"
       fixed
@@ -18,7 +18,7 @@
         v-text="'mdi-menu'"
       />
       <v-spacer/>
-      <Account/>
+      <account/>
     </v-app-bar>
     <v-container class="px-10 pb-10">
       <h1 class="my-2">
@@ -40,7 +40,7 @@
           </v-col>
           <v-col lg="3" align="right" class="align-self-center">
             <v-text-field
-              v-model="search"
+              v-model="searchQuery"
               append-icon="mdi-magnify"
               label="Search"
               single-line
@@ -92,6 +92,23 @@
             {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
           </template>
           <template v-slot:item.aksi="{item}">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
+                  @click="_download(item)"
+                  v-on="on"
+                >
+                  <v-icon
+                    color="blue"
+                  >
+                    mdi-download
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Download</span>
+            </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -156,8 +173,6 @@
             :next-icon="null"
             :first-icon="null"
             :last-icon="null"
-            :page-text="baris"
-            :items-per-page-text="smfbsm"
             :items-per-page-options="[10,15,50,100,-1]"
             :options.sync="options"
           />
@@ -172,6 +187,16 @@
         </div>
       </div>
     </v-container>
+    <download-dialog-confirm
+      :show-dialog="showDW"
+      :negative-button="dwNegativeBtn"
+      :positive-button="dwPositiveBtn"
+      :disabled-negative-btn="dwdisabledNegativeBtn"
+      :disabled-positive-btn="dwdisabledPositiveBtn"
+      :progress="dwProgress"
+      :title="'Download'"
+      :message="dwMessages"
+    />
     <delete-dialog-confirm
       :show-dialog="showDC"
       :negative-button="dcNegativeBtn"
@@ -252,10 +277,11 @@ import {can} from '@/plugins/supports'
 import Account from "@/components/default/Account";
 
 export default {
-  name: 'Material',
+  name: 'TemplateSurat',
   components: {
-    Account,
-    'delete-dialog-confirm': Dialog
+    'account': Account,
+    'delete-dialog-confirm': Dialog,
+    'download-dialog-confirm': Dialog,
   },
   data() {
     return {
@@ -278,6 +304,18 @@ export default {
         }
       },
 
+      showDW: false,
+      downloadId: '',
+      dwMessages: '',
+      dwProgress: false,
+      dwdisabledNegativeBtn: false,
+      dwdisabledPositiveBtn: false,
+      dwNegativeBtn:() => {
+        this.showDW = false
+      },
+      dwPositiveBtn: () => this._download(true),
+
+
       showDC: false,
       deleteId: '',
       dcMessages: '',
@@ -293,13 +331,13 @@ export default {
   computed: {
     headerData() {
       return [
-        {text: 'Nomor', value: 'nama'},
-        {text: 'Nama Template', value: 'satuan'},
-        {text: 'Jenis Surat', value: 'updated_at'},
-        {text: 'Pembuat', value: 'updated_at'},
-        {text: 'Tanggal Pembuatan', value: 'updated_at'},
-        {text: 'Validator', value: 'updated_at'},
-        {text: 'Status', value: 'updated_at'},
+        {text: 'Nomor', value: 'id_template_surat'},
+        {text: 'Nama Template', value: 'nama_template'},
+        {text: 'Jenis Surat', value: 'jenis_surat'},
+        {text: 'Pembuat', value: 'nip_author'},
+        {text: 'Tanggal Pembuatan', value: 'created_at'},
+        {text: 'Validator', value: 'nip_author'},
+        {text: 'Status', value: 'status'},
         {text: 'Aksi', value: 'aksi'}
       ]
     }
@@ -313,6 +351,7 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
+    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat']),
     can,
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
@@ -320,18 +359,60 @@ export default {
     _add() {
       this.$router.push({name: 'template_surat_add'})
     },
+    _download(value){
+      if (value === true) {
+        this.dwProgress = true
+        this.dwdisabledNegativeBtn = true
+        this.dwdisabledPositiveBtn = true
+        this.dwMessages = `Sedang mendownload template surat`
+        this.downloadTemplateSurat(this.downloadId).then(res => {
+          this._loadData(true)
+          this.dwProgress = false
+          this.dwMessages = 'Berhasil mendownload template surat'
+          setTimeout(() => {
+            this.downloadId = ''
+            this.showDW = false
+            this.dwdisabledNegativeBtn = false
+            this.dwdisabledPositiveBtn = false
+          }, 1500)
+        }).catch(err => {
+          console.log(err)
+          this.dwdisabledNegativeBtn = false
+          this.dwdisabledPositiveBtn = false
+        })
+      } else {
+        this.downloadId = value.id_template_surat
+        this.dwMessages = `Download template <span class="pink--text">#${this.downloadId}</span> ?`
+        this.showDW = true
+      }
+    },
     _edit(value) {
-      this.$router.push({name: 'material_edit', params: {id: value.id}})
+      this.$router.push({name: 'template_surat_edit', params: {id: value.id_template_surat}})
     },
     _delete(value) {
       if (value === true) {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus material`
+        this.dcMessages = `Sedang menghapus template surat`
+        this.deleteTemplateSurat(this.deleteId).then(res => {
+          this._loadData(true)
+          this.dcProgress = false
+          this.dcMessages = 'Berhasil menghapus template surat'
+          setTimeout(() => {
+            this.deleteId = ''
+            this.showDC = false
+            this.dcdisabledNegativeBtn = false
+            this.dcdisabledPositiveBtn = false
+          }, 1500)
+        }).catch(err => {
+          console.log(err)
+          this.dcdisabledNegativeBtn = false
+          this.dcdisabledPositiveBtn = false
+        })
       } else {
-        this.deleteId = value.id
-        this.dcMessages = `Hapus material <span class="pink--text">#${this.deleteId}</span> ?`
+        this.deleteId = value.id_template_surat
+        this.dcMessages = `Hapus template <span class="pink--text">#${this.deleteId}</span> ?`
         this.showDC = true
       }
     },
@@ -342,6 +423,12 @@ export default {
     _loadData(abort) {
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
+        this.getTemplateSurat({ add: this.filterTask, ...this.options })
+          .then((data) => {
+            this.datas = data.items || []
+            this.serverLength = data.total || 0
+            this.isLoading = false
+          })
       } else {
         this.isLoading = false
       }

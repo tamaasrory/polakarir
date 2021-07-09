@@ -26,35 +26,36 @@
       </h1>
       <v-container class="mt-16">
         <v-row>
-          <v-col cols="4">
-            <img
-              class="rounded-circle"
-              min-height="1120"
-              max-width="1120"
-              src="https://cdn.vuetifyjs.com/images/john.jpg"
-              alt="John"
-            >
+          <v-col cols="4" class="ml-10">
+            <avatar size="200" username="H i"></avatar>
           </v-col>
-          <v-col cols="8">
+          <v-col cols="6" class="align-self-center">
             <template>
+              <v-card>
               <v-simple-table>
                 <template #default>
                   <tbody>
-                  <tr
-                    v-for="item in desserts"
-                    :key="item.name"
-                  >
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.calories }}</td>
+                  <tr>
+                    <td>NIP</td>
+                    <td>{{user ? user.id : '' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Email</td>
+                    <td>{{user ? user.email : '' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Jabatan</td>
+                    <td>{{ (user.sinergi ? user.sinergi.nama_jabatan : (user?user.role[0]:'')).toLowerCase()}}</td>
                   </tr>
                   </tbody>
                 </template>
               </v-simple-table>
-              <v-btn elevation="2"
+              </v-card>
+<!--              <v-btn elevation="2"
                      @click="_editProfil()"
-                     class="mt-5 cyan accent-3 text-capitalize white--text rounded-xl" >
+                     class="mt-5 cyan accent-3 text-capitalize white&#45;&#45;text rounded-xl" >
                 Ubah
-              </v-btn>
+              </v-btn>-->
             </template>
           </v-col>
         </v-row>
@@ -64,43 +65,22 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters, mapState} from 'vuex'
 import Dialog from '@/components/Dialog'
 import {canEdit} from '@/plugins/supports'
 import Account from "@/components/default/Account";
+import Avatar from 'vue-avatar'
+
 
 export default {
-  name: 'Material',
+  name: 'Profil',
   components: {
+    Avatar,
     Account,
     'delete-dialog-confirm': Dialog
   },
   data() {
     return {
-
-      desserts: [
-        {
-          name: 'Username',
-          calories: 'trimueri'
-        },
-        {
-          name: 'Nama',
-          calories: 'Jhon doe'
-        },
-        {
-          name: 'E-mail',
-          calories: 'trimuerisandes@gmail.com'
-        },
-        {
-          name: 'No HP',
-          calories: '081314721408'
-        },
-        {
-          name: 'Alamat',
-          calories: 'Panam, Pekanbaru'
-        }
-      ],
-
       searchQuery: '',
       toggleFp: false,
       isLoading: true,
@@ -133,14 +113,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['isAuth']),
+    ...mapState(['user']),
     headerData() {
       return [
         {text: 'Nomor', value: 'nama'},
-        {text: 'Nomor Berkas', value: 'satuan'},
-        {text: 'Judul Berkas', value: 'updated_at'},
-        {text: 'Klasifikasi', value: 'updated_at'},
-        {text: 'Lokasi Fisik Berkas', value: 'updated_at'},
-        {text: 'Aksi', value: 'aksi'}
+        {text: 'Nomor Berkas', value: 'satuan'}
       ]
     }
   },
@@ -155,6 +133,10 @@ export default {
   methods: {
     ...mapActions(['getMaterial', 'deleteMaterial']),
     canEdit,
+    speakerInitials(speaker) {
+      const name = speaker.user.name.split(' ')
+      return `${name[0].charAt(0)}${name[1] ? name[1].charAt(0) : ''}`;
+    },
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
     },
@@ -215,8 +197,25 @@ export default {
 }
 </script>
 <style>
+.v-simple-table tr:hover:not(.v-table__expanded__content) {
+  background: red !important;
+}
 .v-data-footer__icons-before,
 .v-data-footer__icons-after {
   display: none !important;
+
 }
+
+.v-table tr:hover:not(.v-table__expanded__content) {
+  background: red !important;
+}
+
+.v-data-table
+/deep/
+tbody
+/deep/
+tr:hover:not(.v-data-table__expanded__content) {
+  background: #ffffff !important;
+}
+
 </style>

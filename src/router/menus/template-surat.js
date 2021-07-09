@@ -27,6 +27,17 @@ const TemplateSurat = [
     }
   },
   {
+    path: path + '/edit/:id',
+    name: routeName + '_edit',
+    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
+    props: true,
+    meta: {
+      title: 'Edit' + title,
+      requiresAuth: true,
+      requirePermission: permission + 'edit'
+    }
+  },
+  {
     path: path + '/view/:id',
     name: routeName + '_view',
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/View`),
@@ -37,17 +48,6 @@ const TemplateSurat = [
       requirePermission: permission + 'list'
     }
   },
-  {
-    path: path + '/edit/:id',
-    name: routeName + '_edit',
-    component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Edit`),
-    props: true,
-    meta: {
-      title: 'Edit' + title,
-      requiresAuth: true,
-      requirePermission: permission + 'edit'
-    }
-  }
 ]
 
 export default TemplateSurat
