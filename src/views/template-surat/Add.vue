@@ -43,11 +43,19 @@
             </v-subheader>
           </v-col>
           <v-col cols="5" class="mt-n7">
-            <v-text-field
+<!--            <v-text-field
               v-model="template_surat.jenis_surat"
-              class="outline yellow--text"
+              class="outline yellow&#45;&#45;text"
               outlined
-            ></v-text-field>
+            ></v-text-field>-->
+            <v-autocomplete
+              v-model="template_surat.jenis_surat"
+              :items="items.jenis_surat"
+              label="Jenis Surat"
+              clearable
+              outlined
+              :rules="[rules.required]"
+            />
           </v-col>
         </v-row>
         <v-row class="mt-n7">
@@ -179,8 +187,9 @@ export default {
       schema: {
         nip_author: 'required',
         nama_template: 'required'
-
       },
+
+      items: { jenis_surat: []},
       rules: {
         required: v => {
           v = isEmpty(v)
@@ -204,8 +213,13 @@ export default {
       return inputValidator(this.schema, this.rules, this.template_surat)
     }
   },
+  created () {
+    this.createSuratKeluar().then(data => {
+      this.items.jenis_surat = isEmpty(data.jenis_surat, [])
+    })
+  },
   methods: {
-    ...mapActions(['addTemplateSurat']),
+    ...mapActions(['addTemplateSurat', 'createSuratKeluar']),
     backButton() {
       this.$router.push({
         name: 'template_surat'
