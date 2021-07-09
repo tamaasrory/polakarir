@@ -8,7 +8,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Exception;
-use App\User;
+use App\Models\Base\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Http\Request;
@@ -31,11 +31,19 @@ class JwtMiddleware
             return response()->json(['error' => 'An error while decoding token.'], 400);
         }
 
-        /** @var User $user */
-        $user = User::find($credentials->sub);
-        // Now let's put the user in the request class so that you can grab it from there
-        $request->auth = $user;
+        $sub = $credentials->sub;
+        if (isset($sub->id) && isset($sub->email) && isset($sub->password)) {
+            /** @var User $user */
+            $user = User::find($sub->id);
+            if (($user->password === $sub->password)
+                && ($user->email === $sub->email)) {
 
-        return $next($request);
+                $request->auth = $user;
+                return $next($request);
+
+            }
+        }
+
+        return response()->json(['error' => 'An error while decoding token.'], 400);
     }
 }

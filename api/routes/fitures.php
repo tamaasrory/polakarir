@@ -10,6 +10,8 @@ use App\Http\Controllers\JenisSuratController;
 use App\Http\Controllers\NomorSuratTerakhirController;
 use App\Http\Controllers\SuratKeluarController;
 use App\Http\Controllers\TemplateSuratController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AgendaController;
 
 $router->group(['prefix' => 'jenis-surat'], function () use ($router) {
     $router->get('all', [JenisSuratController::class, 'index']);
@@ -27,10 +29,11 @@ $router->group(['prefix' => 'surat-keluar'], function () use ($router) {
     $router->get('create', [SuratKeluarController::class, 'create']);
     $router->post('baru', [SuratKeluarController::class, 'store']);
     $router->get('edit/{id}', [SuratKeluarController::class, 'edit']);
-    $router->put('update/{id}', [SuratKeluarController::class, 'update']);
+    $router->post('update', [SuratKeluarController::class, 'update']);
     $router->delete('delete/{id}', [SuratKeluarController::class, 'destroy']);
     $router->post('tte', [SuratKeluarController::class, 'tte']);
     $router->put('validasi-surat', [SuratKeluarController::class, 'validasiSurat']);
+    $router->get('get-atasan', [SuratKeluarController::class, 'getAtasan']);
 });
 
 $router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {
@@ -53,3 +56,16 @@ $router->group(['prefix' => 'template-surat'], function () use ($router) {
     $router->get('download/{id}', [TemplateSuratController::class, 'download_template']);
 });
 
+$router->group(['prefix' => 'agenda'], function () use ($router) {
+    $router->get('all', [AgendaController::class, 'index']);
+    $router->get('detail/{id}', [AgendaController::class, 'show']);
+    $router->get('create', [AgendaController::class, 'create']);
+    $router->post('baru', [AgendaController::class, 'store']);
+    $router->get('edit/{id}', [AgendaController::class, 'edit']);
+    $router->put('update/{id}', [AgendaController::class, 'update']);
+    $router->delete('delete/{id}', [AgendaController::class, 'destroy']);
+  });
+
+$router->group(['prefix' => 'dashborad'], function () use ($router) {
+    $router->get('index', [DashboardController::class, 'index']);
+});

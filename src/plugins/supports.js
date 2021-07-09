@@ -16,16 +16,34 @@ const perm = store.state.perm || []
  * <code>(r, v) => (r ? [] : v)</code><br>
  */
 export const isEmpty = (v, callBack) => {
+  let result = false
+
+  if (['null', null].includes(v)) {
+    result = true
+  } else {
+    switch (typeof v) {
+      case 'object':
+        if (v.constructor.name === 'Object') {
+          result = !Object.keys(v).length
+        } else {
+          result = false
+        }
+        break
+      case 'string':
+        result = !v.length
+        break
+      case 'undefined':
+        result = true
+        break
+    }
+  }
+
+  if (typeof callBack === 'function') {
+    result = callBack(result, v)
+  }
   if (typeof callBack !== 'function' && typeof callBack !== 'undefined') {
-    callBack = (r, v) => (r ? callBack : v)
+    result = result ? callBack : v
   }
-  if (['undefined', null, 'null', ''].includes(v)) {
-    return true
-  }
-  let result = typeof v === 'string' ? !v.length : false
-  result = !Object.keys(v || {}).length && result
-  result = (!v) || result
-  result = typeof callBack === 'function' ? callBack(result, v) : result
   return result
 }
 

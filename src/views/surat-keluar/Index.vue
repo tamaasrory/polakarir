@@ -62,8 +62,9 @@
         @pagination="pagination=$event"
         @click:row="_detail"
       >
-        <template #item.updated_at="{item}">
-          {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
+        <template #item.tanggal_surat="{item}">
+          <span v-if="!!item.tanggal_surat">{{ item.tanggal_surat | moment('DD MMMM YYYY') }}</span>
+          <span v-else>-</span>
         </template>
         <template #item.aksi="{item}">
           <v-tooltip bottom>
@@ -318,7 +319,6 @@ export default {
         },
         { text: 'Perihal', value: 'perihal_surat' },
         { text: 'Jenis Surat', value: 'jenis_surat' },
-        { text: 'Penerima', value: 'penerima_surat' },
         { text: 'Tanggal Surat', value: 'tanggal_surat' },
         { text: 'Urgensi', value: 'derajat_surat' },
         { text: 'Status', value: 'status' }

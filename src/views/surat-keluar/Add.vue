@@ -23,156 +23,292 @@
       <v-toolbar-title>Buat Surat Keluar</v-toolbar-title>
     </v-app-bar>
     <v-container class="white">
-      <v-row class="py-6 py-md-8 px-2">
+      <v-row class="pb-6">
         <v-col
-          cols="12"
           md="8"
-          class="py-0"
         >
-          <v-autocomplete
-            v-model="surat_keluar.id_jenis_surat"
-            :items="items.jenis_surat"
-            label="Jenis Surat"
-            clearable
-            outlined
-            :rules="[rules.required]"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-          class="py-0"
-        >
-          <v-btn
-            x-large
-            color="#2d62ed"
-            dark
-            block
-            @click="tmp.showDialogTujuan=true"
-          >
-            Tujuan Surat
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-          class="py-0"
-        >
-          <span>Kategori Surat</span>
-          <v-radio-group
-            v-model="surat_keluar.kategori_surat"
-            class="mt-2"
-            row
-          >
-            <v-radio
-              class="fs-14"
-              label="Internal"
-              value="internal"
-            />
-            <v-radio
-              class="fs-14"
-              label="Eksternal"
-              value="eksternal"
-            />
-          </v-radio-group>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-          class="py-0"
-        >
-          <span>Karakteristik Surat</span>
-          <v-radio-group
-            v-model="surat_keluar.karakteristik_surat"
-            class="mt-2"
-            row
-          >
-            <v-radio
-              class="fs-14"
-              label="Biasa"
-              value="biasa"
-            />
-            <v-radio
-              class="fs-14"
-              label="Rahasia"
-              value="rahasia"
-            />
-            <v-radio
-              class="fs-14"
-              label="Sangat Rahasia"
-              value="sangat rahasia"
-            />
-          </v-radio-group>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-          class="py-0"
-        >
-          <span>Derajat Surat</span>
-          <v-radio-group
-            v-model="surat_keluar.derajat_surat"
-            class="mt-2"
-            row
-          >
-            <v-radio
-              class="fs-14"
-              label="Biasa"
-              value="biasa"
-            />
-            <v-radio
-              class="fs-14"
-              label="Segera"
-              value="segera"
-            />
-            <v-radio
-              class="fs-14"
-              label="Sangat Segera"
-              value="sangat segera"
-            />
-          </v-radio-group>
-        </v-col>
-        <v-col
-          cols="12"
-          md="8"
-          class="py-0"
-        >
-          <v-text-field
-            v-model="surat_keluar.perihal_surat"
-            label="Perihal Surat"
-            outlined
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-          class="py-0"
-        >
-          <v-file-input
-            v-model="surat_keluar.lampiran"
-            label="Lampiran"
-            prepend-inner-icon="mdi-paperclip"
-            :prepend-icon="null"
-            outlined
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          md="12"
-          class="py-0"
-        >
-          <v-btn
-            color="green"
-            large
-            :dark="!dataValidation"
-            :disabled="dataValidation"
-            @click="showDC = true"
-          >
-            <v-icon color="white">
-              mdi-check
-            </v-icon>
-            SIMPAN
-          </v-btn>
+          <v-row class="pt-6 pt-md-8 pb-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Jenis Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.id_jenis_surat"
+                :items="items.jenis_surat"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-slide-y-transition>
+            <v-row
+              v-show="surat_keluar.kategori_surat !=='eksternal'"
+              class="pt-0 pt-md-0 px-2"
+            >
+              <v-col
+                cols="12"
+                md="4"
+                class="py-0"
+              >
+                <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                  Tujuan Surat
+                </h4>
+              </v-col>
+              <v-col
+                cols="12"
+                md="5"
+                class="py-0"
+              >
+                <v-text-field
+                  v-model="showTujuanSurat"
+                  readonly
+                  outlined
+                  class="bpp-input-md bpp-rounded-12"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
+                class="py-0"
+              >
+                <v-btn
+                  color="#2d62ed"
+                  dark
+                  block
+                  large
+                  min-height="50"
+                  class="bpp-rounded-12"
+                  @click="tmp.showDialogTujuan=true"
+                >
+                  Pilih Tujuan
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-slide-y-transition>
+          <v-row class="pt-6 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Kepada
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-select
+                v-model="surat_keluar.kode_jabatan_terusan"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :items="items.kepada"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-6 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Isi Ringkasan Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-textarea
+                v-model="surat_keluar.isi_surat_ringkas"
+                rows="2"
+                auto-grow
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Kategori Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-radio-group
+                v-model="surat_keluar.kategori_surat"
+                class="mt-2"
+                row
+              >
+                <v-radio
+                  label="Internal"
+                  value="internal"
+                />
+                <v-radio
+                  label="Eksternal"
+                  value="eksternal"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Karakteristik Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-radio-group
+                v-model="surat_keluar.karakteristik_surat"
+                class="mt-2"
+                row
+              >
+                <v-radio
+                  label="Biasa"
+                  value="biasa"
+                />
+                <v-radio
+                  label="Rahasia"
+                  value="rahasia"
+                />
+                <v-radio
+                  label="Sangat Rahasia"
+                  value="sangat rahasia"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Derajat Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-radio-group
+                v-model="surat_keluar.derajat_surat"
+                class="mt-2"
+                row
+              >
+                <v-radio
+                  label="Biasa"
+                  value="biasa"
+                />
+                <v-radio
+                  label="Segera"
+                  value="segera"
+                />
+                <v-radio
+                  label="Sangat Segera"
+                  value="sangat segera"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Perihal Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-text-field
+                v-model="surat_keluar.perihal_surat"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Lampiran
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-file-input
+                v-model="surat_keluar.lampiran"
+                prepend-inner-icon="mdi-paperclip"
+                :prepend-icon="null"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <div class="px-2 py-3">
+            <v-btn
+              color="green"
+              class="float-right bpp-input-md bpp-rounded-12 px-6"
+              :dark="!dataValidation"
+              :disabled="dataValidation"
+              @click="showDC = true"
+            >
+              <v-icon
+                color="white"
+                class="pr-3"
+              >
+                mdi-check
+              </v-icon>
+              SIMPAN
+            </v-btn>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -206,7 +342,7 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card-text>
+        <v-card-text class="px-1 px-md-3">
           <v-container fluid>
             <v-row>
               <v-col
@@ -285,7 +421,7 @@
                           @click="togglejabatan()"
                         >
                           <v-list-item-action>
-                            <v-icon :color="tmp.jabatan[surat_keluar.id_opd].length > 0 ? 'indigo darken-4' : ''">
+                            <v-icon :color="currentJabatan.length > 0 ? 'indigo darken-4' : ''">
                               {{ toggleIconJabatan }}
                             </v-icon>
                           </v-list-item-action>
@@ -309,7 +445,7 @@
                           v-if="index === colSize.show"
                           class="primary--text text-caption"
                         >
-                          (+{{ tmp.jabatan[surat_keluar.id_opd].length - colSize.show }})
+                          (+{{ currentJabatan.length - colSize.show }})
                         </span>
                       </template>
                     </v-autocomplete>
@@ -336,7 +472,7 @@
                           @click="togglepegawai()"
                         >
                           <v-list-item-action>
-                            <v-icon :color="tmp.pegawai[surat_keluar.id_opd].length > 0 ? 'indigo darken-4' : ''">
+                            <v-icon :color="currentPegawai.length > 0 ? 'indigo darken-4' : ''">
                               {{ toggleIconPegawai }}
                             </v-icon>
                           </v-list-item-action>
@@ -360,7 +496,7 @@
                           v-if="index === colSize.show"
                           class="primary--text text-caption"
                         >
-                          (+{{ tmp.pegawai[surat_keluar.id_opd].length - colSize.show }})
+                          (+{{ currentPegawai.length - colSize.show }})
                         </span>
                       </template>
                     </v-autocomplete>
@@ -387,7 +523,7 @@
                           @click="toggleesselon()"
                         >
                           <v-list-item-action>
-                            <v-icon :color="tmp.esselon[surat_keluar.id_opd].length > 0 ? 'indigo darken-4' : ''">
+                            <v-icon :color="currentEsselon.length > 0 ? 'indigo darken-4' : ''">
                               {{ toggleIconEsselon }}
                             </v-icon>
                           </v-list-item-action>
@@ -411,7 +547,7 @@
                           v-if="index === colSize.show"
                           class="primary--text text-caption"
                         >
-                          (+{{ tmp.esselon[surat_keluar.id_opd].length - colSize.show }})
+                          (+{{ currentEsselon.length - colSize.show }})
                         </span>
                       </template>
                     </v-autocomplete>
@@ -481,6 +617,7 @@ export default {
         kategori_surat: null,
         karakteristik_surat: null,
         derajat_surat: null,
+        isi_surat_ringkas: null,
         perihal_surat: null,
         lampiran: null
       },
@@ -493,7 +630,15 @@ export default {
         loadingOpd: false,
         showDialogTujuan: false
       },
-      items: { jenis_surat: [], opd: [], jabatan: [], esselon: [], pegawai: [], datas: [] },
+      items: {
+        jenis_surat: [],
+        opd: [],
+        jabatan: [],
+        esselon: [],
+        pegawai: [],
+        datas: [],
+        kepada: []
+      },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
@@ -503,6 +648,7 @@ export default {
         penerima_surat: 'required',
         karakteristik_surat: 'required',
         derajat_surat: 'required',
+        isi_surat_ringkas: 'required',
         perihal_surat: 'required',
         lampiran: 'required'
       },
@@ -526,28 +672,54 @@ export default {
     dataValidation () {
       return inputValidator(this.schema, this.rules, this.surat_keluar)
     },
+    showTujuanSurat () {
+      const len = this.surat_keluar.penerima_surat.length
+      if (len > 0) {
+        const dll = len > 1 ? `, ... (+${len - 1})` : ''
+        return `${this.surat_keluar.penerima_surat[0].nama_pegawai} ${dll}`
+      }
+      return ''
+    },
     selectedAllJabatan () {
-      return this.tmp.jabatan[this.surat_keluar.id_opd].length === this.items.jabatan.length
+      return this.currentJabatan.length === this.items.jabatan.length
     },
     selectedAllEsselon () {
-      return this.tmp.esselon[this.surat_keluar.id_opd].length === this.items.esselon.length
+      return this.currentEsselon.length === this.items.esselon.length
     },
     selectedAllPegawai () {
-      return this.tmp.pegawai[this.surat_keluar.id_opd].length === this.items.pegawai.length
+      return this.currentPegawai.length === this.items.pegawai.length
+    },
+    currentJabatan () {
+      if (!isEmpty(this.tmp.jabatan)) {
+        return this.tmp.jabatan[this.surat_keluar.id_opd]
+      }
+      return []
+    },
+    currentEsselon () {
+      if (!isEmpty(this.tmp.esselon)) {
+        return this.tmp.esselon[this.surat_keluar.id_opd]
+      }
+      return []
+    },
+    currentPegawai () {
+      if (!isEmpty(this.tmp.pegawai)) {
+        return this.tmp.pegawai[this.surat_keluar.id_opd]
+      }
+      return []
     },
     toggleIconJabatan () {
       if (this.selectedAllJabatan) return 'mdi-close-box'
-      if (this.tmp.jabatan[this.surat_keluar.id_opd].length > 0 && !this.selectedAllJabatan) return 'mdi-minus-box'
+      if (this.currentJabatan.length > 0 && !this.selectedAllJabatan) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     },
     toggleIconEsselon () {
       if (this.selectedAllEsselon) return 'mdi-close-box'
-      if (this.tmp.esselon[this.surat_keluar.id_opd].length > 0 && !this.selectedAllEsselon) return 'mdi-minus-box'
+      if (this.currentEsselon.length > 0 && !this.selectedAllEsselon) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     },
     toggleIconPegawai () {
       if (this.selectedAllPegawai) return 'mdi-close-box'
-      if (this.tmp.pegawai[this.surat_keluar.id_opd].length > 0 && !this.selectedAllPegawai) return 'mdi-minus-box'
+      if (this.currentPegawai.length > 0 && !this.selectedAllPegawai) return 'mdi-minus-box'
       return 'mdi-checkbox-blank-outline'
     },
     showDataTerpilih () {
@@ -565,13 +737,14 @@ export default {
   },
   created () {
     for (const d of ['jabatan', 'esselon', 'pegawai']) {
-      for (let i = 0; i < 60; i++) {
+      for (let i = -1; i < 60; i++) {
         this.tmp[d][i] = []
       }
     }
     this.createSuratKeluar().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.items.opd = isEmpty(data.opd, [])
+      this.items.kepada = isEmpty(data.kepada, [])
     })
   },
   methods: {
@@ -706,12 +879,22 @@ export default {
       const formData = new FormData()
 
       /* Add the form data we need to submit */
-      const penerimaSurat = this.surat_keluar.penerima_surat.map(data => {
-        return data.kode_jabatan
-      })
+      // let penerimaSurat = {}
+
+      // this.surat_keluar.penerima_surat.forEach(data => {
+      //   const opd = data.kode_jabatan.substring(0, 2)
+      //   if (typeof penerimaSurat[opd] !== 'undefined') {
+      //     penerimaSurat[opd].tujuan.push(data.kode_jabatan)
+      //   } else {
+      //     penerimaSurat[opd] = { id_opd: opd, tujuan: [data.kode_jabatan] }
+      //   }
+      // })
+
+      // penerimaSurat = Object.values(penerimaSurat)
 
       formData.append('penerima_surat',
-        new Blob([JSON.stringify(penerimaSurat)], { type: 'application/json' }))
+        new Blob([JSON.stringify(this.surat_keluar.penerima_surat)],
+          { type: 'application/json' }))
 
       Object.keys(this.surat_keluar).forEach(d => {
         if (!(['penerima_surat'].includes(d))) {
@@ -730,6 +913,8 @@ export default {
         this.dcMessages = res.msg
         setTimeout(() => {
           this.showDC = false
+          this.dcdisabledNegativeBtn = false
+          this.dcdisabledPositiveBtn = false
           this.$router.push({ name: 'surat_keluar' })
           this.dcMessages = 'Simpan Surat Keluar Sekarang?'
         }, 2000)
@@ -740,9 +925,6 @@ export default {
 </script>
 
 <style>
-.fs-14 > label{
-  font-size: 14px !important;
-}
 .theme--light.v-data-table.v-data-table--fixed-header thead th {
   background-color: #eee !important;
 }

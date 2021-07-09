@@ -16,10 +16,11 @@ class CreateTbAgendaTable extends Migration
         Schema::create('tb_agenda', function (Blueprint $table) {
             $table->id('id_agenda');
             $table->string('nip_pegawai',22);
-            $table->bigInteger('id_surat_masuk');
+            $table->bigInteger('id_surat_masuk')->nullable();
             $table->string('nama_kegiatan',250);
             $table->dateTime('waktu');
             $table->string('lokasi',250);
+            $table->bigInteger('id_opd');
             $table->string('status',30);
             $table->timestamps();
         });

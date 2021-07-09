@@ -22,7 +22,7 @@ class SinergiController extends Controller
      */
     public function getOpdById(Request $request)
     {
-        return ExtApi::getOpdById($request);
+        return ExtApi::getOpdById($request->id_opd);
     }
 
     /**
@@ -31,7 +31,7 @@ class SinergiController extends Controller
      */
     public function listPegawaiByOpd(Request $request)
     {
-        return ExtApi::listPegawaiByOpd($request);
+        return ExtApi::listPegawaiByOpd($request->id_opd);
     }
 
     /**
@@ -40,6 +40,6 @@ class SinergiController extends Controller
      */
     public function getPegawaiByNip(Request $request)
     {
-        return ExtApi::getPegawaiByNip($request);
+        return ExtApi::getPegawaiByNip($request->nip);
     }
 }

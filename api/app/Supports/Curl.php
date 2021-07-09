@@ -10,8 +10,15 @@ class Curl
 
     public $headers = array();
 
-    public function __construct()
+    /**
+     * Curl constructor.
+     * @param string|null $BASE_URL
+     */
+    public function __construct($BASE_URL = null)
     {
+        if ($BASE_URL) {
+            $this->BASE_URL = $BASE_URL;
+        }
         $this->setUpOrReset();
     }
 
@@ -104,7 +111,7 @@ class Curl
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
         $result = curl_exec($this->ch);
         if (curl_errno($this->ch)) {
-            return curl_error($this->ch);
+            return ['error' => curl_error($this->ch)];
         }
 
         curl_close($this->ch);
@@ -120,6 +127,23 @@ class Curl
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $route
+     * @param null|array $fields
+     * @return mixed
+     */
+    public function get($route, $fields = null)
+    {
+        $this->setUpOrReset();
+        $get = $this->route($route)->method('GET');
+
+        if ($fields) {
+            $get->addField($fields);
+        }
+
+        return $get->run();
     }
 
 }

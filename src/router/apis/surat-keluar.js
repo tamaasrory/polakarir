@@ -40,8 +40,8 @@ const SuratKeluar = {
           }
         })
         .catch((error) => {
-          console.log(error)
-          resolve([])
+          console.error(error)
+          reject(error)
         })
     })
   },
@@ -97,9 +97,29 @@ const SuratKeluar = {
         })
     })
   },
+  editSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.get(`/surat-keluar/edit/${payload.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve([])
+        })
+    })
+  },
   updateSuratKeluar ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.put(`/surat-keluar/update/${payload.id}`, payload)
+      $axios.post('/surat-keluar/update', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)
@@ -111,6 +131,40 @@ const SuratKeluar = {
         .catch((error) => {
           console.log(error)
           resolve([])
+        })
+    })
+  },
+  validasiSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.put('/surat-keluar/validasi-surat', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            resolve(response.data)
+          }
+          resolve(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve('Sepertinya ada masalah, silahkan coba lagi')
+        })
+    })
+  },
+  tteSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.post('/surat-keluar/tte', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            resolve(response.data)
+          }
+          resolve(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve('Sepertinya ada masalah, silahkan coba lagi')
         })
     })
   }

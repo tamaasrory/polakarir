@@ -15,16 +15,12 @@ class ExtApi
     public static function login(Request $request)
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_login')
-            ->method('GET')
-            ->addField($request->all())
-            ->run();
+        $tmp = $curl->get('api_login', $request->all());
 
-        if (isset($tmp['result'])) {
+        if (!isset($tmp['error']) && isset($tmp['result'])) {
             if ($tmp['result'] === 'verified') {
 
-                $request->request->add(['nip' => $tmp['nip']]);
-                $pegawai = self::getPegawaiByNip($request);
+                $pegawai = self::getPegawaiByNip($tmp['nip']);
 
                 if ($pegawai['result']) {
                     $tmp['nama_pegawai'] = $pegawai['nama_pegawai'];
@@ -46,51 +42,49 @@ class ExtApi
     public static function listOpd()
     {
         $curl = new Curl();
-        return $curl->route('api_opd')
-            ->method('GET')
-            ->addField(['all' => 'yes'])
-            ->run();
+        $tmp = $curl->get('api_opd', ['all' => 'yes']);
+
+        if (!isset($tmp['error'])) {
+            return $tmp;
+        }
+
+        return ['result' => false];
     }
 
     /**
      * Get OPD by id OPD
      *
-     * @param Request $request
+     * @param $id_opd
      * @return array|bool|mixed|string
      */
-    public static function getOpdById(Request $request)
+    public static function getOpdById($id_opd)
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_opd')
-            ->method('GET')
-            ->addField(['id_opd' => $request->input('id_opd')])
-            ->run();
-        if (is_array($tmp)) {
+        $tmp = $curl->get('api_opd',
+            ['id_opd' => $id_opd]
+        );
+
+        if (!isset($tmp['error']) && is_array($tmp)) {
             return $tmp[0];
         }
-        return $tmp;
+        return ['result' => false];
     }
 
     /**
      * Get List Pegawai by id OPD
      *
-     * @param Request $request
+     * @param $id_opd
      * @return array|bool|mixed|string
      */
-    public static function listPegawaiByOpd(Request $request)
+    public static function listPegawaiByOpd($id_opd)
     {
-        $id_opd = $request->input('id_opd');
         $curl = new Curl();
-        $tmp = $curl->route('api_pegawai')
-            ->method('GET')
-            ->addField(['id_opd' => $id_opd])
-            ->run();
-        if ($tmp) {
-            return array_values(array_filter($tmp, function ($data) use ($id_opd) {
-                if ((((int)substr($data['kode_jabatan'], 0, 2)) == $id_opd) || ($id_opd == '-1')) {
-                    return $data;
-                }
-            }));
+        $tmp = $curl->get('api_pegawai',
+            ['id_opd' => $id_opd > 0 ? $id_opd : 'all']
+        );
+
+        if (!isset($tmp['error']) && $tmp) {
+            return $tmp;
         }
         return [];
     }
@@ -98,18 +92,38 @@ class ExtApi
     /**
      * Get Pegawai by NIP
      *
-     * @param Request $request
+     * @param string $nip
      * @return array|bool|mixed|string
      */
-    public static function getPegawaiByNip(Request $request)
+    public static function getPegawaiByNip($nip)
     {
         $curl = new Curl();
-        $tmp = $curl->route('api_pegawai')
-            ->method('GET')
-            ->addField(['nip' => $request->input('nip')])
-            ->run();
+        $tmp = $curl->get('api_pegawai',
+            ['nip' => $nip]
+        );
 
-        if (!isset($tmp['result'])) {
+        if (!isset($tmp['error']) && !isset($tmp['result'])) {
+            $tmp['result'] = true;
+            return $tmp;
+        }
+
+        return ['result' => false];
+    }
+
+    /**
+     * Get Pegawai by Kode Jabatan
+     *
+     * @param $kode_jabatan
+     * @return array|bool|mixed|string
+     */
+    public static function getPegawaiByKodeJabatan($kode_jabatan)
+    {
+        $curl = new Curl();
+        $tmp = $curl->get('api_pegawai',
+            ['kode_jabatan' => $kode_jabatan]
+        );
+
+        if (!isset($tmp['error']) && !isset($tmp['result'])) {
             $tmp['result'] = true;
             return $tmp;
         }

@@ -1,0 +1,10 @@
+.bpp-input-md {
+    min-height: 52px !important;
+}
+.bpp-rounded-12{
+    border-radius: 12px !important;
+}
+.bpp-label{
+    display: flex;
+    align-items: center;
+}

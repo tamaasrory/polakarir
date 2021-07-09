@@ -46,11 +46,11 @@ export default {
               commit('SET_ERRORS', { message: data.msg })
             }
           }
-          resolve(false)
+          resolve([])
         })
         .catch((error) => {
           commit('SET_ERRORS', { message: error })
-          resolve(error)
+          resolve([])
         })
     })
   }

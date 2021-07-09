@@ -6,6 +6,7 @@
 //LocalHost
 export const baseURL = 'http://localhost:7000'
 export const asset = (v) => `http://localhost:7000/api/v1/images?f=${v}`
+export const urlSuratKeluar = (v) => `http://localhost:7000/suratkeluar/${v}`
 
 // Server Development
 // export const baseURL = 'https://api.e-office.tajriy.com'
