@@ -33,7 +33,7 @@ class SuratKeluar extends SelfModel
 
     protected $table = 'tb_surat_keluar';
     protected $primaryKey = 'id_surat_keluar';
-    public $incrementing = true;
+    public $incrementing = false;
 
     public $searchable = [
         'nomor_surat',
@@ -83,11 +83,6 @@ class SuratKeluar extends SelfModel
         return $this->belongsTo(TujuanSurat::class,
             'id_surat_keluar',
             'id_surat_keluar')
-            ->first([
-                'id_tujuan_surat',
-                'id_surat_keluar',
-                'id_opd',
-                'tujuan',
-            ]);
+            ->first();
     }
 }
