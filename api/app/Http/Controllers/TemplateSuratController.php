@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
+use App\Models\JenisSurat;
 use App\Models\TemplateSurat;
+use App\Supports\ExtApi;
 use Illuminate\Http\Request;
 
 
@@ -42,16 +44,6 @@ class TemplateSuratController extends Controller
             'value' => [],
             'msg' => "Data {$this->title} Tidak Ditemukan"
         ];
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response|array
-     */
-    public function create()
-    {
-
     }
 
     /**
@@ -205,4 +197,21 @@ class TemplateSuratController extends Controller
 
         return $nama_folder;
     }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response|array
+     */
+    public function create()
+    {
+        $jenis_surat = JenisSurat::selectRaw(
+            "id_jenis_surat as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
+
+        return [
+            'value' => compact('jenis_surat')
+        ];
+    }
+
+
 }
