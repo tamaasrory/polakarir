@@ -252,7 +252,7 @@ class SuratKeluarController extends Controller
             'value' => compact(
                 'jenis_surat',
                 'opd',
-                'surat_keluar',
+                'surat_keluar'
 //                'tujuan_surat',
             )
         ];

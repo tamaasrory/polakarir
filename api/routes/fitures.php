@@ -49,6 +49,7 @@ $router->group(['prefix' => 'template-surat'], function () use ($router) {
     $router->get('all', [TemplateSuratController::class, 'index']);
     $router->get('detail/{id}', [TemplateSuratController::class, 'show']);
     $router->get('create', [TemplateSuratController::class, 'create']);
+    $router->get('getJenisSurat', [TemplateSuratController::class, 'getJenisSurat']);
     $router->post('baru', [TemplateSuratController::class, 'store']);
     $router->get('edit/{id}', [TemplateSuratController::class, 'edit']);
     $router->put('update/{id}', [TemplateSuratController::class, 'update']);

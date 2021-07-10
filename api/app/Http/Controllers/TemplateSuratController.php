@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
+use App\Models\JenisSurat;
 use App\Models\TemplateSurat;
+use App\Supports\ExtApi;
 use Illuminate\Http\Request;
 
 
@@ -205,4 +207,22 @@ class TemplateSuratController extends Controller
 
         return $nama_folder;
     }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response|array
+     */
+    public function getJenisSurat (Request $request)
+    {
+        $jenis_surat = JenisSurat::selectRaw(
+            "id_jenis_surat as value, concat(kode_surat,' - ',nama_jenis_surat) as text")->get();
+        return [
+            'value' => [],
+            'msg' => "{$this->title} Tidak Tersedia"
+
+        ];
+    }
+
 }
