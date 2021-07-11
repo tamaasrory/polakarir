@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Base\Controller;
 use App\Models\JenisSurat;
 use App\Models\TemplateSurat;
-use App\Supports\ExtApi;
 use Illuminate\Http\Request;
 
 
@@ -16,10 +15,10 @@ class TemplateSuratController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:jenis-surat-list|jenis-surat-create|jenis-surat-edit|jenis-surat-delete', ['only' => 'index', 'show']);
-        $this->middleware('permission:jenis-surat-create', ['only' => 'create', 'store']);
-        $this->middleware('permission:jenis-surat-edit', ['only' => 'edit', 'update']);
-        $this->middleware('permission:jenis-surat-delete', ['only' => 'destroy']);
+        $this->middleware('permission:template-surat-list|jenis-surat-create|jenis-surat-edit|jenis-surat-delete', ['only' => 'index', 'show']);
+        $this->middleware('permission:template-surat-create', ['only' => 'create', 'store']);
+        $this->middleware('permission:template-surat-edit', ['only' => 'edit', 'update']);
+        $this->middleware('permission:template-surat-delete', ['only' => 'destroy']);
     }
 
     /**
@@ -56,6 +55,7 @@ class TemplateSuratController extends Controller
         $data = new TemplateSurat();
         $data->fill(request()->all());
         $jenis_surat = $data->jenis_surat;
+
 
         if ($request->hasFile('draf')) {
             $original_filename = $request->file('draf')->getClientOriginalName();
@@ -115,6 +115,12 @@ class TemplateSuratController extends Controller
     public function edit($id)
     {
         //
+        $data_jenis_surat = JenisSurat::all();
+        $data = TemplateSurat::find($id);
+        return[
+            'value'=>$data,
+            'jenis_surat'=>$data_jenis_surat
+        ];
     }
 
     /**
@@ -123,22 +129,53 @@ class TemplateSuratController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response|array
      */
-    public function update($id)
+    public function update(Request $request,$id)
     {
-        $data = TemplateSurat::find($id);
+        $dataOld = TemplateSurat::find($id);
+       // $data = new TemplateSurat();
+
+        //$data->fill(request()->all());
+        $jenis_surat = $request->jenis_surat;
 
 
-        if ($data->update(request()->all())) {
+        if ($request->file('draf') != '') {
+            //code for remove old file
+            if($dataOld->url_berkas != ''  && $dataOld->url_berkas != null){
+                $file_old = '.'.$dataOld->url_berkas;
+                unlink($file_old);
+            }
+
+            //upload new
+            $original_filename = $request->file('draf')->getClientOriginalName();
+            $original_filename_arr = explode('.', $original_filename);
+            $file_ext = end($original_filename_arr);
+            $destination_path = '/template/' . $this->name_folder_draf($jenis_surat) . '/';
+            $nama_template = 'draf-' . time() . '.' . $file_ext;
+
+            if ($request->file('draf')->move('.' . $destination_path, $nama_template)) {
+
+                $dataOld->url_berkas = $destination_path.$nama_template;
+
+                if ($dataOld->update(request()->all())) {
+                    return [
+                        'value' => $dataOld,
+                        'msg' => "{$this->title} baru berhasil disimpan"
+                    ];
+                }
+            }
+        }else if ($dataOld->update(request()->all())){
             return [
-                'value' => $data,
+                'value' => $dataOld,
                 'msg' => "{$this->title} #{$id} berhasil diperbarui"
+            ];
+
+        }else{
+            return [
+                'value' => [],
+                'msg' => "{$this->title} #{$id} gagal diperbarui"
             ];
         }
 
-        return [
-            'value' => [],
-            'msg' => "{$this->title} #{$id} gagal diperbarui"
-        ];
     }
 
     /**
@@ -151,12 +188,18 @@ class TemplateSuratController extends Controller
     {
         $data = TemplateSurat::find($id);
 
-        if ($data->delete()) {
-            return [
-                'value' => $data,
-                'msg' => "{$this->title} #{$id} berhasil dihapus"
-            ];
+        if($data->url_berkas != ''  && $data->url_berkas != null){
+            $file_old = '.'.$data->url_berkas;
+            unlink($file_old);
+
+            if ($data->delete()) {
+                return [
+                    'value' => $data,
+                    'msg' => "{$this->title} #{$id} berhasil dihapus"
+                ];
+            }
         }
+
 
         return [
             'value' => [],
@@ -173,8 +216,9 @@ class TemplateSuratController extends Controller
          $file_path = '.'.$template['url_berkas'];
         if (file_exists($file_path)){
             //send download
-
-            return response()->download($file_path);
+            //$headers = ['Content-Type: application/msword'];
+            //return response()->download($file_path,$template->nama_template."docx",$headers);
+            return response()->download($file_path,$template->nama_template."docx");
 
         }else{
             return [
@@ -206,7 +250,7 @@ class TemplateSuratController extends Controller
     public function create()
     {
         $jenis_surat = JenisSurat::selectRaw(
-            "id_jenis_surat as value, (kode_surat||' - '||nama_jenis_surat) as text")->get();
+            "id_jenis_surat as value, concat(kode_surat,' - ',nama_jenis_surat) as text")->get();
 
         return [
             'value' => compact('jenis_surat')

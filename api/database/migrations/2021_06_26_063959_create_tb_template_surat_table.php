@@ -19,7 +19,7 @@ class CreateTbTemplateSuratTable extends Migration
             $table->string('nama_template', 200);
             $table->text('url_berkas');
             $table->text('sumber_hukum');
-            $table->string('jenis_surat',200);
+            $table->bigInteger('id_jenis_surat');
             $table->enum('status', ['draft', 'publish']);
             $table->timestamps();
         });

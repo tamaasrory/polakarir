@@ -63,26 +63,22 @@ const TemplateSurat = {
   },
   downloadTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/template-surat/download/${payload}`, {method:"GET", responseType:'blob'})
-        .then((response) => {
-          if (response.status === 200) {
-            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-            var fileLink = document.createElement('a');
-
-            fileLink.href = fileURL;
-            fileLink.setAttribute('download', 'template-surat.docx');
-            document.body.appendChild(fileLink);
-
-            fileLink.click();
-            resolve(response.data.value)
-          } else {
-            resolve(response.data.value)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
+      $axios.get(`/template-surat/download/${payload.id}`, { method: 'GET', responseType: 'blob' }).then(response => {
+        if (response.status === 200) {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]))
+          var fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', `${payload.nama}.docx`)
+          document.body.appendChild(fileLink)
+          fileLink.click()
+          resolve(response.data.value)
+        } else {
+          resolve(response.data.value)
+        }
+      }).catch(error => {
+        console.log(error)
+        resolve([])
+      })
     })
   },
   addTemplateSurat ({ commit }, payload) {

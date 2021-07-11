@@ -51,9 +51,10 @@
               hide-details
             ></v-text-field>
 
-          </v-col>
+          </v-col >
+
           <v-col cols="1" class="align-self-lg-center" align="right">
-            <v-btn
+            <v-btn v-if="can(['template-surat-create'])"
               class="mx-2"
               fab
               align="end"
@@ -66,6 +67,7 @@
               <v-icon dark large> mdi-plus </v-icon>
             </v-btn>
           </v-col>
+
         </v-row>
 
         <v-data-table
@@ -109,7 +111,7 @@
               </template>
               <span>Download</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip v-if="can(['template-surat-edit'])" bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   icon
@@ -144,7 +146,7 @@
               </template>
               <span>Hapus</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip v-if="can(['template-surat-edit'])" bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   v-bind="attrs"
@@ -297,15 +299,16 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ['id'],
-          sortDesc: [true],
+          sortBy: ['id_template_surat'],
+          sortDesc: [false],
           itemsPerPage: 10,
-          itemKey: 'id'
+          itemKey: 'id_template_surat'
         }
       },
 
       showDW: false,
       downloadId: '',
+      namaTemplate: '',
       dwMessages: '',
       dwProgress: false,
       dwdisabledNegativeBtn: false,
@@ -334,9 +337,7 @@ export default {
         {text: 'Nomor', value: 'id_template_surat'},
         {text: 'Nama Template', value: 'nama_template'},
         {text: 'Jenis Surat', value: 'jenis_surat'},
-        {text: 'Pembuat', value: 'nip_author'},
-        {text: 'Tanggal Pembuatan', value: 'created_at'},
-        {text: 'Validator', value: 'nip_author'},
+        {text: 'Sumber Hukum', value: 'sumber_hukum'},
         {text: 'Status', value: 'status'},
         {text: 'Aksi', value: 'aksi'}
       ]
@@ -360,21 +361,22 @@ export default {
       this.$router.push({name: 'template_surat_add'})
     },
     _download(value){
+
       if (value === true) {
-        this.dwProgress = true
-        this.dwdisabledNegativeBtn = true
-        this.dwdisabledPositiveBtn = true
-        this.dwMessages = `Sedang mendownload template surat`
-        this.downloadTemplateSurat(this.downloadId).then(res => {
-          this._loadData(true)
-          this.dwProgress = false
-          this.dwMessages = 'Berhasil mendownload template surat'
+        // this.dwProgress = true
+        // this.dwdisabledNegativeBtn = true
+        // this.dwdisabledPositiveBtn = true
+        // this.dwMessages = `Sedang mendownload template surat`
+        this.downloadTemplateSurat({ nama: this.namaTemplate, id: this.downloadId }).then(res => {
+          // this._loadData(true)
+          // this.dwProgress = false
+          // this.dwMessages = 'Berhasil mendownload template surat'
           setTimeout(() => {
             this.downloadId = ''
             this.showDW = false
             this.dwdisabledNegativeBtn = false
             this.dwdisabledPositiveBtn = false
-          }, 1500)
+          })
         }).catch(err => {
           console.log(err)
           this.dwdisabledNegativeBtn = false
@@ -382,7 +384,8 @@ export default {
         })
       } else {
         this.downloadId = value.id_template_surat
-        this.dwMessages = `Download template <span class="pink--text">#${this.downloadId}</span> ?`
+        this.namaTemplate = value.nama_template
+        this.dwMessages = `Download template <span class="pink--text">${this.namaTemplate}</span> ?`
         this.showDW = true
       }
     },
