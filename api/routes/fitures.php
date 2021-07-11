@@ -51,7 +51,7 @@ $router->group(['prefix' => 'template-surat'], function () use ($router) {
     $router->get('create', [TemplateSuratController::class, 'create']);
     $router->post('baru', [TemplateSuratController::class, 'store']);
     $router->get('edit/{id}', [TemplateSuratController::class, 'edit']);
-    $router->put('update/{id}', [TemplateSuratController::class, 'update']);
+    $router->post('update/{id}', [TemplateSuratController::class, 'update']);
     $router->delete('delete/{id}', [TemplateSuratController::class, 'destroy']);
     $router->get('download/{id}', [TemplateSuratController::class, 'download_template']);
 });

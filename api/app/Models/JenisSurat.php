@@ -37,4 +37,6 @@ class JenisSurat extends SelfModel
      */
     public $searchable = ['kode_surat', 'nama_jenis_surat', 'created_at', 'updated_at'];
 
+
+
 }
