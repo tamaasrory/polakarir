@@ -46,19 +46,6 @@ class TemplateSuratController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response|array
-     */
-    public function create()
-    {
-        $data = JenisSurat::all();
-        return[
-            'data'=>$data
-        ];
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return \Illuminate\Http\Response|array
@@ -254,4 +241,21 @@ class TemplateSuratController extends Controller
 
         return $nama_folder;
     }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response|array
+     */
+    public function create()
+    {
+        $jenis_surat = JenisSurat::selectRaw(
+            "id_jenis_surat as value, concat(kode_surat,' - ',nama_jenis_surat) as text")->get();
+
+        return [
+            'value' => compact('jenis_surat')
+        ];
+    }
+
+
 }

@@ -214,12 +214,12 @@ export default {
     }
   },
   created () {
-    this.createSuratKeluar().then(data => {
+    this.createTemplateSurat().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
     })
   },
   methods: {
-    ...mapActions(['addTemplateSurat', 'createSuratKeluar']),
+    ...mapActions(['addTemplateSurat','createTemplateSurat']),
     backButton() {
       this.$router.push({
         name: 'template_surat'
