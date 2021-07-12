@@ -25,6 +25,16 @@
         Template Surat
       </h1>
       <v-card>
+        <v-row dense v-if="(user.sinergi)">
+          <v-col>
+            <v-tabs centered slider-size="5">
+              <v-tab dense @click="_loadData(true,0)"><p class="font-weight-bold mb-n2 text-capitalize">Template Umum</p>
+              </v-tab>
+              <v-tab dense  @click="_loadData(true,user.sinergi.id_opd)"><p class="font-weight-bold mb-n2 text-capitalize"> Template Khusus</p></v-tab>
+            </v-tabs>
+            <v-divider class="mt-2"/>
+          </v-col>
+        </v-row>
         <v-row dense>
           <v-col cols="3" class="align-self-center mr-auto ">
             <v-data-footer
@@ -263,7 +273,7 @@
         </v-btn>
         <v-btn
           color="success"
-          @click="_loadData(true)"
+          @click="_loadData(true,0)"
         >
           Terapkan
         </v-btn>
@@ -273,7 +283,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import Dialog from '@/components/Dialog'
 import {can} from '@/plugins/supports'
 import Account from "@/components/default/Account";
@@ -287,6 +297,8 @@ export default {
   },
   data() {
     return {
+      id_opd_active: 0,
+      template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
       toggleFp: false,
       isLoading: true,
@@ -332,24 +344,35 @@ export default {
     }
   },
   computed: {
-    headerData() {
-      return [
-        {text: 'Nomor', value: 'id_template_surat'},
-        {text: 'Nama Template', value: 'nama_template'},
-        {text: 'Jenis Surat', value: 'jenis_surat'},
-        {text: 'Sumber Hukum', value: 'sumber_hukum'},
-        {text: 'Status', value: 'status'},
-        {text: 'Aksi', value: 'aksi'}
-      ]
+    ...mapState(['user']),
+    headerData () {
+      if (this.user.sinergi) {
+        return [
+          { text: 'Nama Template', value: 'nama_template'},
+          {text: 'Jenis Surat', value: 'jenis_surat'},
+          {text: 'Sumber Hukum', value: 'sumber_hukum'},
+          {text: 'Status', value: 'status'},
+          {text: 'Aksi', value: 'aksi'}
+        ]
+      } else {
+        return [
+          {text: 'Nama Template', value: 'nama_template'},
+          {text: 'Jenis Surat', value: 'jenis_surat'},
+          {text: 'Sumber Hukum', value: 'sumber_hukum'},
+          {text: 'Status', value: 'status'},
+          {text: 'opd', value: 'id_opd'},
+          {text: 'Aksi', value: 'aksi'}
+        ]
+      }
     }
   },
   watch: {
     options(a, b) {
-      this._loadData(true)
+      this._loadData(true, this.id_opd_active)
     }
   },
   mounted() {
-    this._loadData(false) // loading data form server
+    this._loadData(false, this.id_opd_active) // loading data form server
   },
   methods: {
     ...mapActions(['getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat']),
@@ -399,7 +422,7 @@ export default {
         this.dcdisabledPositiveBtn = true
         this.dcMessages = `Sedang menghapus template surat`
         this.deleteTemplateSurat(this.deleteId).then(res => {
-          this._loadData(true)
+          this._loadData(true, this.id_opd_active)
           this.dcProgress = false
           this.dcMessages = 'Berhasil menghapus template surat'
           setTimeout(() => {
@@ -421,9 +444,13 @@ export default {
     },
     _clearFilter() {
       this.searchQuery = null
-      this._loadData(true)
+      this._loadData(true, this.id_opd_active)
     },
-    _loadData(abort) {
+    _loadData(abort, opd) {
+      if (this.user.sinergi) {
+        this.id_opd_active = opd
+        this.options.search = `id_opd:${this.id_opd_active}`
+      }
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
         this.getTemplateSurat({ add: this.filterTask, ...this.options })

@@ -33,13 +33,13 @@ class Agenda extends SelfModel
      * 
      * @var array
      */
-    protected $fillable = ['nip_pegawai', 'id_surat_masuk', 'nama_kegiatan', 'waktu', 'lokasi', 'id_opd','status', 'created_at', 'updated_at'];
+    protected $fillable = ['nip_pegawai', 'id_surat_masuk', 'nama_kegiatan', 'deskripsi_kegiatan', 'waktu_mulai', 'waktu_akhir', 'lokasi', 'id_opd','status', 'color', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
      * 
      * @var array
      */
-    public $searchable = ['nip_pegawai', 'id_surat_masuk', 'nama_kegiatan', 'waktu', 'lokasi', 'id_opd','status', 'created_at', 'updated_at'];
+    public $searchable = ['nip_pegawai', 'id_surat_masuk', 'nama_kegiatan', 'deskripsi_kegiatan', 'waktu_mulai', 'waktu_akhir', 'lokasi', 'id_opd','status', 'color', 'created_at', 'updated_at'];
 
 }
