@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJenisSuratTable extends Migration
+class CreateTbOpdBidang extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateJenisSuratTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_jenis_surat', function (Blueprint $table) {
-            $table->id('id_jenis_surat');
-            $table->string('nama_jenis_surat', 100);
+        Schema::create('tb_opd_bidang', function (Blueprint $table) {
+            $table->id('id_opd_bidang');
+            $table->bigInteger('id_opd');
+            $table->string('nama_opd_bidang',100);
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateJenisSuratTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_jenis_surat');
+        Schema::dropIfExists('tb_opd_bidang');
     }
 }

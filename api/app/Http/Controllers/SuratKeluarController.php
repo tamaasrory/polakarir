@@ -373,18 +373,19 @@ class SuratKeluarController extends Controller
             $tanggal = $this->tanggal_indo(date('Y-m-d'));
 
             //get nomor surat terakhir
-            $nomorSuratTerakhir = new NomorSuratTerakhirController;
-            $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'], $data['id_jenis_surat']);
+            $dataNomorSurat = new FormatPenomoranSuratController();
+            $nomor_surat = $dataNomorSurat->getNomorSurat($data['id_opd'],$data['kode_klasifikasi'],$data['opd_bidang']);
 
             //update template
             $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
-            $template->setValue('${nomorsurat}', $nomor_surat['nomor_selanjutnya']);
+            $template->setValue('${nomorsurat}', $nomor_surat['nomor_surat']);
 
             $template->setValue('${namalengkap}', $pegawai['nama_pegawai']);
             $template->setValue('${nip}', $pegawai['nip']);
 
-            //update data nomor terakhir surat, nomor autonya berubah jadi nomor yang telah dipakai
-            $nomorSuratTerakhir->update($data['id_opd'], $data['id_jenis_surat'], $nomor_surat['nomor_auto_selanjutnya']);
+            //update data format penomoran surat, nomor urut terakhir berubah jadi nomor yang telah dipakai
+            $requestPenomoran = new Request(["nomor_urut_terakhir" => $nomor_surat['nomor_urut']]);
+            $dataNomorSurat->update($requestPenomoran,$nomor_surat['id_format_penomoran']);
 
             if ($request->has('hash_tte')) {
 
