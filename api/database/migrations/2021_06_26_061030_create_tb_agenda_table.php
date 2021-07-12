@@ -17,11 +17,14 @@ class CreateTbAgendaTable extends Migration
             $table->id('id_agenda');
             $table->string('nip_pegawai',22);
             $table->bigInteger('id_surat_masuk')->nullable();
-            $table->string('nama_kegiatan',250);
-            $table->dateTime('waktu');
+            $table->string('nama_kegiatan',50);
+            $table->string('deskripsi_kegiatan',250);
+            $table->dateTime('waktu_mulai');
+            $table->dateTime('waktu_akhir');
             $table->string('lokasi',250);
             $table->bigInteger('id_opd');
             $table->string('status',30);
+            $table->string('color',30);
             $table->timestamps();
         });
     }

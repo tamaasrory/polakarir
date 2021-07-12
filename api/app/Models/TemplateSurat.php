@@ -33,14 +33,14 @@ class TemplateSurat extends SelfModel
      * 
      * @var array
      */
-    protected $fillable = ['nip_author', 'nama_template', 'url_berkas', 'sumber_hukum', 'id_jenis_surat', 'status', 'created_at', 'updated_at'];
+    protected $fillable = ['nip_author', 'nama_template', 'url_berkas', 'sumber_hukum', 'id_jenis_surat', 'id_opd', 'status', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
      * 
      * @var array
      */
-    public $searchable = ['nip_author', 'nama_template', 'url_berkas', 'sumber_hukum', 'id_jenis_surat', 'status', 'created_at', 'updated_at'];
+    public $searchable = ['nip_author', 'nama_template', 'url_berkas', 'sumber_hukum', 'id_jenis_surat', 'id_opd', 'status', 'created_at', 'updated_at'];
 
 
     public function getJenisSuratAttribute()
