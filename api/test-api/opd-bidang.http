@@ -1,0 +1,15 @@
+### get list opd bidang
+GET http://localhost:7000/api/v1/opd-bidang/get-list/5
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI2MDkxMTQ5fQ.eRKYTIWo222AQRQQBeamSEogmgH8EClwSVPGkiWn4Fg
+
+### tambah data baru
+POST http://localhost:7000/api/v1/opd-bidang/baru
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI2MDk3NDMzfQ.xTr0mmVmFQ5ZTRScZc-xCwC1JHglTyYyxfHoKK2-xLg
+
+{
+    "id_opd": 5,
+    "nama_opd_bidang": "BPP-Tes"
+}
+###

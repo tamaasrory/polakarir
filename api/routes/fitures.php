@@ -12,6 +12,8 @@ use App\Http\Controllers\SuratKeluarController;
 use App\Http\Controllers\TemplateSuratController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\OPDBidangController;
+use App\Http\Controllers\FormatPenomoranSuratController;
 
 $router->group(['prefix' => 'jenis-surat'], function () use ($router) {
     $router->get('all', [JenisSuratController::class, 'index']);
@@ -68,4 +70,16 @@ $router->group(['prefix' => 'agenda'], function () use ($router) {
 
 $router->group(['prefix' => 'dashborad'], function () use ($router) {
     $router->get('index', [DashboardController::class, 'index']);
+});
+
+$router->group(['prefix' => 'penomoran-surat'], function () use ($router) {
+    $router->get('index', [FormatPenomoranSuratController::class, 'index']);
+    $router->put('update/{id_format_penomoran}', [FormatPenomoranSuratController::class, 'update']);
+    $router->get('get-nomor/{id_opd}/{kode_klasifikasi}/{opd_bidang}', [FormatPenomoranSuratController::class, 'getNomorSurat']);
+});
+
+$router->group(['prefix' => 'opd-bidang'], function () use ($router) {
+    $router->get('get-list/{id_opd}', [OPDBidangController::class, 'getList']);
+    $router->delete('delete/{id}', [OPDBidangController::class, 'destroy']);
+    $router->post('baru', [OPDBidangController::class, 'store']);
 });

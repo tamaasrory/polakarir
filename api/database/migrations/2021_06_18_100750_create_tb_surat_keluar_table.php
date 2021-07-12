@@ -16,6 +16,8 @@ class CreateTbSuratKeluarTable extends Migration
         Schema::create('tb_surat_keluar', function (Blueprint $table) {
             $table->id('id_surat_keluar');
             $table->string('nip_author', 22)->nullable();
+            $table->string('kode_klasifikasi', 10)->nullable();
+            $table->string('opd_bidang', 30)->nullable();
             $table->bigInteger('id_opd');
             $table->string('kode_jabatan_terusan', 30)->nullable();
             $table->bigInteger('id_jenis_surat');
