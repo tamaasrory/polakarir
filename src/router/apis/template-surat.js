@@ -136,7 +136,7 @@ const TemplateSurat = {
 
   updateTemplateSurat ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.put(`/template-surat/update/${payload.id}`, payload)
+      $axios.post(`/template-surat/update/${payload.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)

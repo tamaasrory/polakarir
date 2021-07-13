@@ -352,7 +352,7 @@ export default {
     this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat']),
+    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat','updateTemplateSurat']),
     can,
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
