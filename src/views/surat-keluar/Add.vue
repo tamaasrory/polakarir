@@ -112,7 +112,7 @@
               class="py-0"
             >
               <v-select
-                v-model="surat_keluar.kode_jabatan_terusan"
+                v-model="surat_keluar.kepada"
                 outlined
                 class="bpp-input-md bpp-rounded-12"
                 :items="items.kepada"
@@ -612,6 +612,7 @@ export default {
       loadingData: true,
       surat_keluar: {
         id_opd: 0,
+        kepada: null,
         id_jenis_surat: null,
         penerima_surat: [],
         kategori_surat: null,
@@ -645,6 +646,7 @@ export default {
         id_jenis_surat: 'required',
         id_opd: 'required',
         kategori_surat: 'required',
+        kepada: 'required',
         penerima_surat: 'required',
         karakteristik_surat: 'required',
         derajat_surat: 'required',
@@ -892,15 +894,15 @@ export default {
 
       // penerimaSurat = Object.values(penerimaSurat)
 
-      formData.append('penerima_surat',
-        new Blob([JSON.stringify(this.surat_keluar.penerima_surat)],
-          { type: 'application/json' }))
-
       Object.keys(this.surat_keluar).forEach(d => {
-        if (!(['penerima_surat'].includes(d))) {
+        if (!(['penerima_surat', 'kepada'].includes(d))) {
           // masukkan ke formData dibawah ini kecuali penerima_surat
           // karena sudah di tambahkan di atas
           formData.append(d, this.surat_keluar[d])
+        } else {
+          formData.append(d,
+            new Blob([JSON.stringify(this.surat_keluar[d])],
+              { type: 'application/json' }))
         }
       })
 

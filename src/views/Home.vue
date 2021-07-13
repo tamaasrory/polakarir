@@ -56,6 +56,7 @@
                   block
                   style="text-transform: capitalize !important;"
                   text
+                  @click="goToSuratMasuk()"
                 >
                   Lihat Selengkapnya
                   <v-spacer />
@@ -64,6 +65,7 @@
                     color="#1BA7A1"
                     x-small
                     elevation="0"
+                    @click="goToSuratMasuk()"
                   >
                     <v-icon>
                       mdi-arrow-bottom-left
@@ -102,6 +104,7 @@
                   block
                   style="text-transform: capitalize !important;"
                   text
+                  @click="goToSuratKeluar()"
                 >
                   Lihat Selengkapnya
                   <v-spacer />
@@ -110,6 +113,7 @@
                     color="#A72D68"
                     x-small
                     elevation="0"
+                    @click="goToSuratKeluar()"
                   >
                     <v-icon>
                       mdi-arrow-top-right
@@ -309,6 +313,12 @@ export default {
   },
   methods: {
     ...mapActions(['getAgendaToCalender']),
+    goToSuratMasuk () {
+      this.$router.push({ name: 'surat_masuk' })
+    },
+    goToSuratKeluar () {
+      this.$router.push({ name: 'surat_keluar' })
+    },
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'

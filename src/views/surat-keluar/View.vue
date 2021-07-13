@@ -23,6 +23,7 @@
       <v-toolbar-title>Surat Keluar</v-toolbar-title>
       <v-spacer />
       <v-btn
+        v-if="canRevisi"
         icon
         @click="_edit()"
       >
@@ -245,11 +246,11 @@
                     </v-card>
                   </template>
                   <v-list>
-                    <v-list-item @click="">
+                    <v-list-item @click="loadDocPreview()">
                       <v-list-item-action class="mr-4">
-                        <v-icon>mdi-cloud-upload</v-icon>
+                        <v-icon>mdi-eye</v-icon>
                       </v-list-item-action>
-                      <v-list-item-title>Ganti File</v-list-item-title>
+                      <v-list-item-title>Lihat Document</v-list-item-title>
                     </v-list-item>
                     <v-list-item
                       :href="urlSuratKeluar(surat_keluar.lampiran)"
@@ -444,6 +445,28 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="showDocPreview"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      scrollable
+    >
+      <v-btn
+        fab
+        absolute
+        right
+        bottom
+        class="mb-10"
+        @click="showDocPreview=false"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+      <WebViewer
+        :initial-doc="docBlobPreview"
+        :filename="docBlobPreviewName"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -451,8 +474,10 @@
 import { mapActions, mapState } from 'vuex'
 import { urlSuratKeluar } from '@/router/Path'
 import { isEmpty } from '@/plugins/supports'
+import WebViewer from '@/components/WebViewer'
 
 export default {
+  components: { WebViewer },
   props: {
     id: { type: [String, Number], required: true }
   },
@@ -494,7 +519,11 @@ export default {
       showBtnTeruskan: false,
       showBtnMemo: false,
       showBtnTte: false,
+      showDocPreview: false,
+      canRevisi: false,
       showPassparse: false,
+      docBlobPreview: null,
+      docBlobPreviewName: null,
       showToast: false,
       toastMsg: ''
     }
@@ -509,8 +538,22 @@ export default {
     this._loadData()
   },
   methods: {
-    ...mapActions(['getSuratKeluarById', 'validasiSuratKeluar', 'tteSuratKeluar']),
+    ...mapActions([
+      'getSuratKeluarById',
+      'validasiSuratKeluar',
+      'tteSuratKeluar',
+      'downloadSurat'
+    ]),
     urlSuratKeluar,
+    loadDocPreview () {
+      this.downloadSurat(this.id).then(d => {
+        if (d.result) {
+          this.docBlobPreviewName = this.surat_keluar.lampiran
+          this.docBlobPreview = d.data
+          this.showDocPreview = true
+        }
+      })
+    },
     backButton () {
       this.$router.back()
     },
@@ -548,12 +591,13 @@ export default {
       this.loadingData = true
       this.getSuratKeluarById({ id: this.id })
         .then(data => {
-          this.surat_keluar = data.surat_keluar || {}
+          this.surat_keluar = isEmpty(data.surat_keluar, {})
           this.items.teruskan = isEmpty(data.teruskan, [])
           this.items.memo = isEmpty(data.memo, [])
           this.showBtnTeruskan = isEmpty(data.showBtnTeruskan, false)
           this.showBtnMemo = isEmpty(data.showBtnMemo, false)
           this.showBtnTte = isEmpty(data.showBtnTte, false)
+          this.canRevisi = isEmpty(data.canRevisi, false)
           this.loadingData = false
         })
         .catch(() => {

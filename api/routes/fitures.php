@@ -36,6 +36,7 @@ $router->group(['prefix' => 'surat-keluar'], function () use ($router) {
     $router->post('tte', [SuratKeluarController::class, 'tte']);
     $router->put('validasi-surat', [SuratKeluarController::class, 'validasiSurat']);
     $router->get('get-atasan', [SuratKeluarController::class, 'getAtasan']);
+    $router->get('download/{id}', [SuratKeluarController::class, 'downloadSurat']);
 });
 
 $router->group(['prefix' => 'nomorsuratterakhir'], function () use ($router) {

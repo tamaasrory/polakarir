@@ -9,7 +9,7 @@ use App\Traits\Searchable;
  * @property integer $id_tujuan_surat
  * @property integer $id_surat_keluar
  * @property integer $id_opd
- * @property string $tujuan
+ * @property array $tujuan
  * @property string $created_at
  * @property string $updated_at
  */
