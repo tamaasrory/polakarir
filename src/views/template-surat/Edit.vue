@@ -117,11 +117,14 @@
             </v-subheader>
           </v-col>
           <v-col cols="5">
-            <v-text-field
-              v-model="template_surat.id_opd"
-              class="outline yellow--text"
-              outlined
-            ></v-text-field>
+            <v-autocomplete
+                    v-model="template_surat.id_opd"
+                    :items="items.opd"
+                    label="Pilih OPD"
+                    clearable
+                    outlined
+
+            />
           </v-col>
         </v-row>
         <v-row class="mt-n7">
@@ -200,7 +203,7 @@ export default {
         id_template_surat: null
       },
       statusItems:['publish','draft'],
-      items: { jenis_surat: []},
+      items: { jenis_surat: [], opd: [] },
       rules: {
         required: value => !!value || 'Tidak Boleh Kosong'
       },
@@ -221,33 +224,29 @@ export default {
       return inputValidator(this.rules, this.template_surat)
     }
   },
-  created() {
-    this.getTemplateSuratEdit( {id: this.id})
+  created () {
+    this.getTemplateSuratEdit({ id: this.id })
       .then(data => {
-        //this.template_surat.id_template_surat = this.id
-        this.template_surat = data
+        // this.template_surat.id_template_surat = this.id
+        this.template_surat = isEmpty(data.data,[])
+        this.items.jenis_surat = isEmpty(data.jenis_surat, [])
+        this.items.opd = isEmpty(data.opd, [])
         this.loadingData = false
+      }).catch((error) => {
+        this.template_surat = {
+          nama_template: null,
+          id_template_surat: null,
+          jenis_surat: null,
+          nip_author: null,
+          id_opd: null,
+          sumber_hukum: null,
+          status: null
+        }
+        console.log('Error template: ' + error)
       })
-    .catch((error) => {
-      this.template_surat = {
-        nama_template: null,
-        id_template_surat: null,
-        jenis_surat: null,
-        nip_author: null,
-        sumber_hukum: null,
-        status: null
-
-      }
-      console.log('Error template: ' + error)
-
-    })
-
-    this.createTemplateSurat().then(data => {
-      this.items.jenis_surat = isEmpty(data.jenis_surat, [])
-    })
   },
   methods: {
-    ...mapActions(['getTemplateSuratEdit','updateTemplateSurat','createTemplateSurat']),
+    ...mapActions(['getTemplateSuratEdit', 'updateTemplateSurat']),
     backButton() {
       this.$router.push({name: 'template_surat'})
     },

@@ -16,6 +16,8 @@ class DashboardController extends Controller
         $auth=$request->auth;
         $dataUser = $request->auth['sinergi'];
         $data =null;
+        $from =$request->input('from');
+        $to =$request->input('to');
 
 
 
@@ -46,9 +48,17 @@ class DashboardController extends Controller
         }
 
         //agenda berdasarkan nip
-        $data = Agenda::where('id_opd',$dataUser['id_opd'])
-            ->where('nip_pegawai',$dataUser['nip'])->get();
-
+        if ($from != $to) {
+            $data = Agenda::where('id_opd', $dataUser['id_opd'])
+                ->where('nip_pegawai', $dataUser['nip'])
+                ->whereBetween('waktu_mulai', [$from, $to])
+                ->orWhereBetween('waktu_akhir', [$from, $to])->get();
+        }else{
+            $data = Agenda::where('id_opd', $dataUser['id_opd'])
+                ->where('nip_pegawai', $dataUser['nip'])
+                ->WhereDate('waktu_mulai','<=',$from)
+                ->WhereDate('waktu_akhir','>=',$to)->get();
+        }
 
 
         return [

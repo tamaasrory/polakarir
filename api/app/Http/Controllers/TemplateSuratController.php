@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Base\Controller;
 use App\Models\JenisSurat;
 use App\Models\TemplateSurat;
+use App\Supports\ExtApi;
 use Illuminate\Http\Request;
 
 
@@ -114,12 +115,17 @@ class TemplateSuratController extends Controller
      */
     public function edit($id)
     {
-        //
-        $data_jenis_surat = JenisSurat::all();
         $data = TemplateSurat::find($id);
-        return[
-            'value'=>$data,
-            'jenis_surat'=>$data_jenis_surat
+        $jenis_surat = JenisSurat::selectRaw(implode(',', [
+            "id_jenis_surat as value", "CONCAT(nama_jenis_surat) as text"]))->get();
+
+        $opd = collect(ExtApi::listOpd())->map(fn($data) => [
+        'value' => $data['id_opd'], 'text' => $data['nama']])->toArray();
+
+        $opd = array_merge([['value' => -1, 'text' => 'Umum / Seluruh OPD']], $opd);
+
+        return [
+            'value' => compact('data', 'jenis_surat','opd')
         ];
     }
 
@@ -253,8 +259,13 @@ class TemplateSuratController extends Controller
         $jenis_surat = JenisSurat::selectRaw(implode(',', [
         "id_jenis_surat as value", "CONCAT(nama_jenis_surat) as text"]))->get();
 
+        $opd = collect(ExtApi::listOpd())->map(fn($data) => [
+        'value' => $data['id_opd'], 'text' => $data['nama']])->toArray();
+
+        $opd = array_merge([['value' => '-1', 'text' => 'Umum / Seluruh OPD']], $opd);
+
         return [
-            'value' => compact('jenis_surat')
+            'value' => compact('jenis_surat','opd')
         ];
     }
 

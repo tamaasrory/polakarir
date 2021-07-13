@@ -28,7 +28,7 @@
         <v-row dense v-if="(user.sinergi)">
           <v-col>
             <v-tabs centered slider-size="5">
-              <v-tab dense @click="_loadData(true,0)"><p class="font-weight-bold mb-n2 text-capitalize">Template Umum</p>
+              <v-tab dense @click="_loadData(true,-1)"><p class="font-weight-bold mb-n2 text-capitalize">Template Umum</p>
               </v-tab>
               <v-tab dense  @click="_loadData(true,user.sinergi.id_opd)"><p class="font-weight-bold mb-n2 text-capitalize"> Template Khusus</p></v-tab>
             </v-tabs>
@@ -297,7 +297,7 @@ export default {
   },
   data() {
     return {
-      id_opd_active: 0,
+      id_opd_active: -1,
       template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
       toggleFp: false,
