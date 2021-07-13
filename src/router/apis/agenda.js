@@ -2,9 +2,15 @@ import $axios from '@/router/server'
 
 const Agenda = {
   // START Agenda API
-  getAgendaToCalender () {
+  getAgendaToCalender ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get('/dashborad/index')
+      const { from, to } = payload
+      let query = {
+        from: from || '',
+        to: to || ''
+      }
+      query = new URLSearchParams(query).toString()
+      $axios.get(`/dashborad/index?${query}`)
         .then((response) => {
           if (response.status === 200) {
             const items = response.data.agenda

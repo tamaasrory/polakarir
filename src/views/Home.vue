@@ -290,6 +290,7 @@ export default {
   name: 'Home',
   components: { Account },
   data: () => ({
+    queryTask: [],
     datas: [],
     suratKeluarActive: '-',
     suratMasukActive: '-',
@@ -301,11 +302,12 @@ export default {
       day: 'Day',
       '4day': '4 Days'
     },
+    options: {},
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [],
-    colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
+    events: []
+    // colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
     // names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
   }),
   mounted () {
@@ -353,7 +355,9 @@ export default {
     },
     updateRange ({ start, end }) {
       console.log(`${start.date}  akhir  ${end.date}`)
-      this.getAgendaToCalender().then((data) => {
+      this.options.from = `${start.date}`
+      this.options.to = `${end.date}`
+      this.getAgendaToCalender({ add: this.queryTask, ...this.options }).then((data) => {
         console.log('ambil lagi')
         this.datas = data.items
         this.suratKeluarActive = data.suratKeluarActive

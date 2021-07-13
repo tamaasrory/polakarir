@@ -112,11 +112,15 @@
             </v-subheader>
           </v-col>
           <v-col cols="5">
-            <v-text-field
+            <v-autocomplete
               v-model="template_surat.id_opd"
               class="outline yellow--text"
               outlined
-            ></v-text-field>
+              :items="items.id_opd"
+              label="Pilih OPD"
+              clearable
+              :rules="[rules.required]"
+            ></v-autocomplete>
           </v-col>
         </v-row>
         <v-row class="mt-n7">
@@ -205,7 +209,7 @@ export default {
         nama_template: 'required'
       },
 
-      items: { jenis_surat: []},
+      items: { jenis_surat: [], id_opd: [] },
       rules: {
         required: v => {
           v = isEmpty(v)
@@ -232,6 +236,7 @@ export default {
   created () {
     this.createTemplateSurat().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
+      this.items.id_opd = isEmpty(data.opd, [])
     })
   },
   methods: {
