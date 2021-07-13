@@ -70,9 +70,14 @@
             "@php artisan key:generate",
             "@php artisan jwt:secret"
         ],
-
         "serve": [
             "@php artisan serve"
+        ],
+        "db:rebuild": [
+            "@composer dump-autoload",
+            "@php artisan db:wipe",
+            "@php artisan migrate",
+            "@php artisan db:seed"
         ]
     }
 }
