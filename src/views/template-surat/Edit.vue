@@ -113,6 +113,21 @@
           <v-col cols="2">
             <v-subheader
               class="font-weight-black black--text"
+            >Khusus OPD
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.id_opd"
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
             >File Template
             </v-subheader>
           </v-col>
@@ -177,9 +192,10 @@ export default {
       template_surat: {
         nama_template: null,
         nip_author: null,
-        id_jenis_surat: 'Instruksi',
+        id_jenis_surat: null,
         sumber_hukum: null,
         status: null,
+        id_opd: null,
         draf: null,
         id_template_surat: null
       },

@@ -251,7 +251,7 @@ class TemplateSuratController extends Controller
     public function create()
     {
         $jenis_surat = JenisSurat::selectRaw(implode(',', [
-        "id_jenis_surat as value", "CONCAT(kode_surat,' - ',nama_jenis_surat) as text"]))->get();
+        "id_jenis_surat as value", "CONCAT(nama_jenis_surat) as text"]))->get();
 
         return [
             'value' => compact('jenis_surat')
