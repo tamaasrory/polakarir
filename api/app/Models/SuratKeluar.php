@@ -11,7 +11,7 @@ use App\Traits\Searchable;
  * @property int $id_surat_keluar
  * @property string $nip_author
  * @property int $id_opd
- * @property string $kode_jabatan_terusan
+ * @property array $kode_jabatan_terusan
  * @property int $id_jenis_surat
  * @property string $nomor_surat
  * @property string $tanggal_surat
@@ -66,6 +66,11 @@ class SuratKeluar extends SelfModel
         'histori_surat',
     ];
 
+    public $casts = [
+        'kode_jabatan_terusan' => 'json',
+        'histori_surat' => 'json'
+    ];
+
     public $appends = [
         'jenis_surat'
     ];
@@ -78,7 +83,7 @@ class SuratKeluar extends SelfModel
             ->first('nama_jenis_surat')->nama_jenis_surat;
     }
 
-    public function getTujuan()
+    public function getTujuanSurat()
     {
         return $this->belongsTo(TujuanSurat::class,
             'id_surat_keluar',

@@ -7,9 +7,11 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "HOST=localhost vue-cli-service serve --port 9000",
-    "vueui": "vue ui"
+    "vueui": "vue ui",
+    "postinstall": "node tools/copy-webviewer-files.js"
   },
   "dependencies": {
+    "@pdftron/webviewer": "^7.0.1",
     "@mdi/font": "^5.9.55",
     "axios": "^0.21.1",
     "compressorjs": "^1.0.7",
@@ -59,7 +61,8 @@
     },
     "extends": [
       "plugin:vue/recommended",
-      "@vue/standard"
+      "@vue/standard",
+      "eslint:recommended"
     ],
     "parserOptions": {
       "parser": "@babel/eslint-parser"

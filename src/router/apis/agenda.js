@@ -2,7 +2,25 @@ import $axios from '@/router/server'
 
 const Agenda = {
   // START Agenda API
-  getAgenda ({ commit }, payload) {
+  getAgendaToCalender () {
+    return new Promise((resolve, reject) => {
+      $axios.get('/dashborad/index')
+        .then((response) => {
+          if (response.status === 200) {
+            const items = response.data.agenda
+            const suratKeluarActive = response.data.surat_keluar_active
+            const suratMasukActive = response.data.surat_masuk_active
+            resolve({ items, suratKeluarActive, suratMasukActive })
+          } else {
+            resolve({ items: [], suratKeluarActive: 0, suratMasukActive: 0 })
+          }
+        }).catch((error) => {
+          console.log(error)
+          resolve({ items: [], suratKeluarActive: 0, suratMasukActive: 0 })
+        })
+    })
+  },
+  getAgendaAll ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {

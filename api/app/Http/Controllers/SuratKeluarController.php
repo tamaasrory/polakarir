@@ -61,11 +61,16 @@ class SuratKeluarController extends Controller
             }
 
             // untuk yang tidak memiliki kedua akses diatas
-            $builder->where('kode_jabatan_terusan', $dataUser['kode_jabatan']);
+            $builder->whereJsonContains('kode_jabatan_terusan', $dataUser['kode_jabatan']);
+
             // tidak muncul lagi setelah di tolak
-            $builder->where('status', '!=', 'Ditolak ' . $dataUser['nama_jabatan']);
+            // $builder->where('status', '!=', 'Ditolak ' . $dataUser['nama_jabatan']);
+
             // tidak muncul lagi setelah di setujui
-            $builder->where('status', '!=', 'Disetujui ' . $dataUser['nama_jabatan']);
+            // $builder->where('status', '!=', 'Disetujui ' . $dataUser['nama_jabatan']);
+
+            $builder->where('status', 'NOT LIKE', 'Disetujui%');
+
             // akan terus muncul di surat keluar pembuat
             $builder->orWhere('nip_author', $dataUser['nip']);
 
@@ -95,20 +100,26 @@ class SuratKeluarController extends Controller
      */
     public function create(Request $request)
     {
-        $jenis_surat = JenisSurat::selectRaw(
-            "id_jenis_surat as value, concat(kode_surat,' - ',nama_jenis_surat) as text")->get();
-        $opd = collect(ExtApi::listOpd())->map(function ($data) {
-            $tmp = [];
-            $tmp['value'] = $data['id_opd'];
-            $tmp['text'] = $data['nama'];
+        $jenis_surat = JenisSurat::selectRaw(implode(',', [
+            "id_jenis_surat as value",
+            "CONCAT(kode_surat,' - ',nama_jenis_surat) as text"
+        ]))->get();
 
-            return $tmp;
-        })->toArray();
+        $opd = collect(ExtApi::listOpd())->map(fn($data) => [
+            'value' => $data['id_opd'], 'text' => $data['nama']
+        ])->toArray();
 
         $opd = array_merge([['value' => '-1', 'text' => 'Seluruh OPD']], $opd);
         $kepada = $this->getAtasan($request);
+
         $kepada = array_map(
-            fn($data) => ['value' => $data['kode_jabatan'], 'text' => $data['nama_pegawai']],
+            fn($data) => [
+                'value' => [
+                    'kode_jabatan' => $data['kode_jabatan'],
+                    'nama_jabatan' => $data['nama_jabatan']
+                ],
+                'text' => $data['nama_pegawai']
+            ],
             $kepada
         );
 
@@ -131,11 +142,15 @@ class SuratKeluarController extends Controller
 
         $auth_sinergi = $request->auth['sinergi'];
 
+        if ($request->hasFile('lampiran')
+            && $request->hasFile('kepada')
+            && $request->hasFile('penerima_surat')
+        ) {
+            $penerima = $request->file('penerima_surat')->get();
+            $penerima_arr = json_decode($penerima, true);
 
-        $penerima = $request->file('penerima_surat')->get();
-        $penerima_arr = json_decode($penerima, true);
+            $kepada = json_decode($request->file('kepada')->get(), true);
 
-        if ($request->hasFile('lampiran')) {
             $original_filename = $request->file('lampiran')->getClientOriginalName();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
@@ -144,7 +159,8 @@ class SuratKeluarController extends Controller
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
                 $data->id_surat_keluar = KeyGen::randomKey();
-                $data->status = 'Diajukan';
+                $data->status = 'Diajukan Kpd. ' . ucwords($kepada['nama_jabatan']);
+                $data->kode_jabatan_terusan = [$kepada['kode_jabatan']];
                 $data->lampiran = $namasurat;
                 $data->id_opd = $auth_sinergi['id_opd'];
                 $data->nip_author = $auth_sinergi['nip'];
@@ -156,6 +172,17 @@ class SuratKeluarController extends Controller
                 ]);
 
                 if ($data->save()) {
+                    //update histori
+                    $this->updateHistori(
+                        $data->id_surat_keluar,
+                        $data->status,
+                        $auth_sinergi['nip'],
+                        $auth_sinergi['nama_pegawai'],
+                        $auth_sinergi['nama_jabatan'],
+                        $auth_sinergi['kode_jabatan'],
+                        ""
+                    );
+
                     return [
                         'value' => $data,
                         'msg' => "{$this->title} baru berhasil disimpan"
@@ -183,19 +210,48 @@ class SuratKeluarController extends Controller
 
         /** @var SuratKeluar $surat_keluar */
         $surat_keluar = SuratKeluar::find($id);
-        $dataUser = ExtApi::getPegawaiByNip($surat_keluar->nip_author);
+        $kjt = $surat_keluar->kode_jabatan_terusan;
 
+        // kode jabatan terusak terakhir
+        $kjt_terakhir = end($kjt);
+
+        $dataUser = ExtApi::getPegawaiByNip($surat_keluar->nip_author);
+        $isRevisi = (bool)strstr(strtolower($surat_keluar->status), 'revisi');
+
+        // button teruskan akan tampil bila bukan si pembuat surat keluar
         $showBtnTeruskan = ($auth['nip'] != $surat_keluar->nip_author)
-            && !(strlen($auth['kode_jabatan']) <= 6);
-        $showBtnMemo = $auth['nip'] != $surat_keluar->nip_author;
-        $showBtnTte = strlen($auth['kode_jabatan']) <= 6;
+            && !(strlen($auth['kode_jabatan']) <= 6)
+            && ($auth['kode_jabatan'] == $kjt_terakhir)
+            && !$isRevisi;
+
+        // button Revisi akan tampil bila bukan si pembuat surat keluar
+        $showBtnMemo = ($auth['nip'] != $surat_keluar->nip_author)
+            && ($auth['kode_jabatan'] == $kjt_terakhir)
+            && !$isRevisi;
+
+        // button tte akan tampil bila kode jabatan <= 6
+        $showBtnTte = strlen($auth['kode_jabatan']) <= 6
+            && ($auth['kode_jabatan'] == $kjt_terakhir)
+            && !$isRevisi;
+
+        // button edit muncul hanya saat ada revisi saja dan yang bisa
+        // merevisi hanya si pembuat surat keluar
+        $canRevisi = ($auth['nip'] == $surat_keluar->nip_author)
+            && $isRevisi;
 
         $teruskan = [];
         if ($showBtnTeruskan) {
             $teruskan = $this->getAtasan(request());
-            $teruskan = array_map(function ($data) {
-                return ['value' => $data['kode_jabatan'], 'text' => $data['nama_pegawai']];
-            }, $teruskan);
+            $teruskan = array_map(
+                fn($data) => [
+                    'value' => [
+                        'kode_jabatan' => $data['kode_jabatan'],
+                        'nama_jabatan' => $data['nama_jabatan']
+                    ],
+                    'text' => $data['nama_pegawai']
+                ],
+                $teruskan
+            );
         }
 
         $memo = [];
@@ -211,7 +267,8 @@ class SuratKeluarController extends Controller
                     'memo',
                     'showBtnTeruskan',
                     'showBtnMemo',
-                    'showBtnTte'
+                    'showBtnTte',
+                    'canRevisi'
                 ),
                 'msg' => "{$this->title} #{$id} ditemukan"
             ];
@@ -234,20 +291,21 @@ class SuratKeluarController extends Controller
         /** @var SuratKeluar $surat_keluar */
         $surat_keluar = SuratKeluar::find($id);
 
-        $jenis_surat = JenisSurat::selectRaw(
-            "id_jenis_surat as value, concat(kode_surat,' - ',nama_jenis_surat) as text")->get();
-        $opd = collect(ExtApi::listOpd())->map(function ($data) {
-            $tmp = [];
-            $tmp['value'] = $data['id_opd'];
-            $tmp['text'] = $data['nama'];
+        $jenis_surat = JenisSurat::selectRaw(implode(',', [
+            "id_jenis_surat as value",
+            "CONCAT(kode_surat,' - ',nama_jenis_surat) as text"
+        ]))->get();
 
-            return $tmp;
-        })->toArray();
+        $opd = collect(ExtApi::listOpd())->map(fn($data) => [
+            'value' => $data['id_opd'], 'text' => $data['nama']
+        ])->toArray();
 
         $opd = array_merge([
             ['value' => '-1', 'text' => 'Seluruh OPD']
         ], $opd);
-        $surat_keluar->penerima_surat = $surat_keluar->getTujuan()->tujuan;
+
+        $surat_keluar->penerima_surat = $surat_keluar->getTujuanSurat()->tujuan;
+
         return [
             'value' => compact(
                 'jenis_surat',
@@ -267,18 +325,18 @@ class SuratKeluarController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->input('id');
-
-        /** @var SuratKeluar $data */
-        $data = SuratKeluar::find($id);
-        $old_name = $data->lampiran;
-
-        $data->fill($request->all());
-
         $auth_sinergi = $request->auth['sinergi'];
+        $id = $request->input('id_surat_keluar');
 
-        $penerima = $request->file('penerima_surat')->get();
-        $penerima_arr = json_decode($penerima, true);
+        /** @var SuratKeluar $surat_keluar */
+        $surat_keluar = SuratKeluar::find($id);
+
+        $surat_keluar->id_jenis_surat = $request->id_jenis_surat;
+        $surat_keluar->perihal_surat = $request->perihal_surat;
+        $surat_keluar->isi_surat_ringkas = $request->isi_surat_ringkas;
+        $surat_keluar->kategori_surat = $request->kategori_surat;
+        $surat_keluar->karakteristik_surat = $request->karakteristik_surat;
+        $surat_keluar->derajat_surat = $request->derajat_surat;
 
         if ($request->hasFile('lampiran')) {
             $original_filename = $request->file('lampiran')->getClientOriginalName();
@@ -288,24 +346,52 @@ class SuratKeluarController extends Controller
             $namasurat = 'SuratKeluar-' . $auth_sinergi['id_opd'] . '-' . time() . '.' . $file_ext;
 
             if ($request->file('lampiran')->move($destination_path, $namasurat)) {
-                $data->lampiran = $namasurat;
+                $old_name = $surat_keluar->lampiran;
+                $surat_keluar->lampiran = $namasurat;
                 // hapus file lama
                 @unlink($destination_path . $old_name);
             }
-        } else {
-            $data->lampiran = $old_name;
         }
 
-        TujuanSurat::update([
-            'id_surat_keluar' => $id,
-            'tujuan' => $penerima_arr,
-        ]);
+        $penerima = $request->file('penerima_surat')->get();
+        $penerima_arr = json_decode($penerima, true);
 
-        $data->status = 'Diajukan';
+        /** @var TujuanSurat $tujuanSurat */
+        $tujuanSurat = TujuanSurat::where('id_surat_keluar', $id)->first();
+        $tujuanSurat->tujuan = $penerima_arr;
+        $tujuanSurat->save();
 
-        if ($data->save()) {
+        /*
+         * Mencari nama_jabatan berdasarkan kode jabatan terusan index terakhir
+         * data yang di cari dari dalam histori surat
+         */
+        $kjt = $surat_keluar->kode_jabatan_terusan;
+        $historis = $surat_keluar->histori_surat;
+
+        $nama_jabatan = null;
+        foreach ($historis as $history) {
+            if ($history['kode_jabatan'] == end($kjt)) {
+                $nama_jabatan = $history['nama_jabatan'];
+                break;
+            }
+        }
+
+        $surat_keluar->status = 'Diajukan Kpd. ' . $nama_jabatan;
+
+        if ($surat_keluar->save()) {
+            //update histori
+            $this->updateHistori(
+                $surat_keluar->id_surat_keluar,
+                $surat_keluar->status,
+                $auth_sinergi['nip'],
+                $auth_sinergi['nama_pegawai'],
+                $auth_sinergi['nama_jabatan'],
+                $auth_sinergi['kode_jabatan'],
+                ""
+            );
+
             return [
-                'value' => $data,
+                'value' => $surat_keluar,
                 'msg' => "{$this->title} #{$id} berhasil diperbarui"
             ];
         }
@@ -373,18 +459,19 @@ class SuratKeluarController extends Controller
             $tanggal = $this->tanggal_indo(date('Y-m-d'));
 
             //get nomor surat terakhir
-            $nomorSuratTerakhir = new NomorSuratTerakhirController;
-            $nomor_surat = $nomorSuratTerakhir->getNomorTerakhir($data['id_opd'], $data['id_jenis_surat']);
+            $dataNomorSurat = new FormatPenomoranSuratController();
+            $nomor_surat = $dataNomorSurat->getNomorSurat($data['id_opd'],$data['kode_klasifikasi'],$data['opd_bidang']);
 
             //update template
             $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
-            $template->setValue('${nomorsurat}', $nomor_surat['nomor_selanjutnya']);
+            $template->setValue('${nomorsurat}', $nomor_surat['nomor_surat']);
 
             $template->setValue('${namalengkap}', $pegawai['nama_pegawai']);
             $template->setValue('${nip}', $pegawai['nip']);
 
-            //update data nomor terakhir surat, nomor autonya berubah jadi nomor yang telah dipakai
-            $nomorSuratTerakhir->update($data['id_opd'], $data['id_jenis_surat'], $nomor_surat['nomor_auto_selanjutnya']);
+            //update data format penomoran surat, nomor urut terakhir berubah jadi nomor yang telah dipakai
+            $requestPenomoran = new Request(["nomor_urut_terakhir" => $nomor_surat['nomor_urut']]);
+            $dataNomorSurat->update($requestPenomoran,$nomor_surat['id_format_penomoran']);
 
             if ($request->has('hash_tte')) {
 
@@ -495,10 +582,18 @@ class SuratKeluarController extends Controller
         $dataSurat = SuratKeluar::find($request->id_surat_keluar);
 
         if ($request->ket == "Disetujui") {
-            //surat disetujui
-            $dataSurat->kode_jabatan_terusan = $request->kode_jabatan_terusan;
-            $dataSurat->status = 'Disetujui ' . $dataValidator['nama_jabatan'];
-            $dataSurat->catatan = "";
+            // teruskan
+            $teruskan = $request->kode_jabatan_terusan;
+            // tampung dan tambah kode jabatan yang dapat melihat surat keluar
+            $tmpKjt = $dataSurat->kode_jabatan_terusan;
+            $tmpKjt[] = $teruskan['kode_jabatan'];
+
+            // kode_jabatan_terusan menyimpan lebih dari 1 kode jabatan
+            // supaya surat keluar dapat tampilkan di tabel mereka
+            $dataSurat->kode_jabatan_terusan = $tmpKjt;
+
+            $dataSurat->status = 'Diajukan Kpd. ' . $teruskan['nama_jabatan'];
+            $dataSurat->catatan = $request->catatan;
             $dataSurat->save();
 
             //update histori
@@ -515,9 +610,20 @@ class SuratKeluarController extends Controller
             return "Berhasil disetujui";
         } else {
             //surat ditolak
-            $dataSurat->status = 'Ditolak ' . $dataValidator['nama_jabatan'];
+            $dataSurat->status = 'Revisi ' . $dataValidator['nama_jabatan'];
             $dataSurat->catatan = $request->catatan;
             $dataSurat->save();
+
+            //update histori
+            $this->updateHistori(
+                $dataSurat->id_surat_keluar,
+                $dataSurat->status,
+                $dataValidator['nip'],
+                $dataValidator['nama_pegawai'],
+                $dataValidator['nama_jabatan'],
+                $dataValidator['kode_jabatan'],
+                $dataSurat->catatan
+            );
 
             return "Berhasil ditolak dengan catatan " . $request->catatan;
         }
@@ -527,43 +633,39 @@ class SuratKeluarController extends Controller
     {
         /** @var SuratKeluar $dataSurat */
         $dataSurat = SuratKeluar::find($id_surat_keluar);
-        $dataHistori = [];
+
         if ($dataSurat) {
             //ditemukan
-            if ($dataSurat['histori_surat'] == "") {
+            if ($dataSurat->histori_surat == "") {
                 //jika histori masih kosong, maka lgsung push histori
-                array_push($dataHistori, (object)[
+                $dataHistori = [
                     'nip' => $nip,
                     'nama_pegawai' => $nama_pegawai,
-                    'jabatan' => $nama_jabatan,
+                    'nama_jabatan' => $nama_jabatan,
                     'kode_jabatan' => $kode_jabatan,
                     'status_surat' => $status_surat,
                     'catatan' => $catatan,
-                    'waktu' => Carbon::now()
-                ]);
-                $dataSurat->histori_surat = $dataHistori;
+                    'waktu' => date('Y-m-d H:i:s')
+                ];
+
+                $dataSurat->histori_surat = [$dataHistori];
                 $dataSurat->save();
                 return "histori berhasil ditambahkan";
             } else {
                 //tampung dlu yang lama, setelah itu gabung dengan yang baru
-                array_push($dataHistori, (object)[
+                $dataHistori = $dataSurat->histori_surat;
+                //menggabungkan data histori sebelumnya dengan data histori terbaru
+                $dataHistori[] = [
                     'nip' => $nip,
                     'nama_pegawai' => $nama_pegawai,
-                    'jabatan' => $nama_jabatan,
+                    'nama_jabatan' => $nama_jabatan,
                     'kode_jabatan' => $kode_jabatan,
                     'status_surat' => $status_surat,
                     'catatan' => $catatan,
-                    'waktu' => Carbon::now()
-                ]);
+                    'waktu' => date('Y-m-d H:i:s')
+                ];
 
-                //menggabungkan data histori sebelumnya dengan data histori terbaru
-                $array1 = json_decode($dataSurat['histori_surat'], true);
-                $array2 = json_decode(json_encode($dataHistori), true);
-
-                $res = array_merge($array1, $array2);
-                $merged = json_encode($res);
-
-                $dataSurat->histori_surat = $merged;
+                $dataSurat->histori_surat = $dataHistori;
                 $dataSurat->save();
 
                 return "histori berhasil ditambahkan";
@@ -587,6 +689,7 @@ class SuratKeluarController extends Controller
             array_push($dataAtasan, [
                 "kode_jabatan" => $tampungAtasan['kode_jabatan'],
                 "nip" => $tampungAtasan['nip'],
+                "nama_jabatan" => $tampungAtasan['nama_jabatan'],
                 "nama_pegawai" => $tampungAtasan['nama_pegawai']
             ]);
             return $dataAtasan;
@@ -598,6 +701,7 @@ class SuratKeluarController extends Controller
                 array_push($dataAtasan, [
                     "kode_jabatan" => $tampungAtasan['kode_jabatan'],
                     "nip" => $tampungAtasan['nip'],
+                    "nama_jabatan" => $tampungAtasan['nama_jabatan'],
                     "nama_pegawai" => $tampungAtasan['nama_pegawai']
                 ]);
                 if (strlen($kode_jabatan_atasan) <= 6) {
@@ -608,6 +712,19 @@ class SuratKeluarController extends Controller
         }
 
         return $dataAtasan;
+    }
+
+    public function downloadSurat($id)
+    {
+        /** @var SuratKeluar $surat_keluar */
+        $surat_keluar = SuratKeluar::findOrFail($id);
+        $file_path = './suratkeluar/' . $surat_keluar->lampiran;
+
+        if (file_exists($file_path)) {
+            return response()->download($file_path);
+        } else {
+            return response('not found', 404);
+        }
     }
 
 }

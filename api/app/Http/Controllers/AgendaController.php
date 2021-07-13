@@ -100,7 +100,10 @@ class AgendaController extends Controller {
         $dataOperator = $request->auth['sinergi'];
 
         $data->id_opd = $dataOperator['id_opd'];
+        $colors = ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'];
         $data->status = "aktif";
+        $data->color = $colors[rand(0,count($colors)-1)];
+
         if ($data->save()) {
             return [
                 'value' => $data,

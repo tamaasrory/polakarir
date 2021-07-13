@@ -624,7 +624,14 @@ export default {
         loadingOpd: false,
         showDialogTujuan: false
       },
-      items: { jenis_surat: [], opd: [], jabatan: [], esselon: [], pegawai: [], datas: [] },
+      items: {
+        jenis_surat: [],
+        opd: [],
+        jabatan: [],
+        esselon: [],
+        pegawai: [],
+        datas: []
+      },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
@@ -710,7 +717,6 @@ export default {
       return 'mdi-checkbox-blank-outline'
     },
     showDataTerpilih () {
-      console.log('showDataTerpilih => ', JSON.stringify(this.surat_keluar.penerima_surat))
       return this.surat_keluar.penerima_surat
     },
     headerDt () {
@@ -732,6 +738,7 @@ export default {
     this.editSuratKeluar({ id: this.id }).then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.surat_keluar = isEmpty(data.surat_keluar, {})
+      console.log(JSON.stringify(this.surat_keluar))
       this.items.opd = isEmpty(data.opd, [])
       this.loadingData = false
     })
@@ -902,7 +909,7 @@ export default {
           this.showDC = false
           this.dcdisabledNegativeBtn = false
           this.dcdisabledPositiveBtn = false
-          this.$router.push({ name: 'surat_keluar' })
+          // this.$router.push({ name: 'surat_keluar' })
           this.dcMessages = 'Simpan Perubahan Sekarang?'
         }, 1500)
       })

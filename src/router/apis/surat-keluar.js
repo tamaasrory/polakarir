@@ -167,6 +167,24 @@ const SuratKeluar = {
           resolve('Sepertinya ada masalah, silahkan coba lagi')
         })
     })
+  },
+  downloadSurat ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.get(`/surat-keluar/download/${payload}`, {
+        responseType: 'blob'
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            resolve({ result: true, data: new Blob([response.data]) })
+          } else {
+            resolve({ result: false })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve({ result: false })
+        })
+    })
   }
   // END SuratKeluar API
 }
