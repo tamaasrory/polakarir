@@ -172,6 +172,17 @@ class SuratKeluarController extends Controller
                 ]);
 
                 if ($data->save()) {
+                    //update histori
+                    $this->updateHistori(
+                        $data->id_surat_keluar,
+                        $data->status,
+                        $auth_sinergi['nip'],
+                        $auth_sinergi['nama_pegawai'],
+                        $auth_sinergi['nama_jabatan'],
+                        $auth_sinergi['kode_jabatan'],
+                        ""
+                    );
+
                     return [
                         'value' => $data,
                         'msg' => "{$this->title} baru berhasil disimpan"
@@ -368,6 +379,17 @@ class SuratKeluarController extends Controller
         $surat_keluar->status = 'Diajukan Kpd. ' . $nama_jabatan;
 
         if ($surat_keluar->save()) {
+            //update histori
+            $this->updateHistori(
+                $surat_keluar->id_surat_keluar,
+                $surat_keluar->status,
+                $auth_sinergi['nip'],
+                $auth_sinergi['nama_pegawai'],
+                $auth_sinergi['nama_jabatan'],
+                $auth_sinergi['kode_jabatan'],
+                ""
+            );
+
             return [
                 'value' => $surat_keluar,
                 'msg' => "{$this->title} #{$id} berhasil diperbarui"
