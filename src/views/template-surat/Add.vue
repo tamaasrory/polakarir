@@ -49,7 +49,7 @@
               outlined
             ></v-text-field>-->
             <v-autocomplete
-              v-model="template_surat.jenis_surat"
+              v-model="template_surat.id_jenis_surat"
               :items="items.jenis_surat"
               label="Jenis Surat"
               clearable
@@ -102,6 +102,21 @@
               class="outline yellow--text"
               outlined
             ></v-select>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Khusus OPD
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.id_opd"
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row class="mt-n7">
@@ -174,10 +189,11 @@ export default {
 
       template_surat: {
         nip_author: null,
-        jenis_surat: null,
+        id_jenis_surat: null,
         nama_template: null,
         sumber_hukum: null,
         status: null,
+        id_opd: null,
         draf: null,
         id_template_surat: null
       },

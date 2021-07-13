@@ -18,33 +18,49 @@
         v-text="'mdi-menu'"
       />
       <v-spacer/>
-      <Account/>
+      <account/>
     </v-app-bar>
     <v-container fluid>
       <h1 class="my-2">
         Ubah Draft Template
       </h1>
-      <div
-        v-if="!loadingData"
-        style="font-size: 11pt"
-      >
-        {{ template_surat.id }}
-      </div>
       <div class="mt-lg-10">
         <v-row>
           <v-col cols="2">
             <v-subheader
               class="font-weight-black black--text"
-            >Jenis Surat
+            >NIP Author
             </v-subheader>
           </v-col>
           <v-col cols="5">
             <v-text-field
-              v-model="template_surat.id"
+              v-model="template_surat.nip_author"
               class="outline yellow--text"
               outlined
-              :rules="[rules.required]"
             ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="2" class="mt-n7">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Jenis Surat
+            </v-subheader>
+          </v-col>
+          <v-col cols="5" class="mt-n7">
+            <!--            <v-text-field
+                          v-model="template_surat.jenis_surat"
+                          class="outline yellow&#45;&#45;text"
+                          outlined
+                        ></v-text-field>-->
+            <v-autocomplete
+              v-model="template_surat.id_jenis_surat"
+              :items="items.jenis_surat"
+              label="Jenis Surat"
+              clearable
+              outlined
+
+            />
           </v-col>
         </v-row>
         <v-row class="mt-n7">
@@ -59,7 +75,6 @@
               v-model="template_surat.nama_template"
               class="outline yellow--text"
               outlined
-              :rules="[rules.required]"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -67,15 +82,45 @@
           <v-col cols="2">
             <v-subheader
               class="font-weight-black black--text"
-            >Nama Template
+            >Sumber Hukum
             </v-subheader>
           </v-col>
           <v-col cols="5">
             <v-text-field
-              v-model="template_surat.jenis_surat"
+              v-model="template_surat.sumber_hukum"
               class="outline yellow--text"
               outlined
-              :rules="[rules.required]"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Status
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-select
+              v-model="template_surat.status"
+              :items="statusItems"
+              class="outline yellow--text"
+              outlined
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row class="mt-n7">
+          <v-col cols="2">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Khusus OPD
+            </v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              v-model="template_surat.id_opd"
+              class="outline yellow--text"
+              outlined
             ></v-text-field>
           </v-col>
         </v-row>
@@ -88,12 +133,14 @@
           </v-col>
           <v-col cols="5">
             <v-file-input
+              v-model="template_surat.draf"
               prepend-icon=""
               outlined
               solo>
               <template v-slot:label>
                 <v-btn depressed x-small rounded class="text-capitalize">Choose File</v-btn>
                 No File Chosen
+                </v-icon>
               </template>
             </v-file-input>
           </v-col>
@@ -101,6 +148,7 @@
         <v-row>
           <v-col sm="12" lg="7" md="12" align="right">
             <v-btn
+              @click="showDC = true"
               elevation="2"
               large
               class=" cyan accent-3 text-capitalize white--text rounded-xl"
@@ -127,10 +175,12 @@
 import {mapActions} from 'vuex'
 import Dialog from '@/components/Dialog'
 import Account from "@/components/default/Account";
+import {isEmpty} from "@/plugins/supports";
+import _ from 'lodash';
 
 export default {
   components: {
-    Account,
+    'account': Account,
     'update-dialog-confirm': Dialog
   },
   props: {
@@ -140,15 +190,17 @@ export default {
     return {
       loadingData: true,
       template_surat: {
-        id: this.id,
-        id_template_surat: this.id_template_surat,
         nama_template: null,
         nip_author: null,
-        url_berkas: null,
-        sumber_hukum:null,
-        jenis_surat:null,
+        id_jenis_surat: null,
+        sumber_hukum: null,
         status: null,
+        id_opd: null,
+        draf: null,
+        id_template_surat: null
       },
+      statusItems:['publish','draft'],
+      items: { jenis_surat: []},
       rules: {
         required: value => !!value || 'Tidak Boleh Kosong'
       },
@@ -165,38 +217,61 @@ export default {
   },
   computed: {
     dataValidation() {
-      return !!(this.template_surat.id)
+      //return !!(this.template_surat.id)
+      return inputValidator(this.rules, this.template_surat)
     }
   },
   created() {
-    this.getTemplateSuratById( {id: this.id})
+    this.getTemplateSuratEdit( {id: this.id})
       .then(data => {
-        /*console.log('Error template: ' + data.nama_template)*/
-        this.template_surat.nama_template = data.template_surat.nama_template ?? ''
-        this.template_surat.jenis_surat = data.template_surat.jenis_surat ?? ''
+        //this.template_surat.id_template_surat = this.id
+        this.template_surat = data
         this.loadingData = false
       })
     .catch((error) => {
       this.template_surat = {
+        nama_template: null,
         id_template_surat: null,
         jenis_surat: null,
-        nama_template: null,
+        nip_author: null,
+        sumber_hukum: null,
+        status: null
 
       }
       console.log('Error template: ' + error)
 
     })
+
+    this.createTemplateSurat().then(data => {
+      this.items.jenis_surat = isEmpty(data.jenis_surat, [])
+    })
   },
   methods: {
-    ...mapActions(['getTemplateSuratEdit', 'updateTemplateSurat']),
+    ...mapActions(['getTemplateSuratEdit','updateTemplateSurat','createTemplateSurat']),
     backButton() {
       this.$router.push({name: 'template_surat'})
     },
     postUpdate() {
+      let template_surat = new FormData();
+      _.each(this.template_surat, (value, key) => {
+        template_surat.append(key, value)
+      })
       this.dcProgress = true
       this.dcdisabledNegativeBtn = true
       this.dcdisabledPositiveBtn = true
-      this.dcMessages = 'Sedang Menyimpan Material...'
+      this.dcMessages = 'Sedang Menyimpan Template Surat...'
+      this.updateTemplateSurat(template_surat).then((res) => {
+        this.dcMessages = 'Berhasil Memperbaharui Template Surat'
+        this.dcProgress = false
+        //this.dcMessages = res.msg
+        setTimeout(() => {
+          this.showDC = false
+          this.dcdisabledNegativeBtn = false
+          this.dcdisabledPositiveBtn = false
+          this.$router.push({name: 'template_surat'})
+          this.dcMessages = 'Simpan Perubahan Sekarang?'
+        }, 1500)
+      })
     }
   }
 }
