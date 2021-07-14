@@ -137,7 +137,7 @@
             elevation="5"
           >
             <v-col>
-              <h3>Agenda / Informasi Dinas</h3>
+              <h3>Agenda / Informasi </h3>
             </v-col>
           </v-row>
           <v-divider class="mt-2" />
@@ -354,11 +354,9 @@ export default {
       nativeEvent.stopPropagation()
     },
     updateRange ({ start, end }) {
-      console.log(`${start.date}  akhir  ${end.date}`)
       this.options.from = `${start.date}`
       this.options.to = `${end.date}`
       this.getAgendaToCalender({ add: this.queryTask, ...this.options }).then((data) => {
-        console.log('ambil lagi')
         this.datas = data.items
         this.suratKeluarActive = data.suratKeluarActive
         this.suratMasukActive = data.suratMasukActive
