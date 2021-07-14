@@ -22,6 +22,8 @@ use App\Traits\Searchable;
  * @property string $derajat_surat
  * @property string $catatan
  * @property string $lampiran
+ * @property string $kode_klasifikasi
+ * @property string $opd_bidang
  * @property string $status
  * @property array $histori_surat
  * @property string $created_at

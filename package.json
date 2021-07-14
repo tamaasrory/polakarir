@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@mdi/font": "^5.9.55",
-    "@pdftron/webviewer": "^7.3.3",
+    "@pdftron/webviewer": "^7.0.1",
+    "@riophae/vue-treeselect": "^0.4.0",
     "axios": "^0.21.1",
     "compressorjs": "^1.0.7",
     "core-js": "^3.13.1",

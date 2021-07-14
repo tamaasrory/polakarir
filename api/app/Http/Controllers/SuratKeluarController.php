@@ -6,6 +6,8 @@ use App\Http\Controllers\Base\Controller;
 use App\Models\Base\KeyGen;
 use App\Models\Base\User;
 use App\Models\JenisSurat;
+use App\Models\KlasifikasiSurat;
+use App\Models\OPDBidang;
 use App\Models\SuratKeluar;
 use App\Models\TujuanSurat;
 use App\Supports\ExtApi;
@@ -69,7 +71,7 @@ class SuratKeluarController extends Controller
             // tidak muncul lagi setelah di setujui
             // $builder->where('status', '!=', 'Disetujui ' . $dataUser['nama_jabatan']);
 
-            $builder->where('status', 'NOT LIKE', 'Disetujui%');
+            $builder->where('status', 'NOT LIKE', 'Selesai%');
 
             // akan terus muncul di surat keluar pembuat
             $builder->orWhere('nip_author', $dataUser['nip']);
@@ -100,9 +102,27 @@ class SuratKeluarController extends Controller
      */
     public function create(Request $request)
     {
+        $klasifikasiSurat = KlasifikasiSurat::selectRaw(implode(',', [
+            "CONCAT(kode_klasifikasi,'-',id_klasifikasi) as id",
+            'nama_klasifikasi as label',
+            'parent_kode',
+        ]))->get()->sortBy('parent_kode')
+            ->sortByDesc('label')->toArray();
+
+        $parent = array_values(array_filter(
+            $klasifikasiSurat, fn($d) => $d['parent_kode'] == null
+        ));
+
+        $kode_klasifikasi = $this->klasifikasiSurat($parent, $klasifikasiSurat);
+
         $jenis_surat = JenisSurat::selectRaw(implode(',', [
             "id_jenis_surat as value",
-            "CONCAT(kode_surat,' - ',nama_jenis_surat) as text"
+            "nama_jenis_surat as text"
+        ]))->get();
+
+        $opd_bidang = OPDBidang::selectRaw(implode(',', [
+            "CONCAT(id_opd,'-',id_opd_bidang) as value",
+            "nama_opd_bidang as text"
         ]))->get();
 
         $opd = collect(ExtApi::listOpd())->map(fn($data) => [
@@ -124,8 +144,38 @@ class SuratKeluarController extends Controller
         );
 
         return [
-            'value' => compact('jenis_surat', 'opd', 'kepada')
+            'value' => compact(
+                'jenis_surat',
+                'opd',
+                'kepada',
+                'kode_klasifikasi',
+                'opd_bidang'
+            )
         ];
+    }
+
+    public function klasifikasiSurat($kode_klasifikasi, $klasifikasiSurat)
+    {
+        $collect = [];
+        foreach ($kode_klasifikasi as $key => $p) {
+            $_id = explode('-', $p['id']);
+            if ($p['parent_kode'] != $_id[0]) {
+
+                $filterChild = array_values(array_filter(
+                    $klasifikasiSurat, fn($d) => $d['parent_kode'] == $_id[0]
+                ));
+
+                if (count($filterChild)) {
+                    $p['children'] = $this->klasifikasiSurat(
+                        $filterChild,
+                        $klasifikasiSurat
+                    );
+                }
+            }
+            $collect[] = $p;
+
+        }
+        return $collect;
     }
 
     /**
@@ -138,11 +188,20 @@ class SuratKeluarController extends Controller
     public function store(Request $request)
     {
         $data = new SuratKeluar();
-        $data->fill(request()->all());
 
         $auth_sinergi = $request->auth['sinergi'];
 
-        if ($request->hasFile('lampiran')
+        if ($request->has([
+                'kode_klasifikasi',
+                'opd_bidang',
+                'id_jenis_surat',
+                'perihal_surat',
+                'isi_surat_ringkas',
+                'kategori_surat',
+                'karakteristik_surat',
+                'derajat_surat',
+            ])
+            && $request->hasFile('lampiran')
             && $request->hasFile('kepada')
             && $request->hasFile('penerima_surat')
         ) {
@@ -164,6 +223,14 @@ class SuratKeluarController extends Controller
                 $data->lampiran = $namasurat;
                 $data->id_opd = $auth_sinergi['id_opd'];
                 $data->nip_author = $auth_sinergi['nip'];
+                $data->kode_klasifikasi = $request->kode_klasifikasi;
+                $data->opd_bidang = $request->opd_bidang;
+                $data->id_jenis_surat = $request->id_jenis_surat;
+                $data->kategori_surat = $request->kategori_surat;
+                $data->karakteristik_surat = $request->karakteristik_surat;
+                $data->derajat_surat = $request->derajat_surat;
+                $data->isi_surat_ringkas = $request->isi_surat_ringkas;
+                $data->perihal_surat = $request->perihal_surat;
 
                 TujuanSurat::create([
                     'id_surat_keluar' => $data->id_surat_keluar,
@@ -227,11 +294,13 @@ class SuratKeluarController extends Controller
         // button Revisi akan tampil bila bukan si pembuat surat keluar
         $showBtnMemo = ($auth['nip'] != $surat_keluar->nip_author)
             && ($auth['kode_jabatan'] == $kjt_terakhir)
+            && (strtolower($surat_keluar->status) != 'selesai')
             && !$isRevisi;
 
         // button tte akan tampil bila kode jabatan <= 6
         $showBtnTte = strlen($auth['kode_jabatan']) <= 6
             && ($auth['kode_jabatan'] == $kjt_terakhir)
+            && (strtolower($surat_keluar->status) != 'selesai')
             && !$isRevisi;
 
         // button edit muncul hanya saat ada revisi saja dan yang bisa
@@ -291,9 +360,27 @@ class SuratKeluarController extends Controller
         /** @var SuratKeluar $surat_keluar */
         $surat_keluar = SuratKeluar::find($id);
 
+        $klasifikasiSurat = KlasifikasiSurat::selectRaw(implode(',', [
+            "CONCAT(kode_klasifikasi,'-',id_klasifikasi) as id",
+            'nama_klasifikasi as label',
+            'parent_kode',
+        ]))->get()->sortBy('parent_kode')
+            ->sortByDesc('label')->toArray();
+
+        $parent = array_values(array_filter(
+            $klasifikasiSurat, fn($d) => $d['parent_kode'] == null
+        ));
+
+        $kode_klasifikasi = $this->klasifikasiSurat($parent, $klasifikasiSurat);
+
         $jenis_surat = JenisSurat::selectRaw(implode(',', [
             "id_jenis_surat as value",
-            "CONCAT(kode_surat,' - ',nama_jenis_surat) as text"
+            "nama_jenis_surat as text"
+        ]))->get();
+
+        $opd_bidang = OPDBidang::selectRaw(implode(',', [
+            "CONCAT(id_opd,'-',id_opd_bidang) as value",
+            "nama_opd_bidang as text"
         ]))->get();
 
         $opd = collect(ExtApi::listOpd())->map(fn($data) => [
@@ -310,8 +397,9 @@ class SuratKeluarController extends Controller
             'value' => compact(
                 'jenis_surat',
                 'opd',
-                'surat_keluar'
-//                'tujuan_surat',
+                'surat_keluar',
+                'kode_klasifikasi',
+                'opd_bidang'
             )
         ];
     }
@@ -331,71 +419,84 @@ class SuratKeluarController extends Controller
         /** @var SuratKeluar $surat_keluar */
         $surat_keluar = SuratKeluar::find($id);
 
-        $surat_keluar->id_jenis_surat = $request->id_jenis_surat;
-        $surat_keluar->perihal_surat = $request->perihal_surat;
-        $surat_keluar->isi_surat_ringkas = $request->isi_surat_ringkas;
-        $surat_keluar->kategori_surat = $request->kategori_surat;
-        $surat_keluar->karakteristik_surat = $request->karakteristik_surat;
-        $surat_keluar->derajat_surat = $request->derajat_surat;
+        if ($request->has([
+            'kode_klasifikasi',
+            'opd_bidang',
+            'id_jenis_surat',
+            'perihal_surat',
+            'isi_surat_ringkas',
+            'kategori_surat',
+            'karakteristik_surat',
+            'derajat_surat',
+        ])) {
+            $surat_keluar->kode_klasifikasi = $request->kode_klasifikasi;
+            $surat_keluar->opd_bidang = $request->opd_bidang;
+            $surat_keluar->id_jenis_surat = $request->id_jenis_surat;
+            $surat_keluar->perihal_surat = $request->perihal_surat;
+            $surat_keluar->isi_surat_ringkas = $request->isi_surat_ringkas;
+            $surat_keluar->kategori_surat = $request->kategori_surat;
+            $surat_keluar->karakteristik_surat = $request->karakteristik_surat;
+            $surat_keluar->derajat_surat = $request->derajat_surat;
 
-        if ($request->hasFile('lampiran')) {
-            $original_filename = $request->file('lampiran')->getClientOriginalName();
-            $original_filename_arr = explode('.', $original_filename);
-            $file_ext = end($original_filename_arr);
-            $destination_path = './suratkeluar/';
-            $namasurat = 'SuratKeluar-' . $auth_sinergi['id_opd'] . '-' . time() . '.' . $file_ext;
+            if ($request->hasFile('lampiran')) {
+                $original_filename = $request->file('lampiran')->getClientOriginalName();
+                $original_filename_arr = explode('.', $original_filename);
+                $file_ext = end($original_filename_arr);
+                $destination_path = './suratkeluar/';
+                $namasurat = 'SuratKeluar-' . $auth_sinergi['id_opd'] . '-' . time() . '.' . $file_ext;
 
-            if ($request->file('lampiran')->move($destination_path, $namasurat)) {
-                $old_name = $surat_keluar->lampiran;
-                $surat_keluar->lampiran = $namasurat;
-                // hapus file lama
-                @unlink($destination_path . $old_name);
+                if ($request->file('lampiran')->move($destination_path, $namasurat)) {
+                    $old_name = $surat_keluar->lampiran;
+                    $surat_keluar->lampiran = $namasurat;
+                    // hapus file lama
+                    @unlink($destination_path . $old_name);
+                }
+            }
+
+            $penerima = $request->file('penerima_surat')->get();
+            $penerima_arr = json_decode($penerima, true);
+
+            /** @var TujuanSurat $tujuanSurat */
+            $tujuanSurat = TujuanSurat::where('id_surat_keluar', $id)->first();
+            $tujuanSurat->tujuan = $penerima_arr;
+            $tujuanSurat->save();
+
+            /*
+             * Mencari nama_jabatan berdasarkan kode jabatan terusan index terakhir
+             * data yang di cari dari dalam histori surat
+             */
+            $kjt = $surat_keluar->kode_jabatan_terusan;
+            $historis = $surat_keluar->histori_surat;
+
+            $nama_jabatan = null;
+            foreach ($historis as $history) {
+                if ($history['kode_jabatan'] == end($kjt)) {
+                    $nama_jabatan = $history['nama_jabatan'];
+                    break;
+                }
+            }
+
+            $surat_keluar->status = 'Diajukan Kpd. ' . $nama_jabatan;
+            $surat_keluar->catatan = '(Telah Direvisi). ' . $surat_keluar->catatan;
+
+            if ($surat_keluar->save()) {
+                //update histori
+                $this->updateHistori(
+                    $surat_keluar->id_surat_keluar,
+                    $surat_keluar->status,
+                    $auth_sinergi['nip'],
+                    $auth_sinergi['nama_pegawai'],
+                    $auth_sinergi['nama_jabatan'],
+                    $auth_sinergi['kode_jabatan'],
+                    ""
+                );
+
+                return [
+                    'value' => $surat_keluar,
+                    'msg' => "{$this->title} #{$id} berhasil diperbarui"
+                ];
             }
         }
-
-        $penerima = $request->file('penerima_surat')->get();
-        $penerima_arr = json_decode($penerima, true);
-
-        /** @var TujuanSurat $tujuanSurat */
-        $tujuanSurat = TujuanSurat::where('id_surat_keluar', $id)->first();
-        $tujuanSurat->tujuan = $penerima_arr;
-        $tujuanSurat->save();
-
-        /*
-         * Mencari nama_jabatan berdasarkan kode jabatan terusan index terakhir
-         * data yang di cari dari dalam histori surat
-         */
-        $kjt = $surat_keluar->kode_jabatan_terusan;
-        $historis = $surat_keluar->histori_surat;
-
-        $nama_jabatan = null;
-        foreach ($historis as $history) {
-            if ($history['kode_jabatan'] == end($kjt)) {
-                $nama_jabatan = $history['nama_jabatan'];
-                break;
-            }
-        }
-
-        $surat_keluar->status = 'Diajukan Kpd. ' . $nama_jabatan;
-
-        if ($surat_keluar->save()) {
-            //update histori
-            $this->updateHistori(
-                $surat_keluar->id_surat_keluar,
-                $surat_keluar->status,
-                $auth_sinergi['nip'],
-                $auth_sinergi['nama_pegawai'],
-                $auth_sinergi['nama_jabatan'],
-                $auth_sinergi['kode_jabatan'],
-                ""
-            );
-
-            return [
-                'value' => $surat_keluar,
-                'msg' => "{$this->title} #{$id} berhasil diperbarui"
-            ];
-        }
-
         return [
             'value' => [],
             'msg' => "{$this->title} #{$id} gagal diperbarui"
@@ -446,7 +547,7 @@ class SuratKeluarController extends Controller
 
             /*@ If already PDF exists then delete it */
             if (file_exists($savePdfPath)) {
-                unlink($savePdfPath);
+                @unlink($savePdfPath);
             }
 
             //generate qrcode
@@ -460,7 +561,9 @@ class SuratKeluarController extends Controller
 
             //get nomor surat terakhir
             $dataNomorSurat = new FormatPenomoranSuratController();
-            $nomor_surat = $dataNomorSurat->getNomorSurat($data['id_opd'],$data['kode_klasifikasi'],$data['opd_bidang']);
+            $tmp_kk = explode('-',$data['kode_klasifikasi']);
+            $tmp_ob = explode('-',$data['opd_bidang']);
+            $nomor_surat = $dataNomorSurat->getNomorSurat($data['id_opd'], $tmp_kk[0], $tmp_ob[0]);
 
             //update template
             $template = new \PhpOffice\PhpWord\TemplateProcessor('./suratkeluar/' . $data['lampiran'] . '');
@@ -471,7 +574,7 @@ class SuratKeluarController extends Controller
 
             //update data format penomoran surat, nomor urut terakhir berubah jadi nomor yang telah dipakai
             $requestPenomoran = new Request(["nomor_urut_terakhir" => $nomor_surat['nomor_urut']]);
-            $dataNomorSurat->update($requestPenomoran,$nomor_surat['id_format_penomoran']);
+            $dataNomorSurat->update($requestPenomoran, $nomor_surat['id_format_penomoran']);
 
             if ($request->has('hash_tte')) {
 
@@ -496,7 +599,7 @@ class SuratKeluarController extends Controller
 
             //convert to pdf
             $cmd = [
-                '/Applications/LibreOffice.app/Contents/MacOS/soffice',
+                'soffice',
                 '--headless',
                 '--convert-to pdf',
                 $public_path . 'suratkeluar_validasi/' . $data['lampiran'] . '/',
@@ -507,6 +610,7 @@ class SuratKeluarController extends Controller
 
             //update surat keluar
             $data->status = 'Selesai';
+            $data->catatan = null;
             $file = explode('.', $data['lampiran']);
             $data->lampiran = $file[0] . '.pdf';
             $data->save();
@@ -520,15 +624,9 @@ class SuratKeluarController extends Controller
                 ""
             );
 
-            return [
-                'value' => $data,
-                'msg' => "Surat Keluar Berhasil Disetujui"
-            ];
+            return "Surat Keluar Berhasil Disetujui";
         } else {
-            return [
-                'value' => $data,
-                'msg' => "Gagal, Status Surat Keluar Telah Selesai"
-            ];
+            return "Gagal, Status Surat Keluar Telah Selesai";
         }
     }
 
@@ -625,7 +723,7 @@ class SuratKeluarController extends Controller
                 $dataSurat->catatan
             );
 
-            return "Berhasil ditolak dengan catatan " . $request->catatan;
+            return "Berhasil mengirim permintaan revisi surat";
         }
     }
 

@@ -76,7 +76,7 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="">
+                <v-list-item @click="showDialog.acc=true">
                   <v-list-item-title>
                     Hanya Setujui
                   </v-list-item-title>
@@ -99,6 +99,24 @@
               Revisi <v-icon>mdi-pen</v-icon>
             </v-btn>
           </div>
+          <v-card
+            v-if="!!surat_keluar.catatan"
+            class="mx-auto"
+            outlined
+            elevation="1"
+            :style="'border-radius:7px;border:1px solid '+(surat_keluar.status.toLowerCase().includes('revisi')?'#e91e63':'#4caf50')"
+          >
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title class="mb-1 font-weight-bold">
+                  {{ surat_keluar.status }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ surat_keluar.catatan }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-card>
           <v-card
             class="px-md-3 mt-3"
           >
@@ -343,6 +361,47 @@
       </v-card>
     </v-dialog>
     <v-dialog
+      v-model="showDialog.acc"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title
+          class="py-3"
+          style="border-bottom: 2px solid #eee;"
+        >
+          Konfirmasi
+        </v-card-title>
+        <v-card-text
+          class="py-5 text-h"
+          style="font-size: 14pt"
+        >
+          Apakah anda yakin akan menyetujui document ini ?
+        </v-card-text>
+        <v-card-actions style="background: #eee">
+          <v-spacer />
+          <v-btn
+            :loading="loading.acc"
+            :disabled="loading.acc"
+            color="primary"
+            class="mr-1 my-2 px-10 text-capitalize"
+            large
+            @click="hanyaSetujui()"
+          >
+            Proses
+          </v-btn>
+          <v-btn
+            color="error"
+            class="mr-2 my-2 px-10 text-capitalize"
+            large
+            :disabled="loading.acc"
+            @click="showDialog.acc=false"
+          >
+            Kembali
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
       v-model="showDialog.teruskan"
       max-width="600"
     >
@@ -509,9 +568,10 @@ export default {
         hash_tte: null
       },
       items: { teruskan: [], memo: [] },
-      showDialog: { teruskan: false, memo: false, tte: false },
+      showDialog: { teruskan: false, memo: false, tte: false, acc: false },
       errorResponse: false,
       loading: {
+        acc: false,
         tte: false,
         teruskan: false,
         kembalikan: false
@@ -567,6 +627,15 @@ export default {
         this.showToast = true
         this.toastMsg = d
         this.showDialog.tte = false
+      })
+    },
+    hanyaSetujui () {
+      this.loading.acc = true
+      this.tteSuratKeluar({ id_surat_keluar: this.id }).then(d => {
+        this.loading.acc = false
+        this.showToast = true
+        this.toastMsg = d
+        this.showDialog.acc = false
       })
     },
     teruskanSurat () {

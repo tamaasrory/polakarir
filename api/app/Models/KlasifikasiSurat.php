@@ -18,24 +18,24 @@ class KlasifikasiSurat extends SelfModel
 
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'tb_klasifikasi';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id_klasifikasi';
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
-    protected $fillable = ['kode_klasifikasi','nama_klasifikasi', 'parent_kode', 'created_at', 'updated_at'];
+    protected $fillable = ['kode_klasifikasi', 'nama_klasifikasi', 'parent_kode', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
-     * 
+     *
      * @var array
      */
-    public $searchable = ['kode_klasifikasi','nama_klasifikasi', 'parent_kode', 'created_at', 'updated_at'];
+    public $searchable = ['kode_klasifikasi', 'nama_klasifikasi', 'parent_kode', 'created_at', 'updated_at'];
 
 }

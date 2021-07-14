@@ -27,7 +27,54 @@
         <v-col
           md="8"
         >
-          <v-row class="pt-6 pt-md-8 pb-md-0 px-2">
+          <v-row class="pt-6 pt-md-8 pb-md-8 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Klasifikasi Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <vue-treeselect
+                v-model="surat_keluar.kode_klasifikasi"
+                :options="items.kode_klasifikasi"
+                :required="true"
+                placeholder="Pilih Klasifikasi Surat"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                OPD Bidang
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.opd_bidang"
+                :items="items.opd_bidang"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
             <v-col
               cols="12"
               md="4"
@@ -116,6 +163,29 @@
                 outlined
                 class="bpp-input-md bpp-rounded-12"
                 :items="items.kepada"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Perihal Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-text-field
+                v-model="surat_keluar.perihal_surat"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
                 :rules="[rules.required]"
               />
             </v-col>
@@ -247,27 +317,6 @@
             </v-col>
           </v-row>
           <v-row class="pt-0 pt-md-0 px-2">
-            <v-col
-              cols="12"
-              md="4"
-              class="py-0"
-            >
-              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Perihal Surat
-              </h4>
-            </v-col>
-            <v-col
-              cols="12"
-              md="8"
-              class="py-0"
-            >
-              <v-text-field
-                v-model="surat_keluar.perihal_surat"
-                outlined
-                class="bpp-input-md bpp-rounded-12"
-                :rules="[rules.required]"
-              />
-            </v-col>
             <v-col
               cols="12"
               md="4"
@@ -602,10 +651,13 @@
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
 import { inputValidator, isEmpty } from '@/plugins/supports'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
   components: {
-    'dialog-confirm': Dialog
+    'dialog-confirm': Dialog,
+    'vue-treeselect': Treeselect
   },
   data () {
     return {
@@ -613,6 +665,8 @@ export default {
       surat_keluar: {
         id_opd: 0,
         kepada: null,
+        kode_klasifikasi: null,
+        opd_bidang: null,
         id_jenis_surat: null,
         penerima_surat: [],
         kategori_surat: null,
@@ -638,11 +692,15 @@ export default {
         esselon: [],
         pegawai: [],
         datas: [],
-        kepada: []
+        kepada: [],
+        kode_klasifikasi: [],
+        opd_bidang: []
       },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
+        kode_klasifikasi: 'required',
+        opd_bidang: 'required',
         id_jenis_surat: 'required',
         id_opd: 'required',
         kategori_surat: 'required',
@@ -746,6 +804,8 @@ export default {
     this.createSuratKeluar().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.items.opd = isEmpty(data.opd, [])
+      this.items.opd_bidang = isEmpty(data.opd_bidang, [])
+      this.items.kode_klasifikasi = isEmpty(data.kode_klasifikasi, [])
       this.items.kepada = isEmpty(data.kepada, [])
     })
   },
@@ -929,5 +989,21 @@ export default {
 <style>
 .theme--light.v-data-table.v-data-table--fixed-header thead th {
   background-color: #eee !important;
+}
+
+.vue-treeselect__control {
+  min-height: 56px !important;
+  border-radius: 12px;
+  border-color: #9e9e9e !important;
+}
+.vue-treeselect__placeholder, .vue-treeselect__single-value{
+  top:10px !important;
+}
+.vue-treeselect__control-arrow {
+  color: #757575 !important;
+  margin-right: 25px;
+}
+.vue-treeselect__x-container{
+  color: #757575 !important;
 }
 </style>

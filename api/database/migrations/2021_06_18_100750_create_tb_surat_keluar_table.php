@@ -30,7 +30,7 @@ class CreateTbSuratKeluarTable extends Migration
             $table->string('derajat_surat', 40);
             $table->text('catatan')->nullable();
             $table->text('lampiran');
-            $table->string('status', 30);
+            $table->string('status', 100);
             $table->json('histori_surat')->nullable();
             $table->timestamps();
         });

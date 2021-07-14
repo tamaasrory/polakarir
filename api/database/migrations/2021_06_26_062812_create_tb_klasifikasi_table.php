@@ -14,7 +14,7 @@ class CreateTbKlasifikasiTable extends Migration
     public function up()
     {
         Schema::create('tb_klasifikasi', function (Blueprint $table) {
-            $table->id('id');
+            $table->id('id_klasifikasi');
             $table->string('kode_klasifikasi',50);
             $table->string('nama_klasifikasi',200);
             $table->string('parent_kode',50)->nullable();

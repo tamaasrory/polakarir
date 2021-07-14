@@ -41,7 +41,54 @@
         <v-col
           md="8"
         >
-          <v-row class="pt-6 pt-md-8 pb-md-0 px-2">
+          <v-row class="pt-6 pt-md-8 pb-md-8 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Klasifikasi Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <vue-treeselect
+                v-model="surat_keluar.kode_klasifikasi"
+                :options="items.kode_klasifikasi"
+                :required="true"
+                placeholder="Pilih Klasifikasi Surat"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                OPD Bidang
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.opd_bidang"
+                :items="items.opd_bidang"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
             <v-col
               cols="12"
               md="4"
@@ -110,6 +157,29 @@
               </v-col>
             </v-row>
           </v-slide-y-transition>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Perihal Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-text-field
+                v-model="surat_keluar.perihal_surat"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
           <v-row class="pt-6 pt-md-0 px-2">
             <v-col
               cols="12"
@@ -243,27 +313,6 @@
               class="py-0"
             >
               <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Perihal Surat
-              </h4>
-            </v-col>
-            <v-col
-              cols="12"
-              md="8"
-              class="py-0"
-            >
-              <v-text-field
-                v-model="surat_keluar.perihal_surat"
-                outlined
-                class="bpp-input-md bpp-rounded-12"
-                :rules="[rules.required]"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-              class="py-0"
-            >
-              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
                 Lampiran
               </h4>
             </v-col>
@@ -275,6 +324,7 @@
               <v-file-input
                 v-model="surat_keluar.lampiran"
                 prepend-inner-icon="mdi-paperclip"
+                messages="* kosongkan bila tidak ada perubahan pada lampiran"
                 :prepend-icon="null"
                 outlined
                 class="bpp-input-md bpp-rounded-12"
@@ -592,10 +642,13 @@
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
 import { inputValidator, isEmpty } from '@/plugins/supports'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
   components: {
-    'update-dialog': Dialog
+    'update-dialog': Dialog,
+    'vue-treeselect': Treeselect
   },
   props: {
     id: { type: [String, Number], required: true }
@@ -606,6 +659,8 @@ export default {
       surat_keluar: {
         id_surat_keluar: null,
         pilih_opd: null,
+        kode_klasifikasi: null,
+        opd_bidang: null,
         id_jenis_surat: null,
         penerima_surat: [],
         kategori_surat: null,
@@ -630,11 +685,15 @@ export default {
         jabatan: [],
         esselon: [],
         pegawai: [],
-        datas: []
+        datas: [],
+        kode_klasifikasi: [],
+        opd_bidang: []
       },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
+        kode_klasifikasi: 'required',
+        opd_bidang: 'required',
         id_jenis_surat: 'required',
         kategori_surat: 'required',
         penerima_surat: 'required',
@@ -665,7 +724,7 @@ export default {
       return inputValidator(this.schema, this.rules, this.surat_keluar)
     },
     showTujuanSurat () {
-      if (isEmpty(this.surat_keluar)) {
+      if (!isEmpty(this.surat_keluar)) {
         const len = this.surat_keluar.penerima_surat.length
         if (len > 0) {
           const dll = len > 1 ? `, ... (+${len - 1})` : ''
@@ -738,8 +797,9 @@ export default {
     this.editSuratKeluar({ id: this.id }).then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.surat_keluar = isEmpty(data.surat_keluar, {})
-      console.log(JSON.stringify(this.surat_keluar))
       this.items.opd = isEmpty(data.opd, [])
+      this.items.opd_bidang = isEmpty(data.opd_bidang, [])
+      this.items.kode_klasifikasi = isEmpty(data.kode_klasifikasi, [])
       this.loadingData = false
     })
   },
@@ -924,5 +984,21 @@ export default {
 }
 .theme--light.v-data-table.v-data-table--fixed-header thead th {
   background-color: #eee !important;
+}
+
+.vue-treeselect__control {
+  min-height: 56px !important;
+  border-radius: 12px;
+  border-color: #9e9e9e !important;
+}
+.vue-treeselect__placeholder, .vue-treeselect__single-value{
+  top:10px !important;
+}
+.vue-treeselect__control-arrow {
+  color: #757575 !important;
+  margin-right: 25px;
+}
+.vue-treeselect__x-container{
+  color: #757575 !important;
 }
 </style>
