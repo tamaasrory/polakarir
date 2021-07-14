@@ -41,7 +41,54 @@
         <v-col
           md="8"
         >
-          <v-row class="pt-6 pt-md-8 pb-md-0 px-2">
+          <v-row class="pt-6 pt-md-8 pb-md-8 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Klasifikasi Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <vue-treeselect
+                v-model="surat_keluar.kode_klasifikasi"
+                :options="items.kode_klasifikasi"
+                :required="true"
+                placeholder="Pilih Klasifikasi Surat"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                OPD Bidang
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.opd_bidang"
+                :items="items.opd_bidang"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
             <v-col
               cols="12"
               md="4"
@@ -65,6 +112,51 @@
               />
             </v-col>
           </v-row>
+          <v-slide-y-transition>
+            <v-row
+              v-show="surat_keluar.kategori_surat !=='eksternal'"
+              class="pt-0 pt-md-0 px-2"
+            >
+              <v-col
+                cols="12"
+                md="4"
+                class="py-0"
+              >
+                <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                  Tujuan Surat
+                </h4>
+              </v-col>
+              <v-col
+                cols="12"
+                md="5"
+                class="py-0"
+              >
+                <v-text-field
+                  v-model="showTujuanSurat"
+                  readonly
+                  outlined
+                  class="bpp-input-md bpp-rounded-12"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
+                class="py-0"
+              >
+                <v-btn
+                  color="#2d62ed"
+                  dark
+                  block
+                  large
+                  min-height="50"
+                  class="bpp-rounded-12"
+                  @click="tmp.showDialogTujuan=true"
+                >
+                  Pilih Tujuan
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-slide-y-transition>
           <v-row class="pt-0 pt-md-0 px-2">
             <v-col
               cols="12"
@@ -72,37 +164,20 @@
               class="py-0"
             >
               <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Tujuan Surat
+                Perihal Surat
               </h4>
             </v-col>
             <v-col
               cols="12"
-              md="5"
+              md="8"
               class="py-0"
             >
               <v-text-field
-                v-model="showTujuanSurat"
-                readonly
+                v-model="surat_keluar.perihal_surat"
                 outlined
                 class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
               />
-            </v-col>
-            <v-col
-              cols="12"
-              md="3"
-              class="py-0"
-            >
-              <v-btn
-                color="#2d62ed"
-                dark
-                block
-                large
-                min-height="50"
-                class="bpp-rounded-12"
-                @click="tmp.showDialogTujuan=true"
-              >
-                Pilih Tujuan
-              </v-btn>
             </v-col>
           </v-row>
           <v-row class="pt-6 pt-md-0 px-2">
@@ -238,27 +313,6 @@
               class="py-0"
             >
               <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Perihal Surat
-              </h4>
-            </v-col>
-            <v-col
-              cols="12"
-              md="8"
-              class="py-0"
-            >
-              <v-text-field
-                v-model="surat_keluar.perihal_surat"
-                outlined
-                class="bpp-input-md bpp-rounded-12"
-                :rules="[rules.required]"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-              class="py-0"
-            >
-              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
                 Lampiran
               </h4>
             </v-col>
@@ -270,6 +324,7 @@
               <v-file-input
                 v-model="surat_keluar.lampiran"
                 prepend-inner-icon="mdi-paperclip"
+                messages="* kosongkan bila tidak ada perubahan pada lampiran"
                 :prepend-icon="null"
                 outlined
                 class="bpp-input-md bpp-rounded-12"
@@ -336,7 +391,7 @@
                 class="pt-7 pt-md-6 pb-0"
               >
                 <v-autocomplete
-                  v-model="surat_keluar.id_opd"
+                  v-model="surat_keluar.pilih_opd"
                   :items="items.opd"
                   label="OPD"
                   outlined
@@ -363,7 +418,7 @@
                 </div>
               </v-col>
               <v-col
-                v-show="tmp.opd_selected"
+                v-if="tmp.opd_selected"
                 cols="12"
                 md="12"
                 class="pb-0"
@@ -391,7 +446,7 @@
                     class="py-0"
                   >
                     <v-autocomplete
-                      v-model="tmp.jabatan[surat_keluar.id_opd]"
+                      v-model="tmp.jabatan[surat_keluar.pilih_opd]"
                       :items="items.jabatan"
                       label="Pilih Berdasarkan Jabatan"
                       outlined
@@ -442,7 +497,7 @@
                     class="py-0"
                   >
                     <v-autocomplete
-                      v-model="tmp.pegawai[surat_keluar.id_opd]"
+                      v-model="tmp.pegawai[surat_keluar.pilih_opd]"
                       :items="items.pegawai"
                       label="Pilih Berdasarkan Nama Pegawai"
                       multiple
@@ -493,7 +548,7 @@
                     class="py-0"
                   >
                     <v-autocomplete
-                      v-model="tmp.esselon[surat_keluar.id_opd]"
+                      v-model="tmp.esselon[surat_keluar.pilih_opd]"
                       :items="items.esselon"
                       label="Pilih Berdasarkan Esselon"
                       multiple
@@ -540,7 +595,7 @@
                 </v-row>
               </v-col>
               <v-col
-                v-show="tmp.opd_selected"
+                v-show="tmp.opd_selected || !!(showDataTerpilih.length)"
                 cols="12"
                 md="12"
                 class="pt-3 pb-5"
@@ -553,6 +608,16 @@
                   class="elevation-1"
                   no-data-text="Belum ada tujuan yang dipilih"
                 >
+                  <template #item.value="{item}">
+                    <v-btn
+                      icon
+                      @click="removeDt(item)"
+                    >
+                      <v-icon color="#d81b60">
+                        mdi-delete
+                      </v-icon>
+                    </v-btn>
+                  </template>
                 </v-data-table>
               </v-col>
             </v-row>
@@ -577,10 +642,13 @@
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
 import { inputValidator, isEmpty } from '@/plugins/supports'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
   components: {
-    'update-dialog': Dialog
+    'update-dialog': Dialog,
+    'vue-treeselect': Treeselect
   },
   props: {
     id: { type: [String, Number], required: true }
@@ -590,7 +658,9 @@ export default {
       loadingData: true,
       surat_keluar: {
         id_surat_keluar: null,
-        id_opd: 0,
+        pilih_opd: null,
+        kode_klasifikasi: null,
+        opd_bidang: null,
         id_jenis_surat: null,
         penerima_surat: [],
         kategori_surat: null,
@@ -609,12 +679,22 @@ export default {
         loadingOpd: false,
         showDialogTujuan: false
       },
-      items: { jenis_surat: [], opd: [], jabatan: [], esselon: [], pegawai: [], datas: [] },
+      items: {
+        jenis_surat: [],
+        opd: [],
+        jabatan: [],
+        esselon: [],
+        pegawai: [],
+        datas: [],
+        kode_klasifikasi: [],
+        opd_bidang: []
+      },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
+        kode_klasifikasi: 'required',
+        opd_bidang: 'required',
         id_jenis_surat: 'required',
-        id_opd: 'required',
         kategori_surat: 'required',
         penerima_surat: 'required',
         karakteristik_surat: 'required',
@@ -644,7 +724,7 @@ export default {
       return inputValidator(this.schema, this.rules, this.surat_keluar)
     },
     showTujuanSurat () {
-      if (isEmpty(this.surat_keluar)) {
+      if (!isEmpty(this.surat_keluar)) {
         const len = this.surat_keluar.penerima_surat.length
         if (len > 0) {
           const dll = len > 1 ? `, ... (+${len - 1})` : ''
@@ -664,19 +744,19 @@ export default {
     },
     currentJabatan () {
       if (!isEmpty(this.tmp.jabatan)) {
-        return this.tmp.jabatan[this.surat_keluar.id_opd]
+        return this.tmp.jabatan[this.surat_keluar.pilih_opd]
       }
       return []
     },
     currentEsselon () {
       if (!isEmpty(this.tmp.esselon)) {
-        return this.tmp.esselon[this.surat_keluar.id_opd]
+        return this.tmp.esselon[this.surat_keluar.pilih_opd]
       }
       return []
     },
     currentPegawai () {
       if (!isEmpty(this.tmp.pegawai)) {
-        return this.tmp.pegawai[this.surat_keluar.id_opd]
+        return this.tmp.pegawai[this.surat_keluar.pilih_opd]
       }
       return []
     },
@@ -704,7 +784,7 @@ export default {
         { text: 'OPD', value: 'opd' },
         { text: 'Jabatan', value: 'nama_jabatan' },
         { text: 'Esselon', value: 'esselon' },
-        { text: 'Aksi', value: 'aksi', align: 'center' }
+        { text: 'Aksi', value: 'value', align: 'center' }
       ]
     }
   },
@@ -717,30 +797,34 @@ export default {
     this.editSuratKeluar({ id: this.id }).then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.surat_keluar = isEmpty(data.surat_keluar, {})
-      this.surat_keluar.penerima_surat = isEmpty(data.surat_keluar.penerima_surat, [])
       this.items.opd = isEmpty(data.opd, [])
+      this.items.opd_bidang = isEmpty(data.opd_bidang, [])
+      this.items.kode_klasifikasi = isEmpty(data.kode_klasifikasi, [])
       this.loadingData = false
     })
   },
   methods: {
     ...mapActions(['updateSuratKeluar', 'editSuratKeluar', 'getPegawaiByOpd']),
     remove (item, key) {
-      const index = this.tmp[key][this.surat_keluar.id_opd].indexOf(item)
-      if (index >= 0) this.tmp[key][this.surat_keluar.id_opd].splice(index, 1)
+      const index = this.tmp[key][this.surat_keluar.pilih_opd].indexOf(item)
+      if (index >= 0) this.tmp[key][this.surat_keluar.pilih_opd].splice(index, 1)
     },
     removeDt (key) {
+      console.log(JSON.stringify(key))
       const index = this.surat_keluar.penerima_surat.indexOf(key)
+      console.log('index => ', index)
       if (index >= 0) this.surat_keluar.penerima_surat.splice(index, 1)
+      console.log('penerima_surat => ', JSON.stringify(this.surat_keluar.penerima_surat))
     },
     togglejabatan () {
       this.$nextTick(() => {
         this.onChangeJabatan()
         if (!this.selectedAllJabatan) {
-          this.tmp.jabatan[this.surat_keluar.id_opd] = this.items.jabatan.map(d => {
+          this.tmp.jabatan[this.surat_keluar.pilih_opd] = this.items.jabatan.map(d => {
             return d.value
           })
         } else {
-          this.tmp.jabatan[this.surat_keluar.id_opd] = []
+          this.tmp.jabatan[this.surat_keluar.pilih_opd] = []
         }
       })
     },
@@ -748,11 +832,11 @@ export default {
       this.$nextTick(() => {
         this.onChangeEsselon()
         if (!this.selectedAllEsselon) {
-          this.tmp.esselon[this.surat_keluar.id_opd] = this.items.esselon.map(d => {
+          this.tmp.esselon[this.surat_keluar.pilih_opd] = this.items.esselon.map(d => {
             return d.value
           })
         } else {
-          this.tmp.esselon[this.surat_keluar.id_opd] = []
+          this.tmp.esselon[this.surat_keluar.pilih_opd] = []
         }
       })
     },
@@ -760,11 +844,11 @@ export default {
       this.$nextTick(() => {
         this.onChangePegawai()
         if (!this.selectedAllPegawai) {
-          this.tmp.pegawai[this.surat_keluar.id_opd] = this.items.pegawai.map(d => {
+          this.tmp.pegawai[this.surat_keluar.pilih_opd] = this.items.pegawai.map(d => {
             return d.value
           })
         } else {
-          this.tmp.pegawai[this.surat_keluar.id_opd] = []
+          this.tmp.pegawai[this.surat_keluar.pilih_opd] = []
         }
       })
     },
@@ -781,7 +865,7 @@ export default {
       this.onChange()
     },
     onChange () {
-      for (const d of this.tmp[this.tmp.tujuan][this.surat_keluar.id_opd]) {
+      for (const d of this.tmp[this.tmp.tujuan][this.surat_keluar.pilih_opd]) {
         for (const data of this.items.datas) {
           if (d.indexOf(data.kode_jabatan) > -1) {
             let o = ''
@@ -792,7 +876,14 @@ export default {
               }
             }
             data.opd = o
-            if (this.surat_keluar.penerima_surat.indexOf(data) === -1) {
+            let boolNotSame = true
+            for (const asn of this.surat_keluar.penerima_surat) {
+              if (asn.kode_jabatan === data.kode_jabatan) {
+                boolNotSame = false
+                break
+              }
+            }
+            if (boolNotSame) {
               this.surat_keluar.penerima_surat.push(data)
             }
           }
@@ -808,7 +899,7 @@ export default {
       this.items.pegawai = []
       this.tmp.opd_selected = false
       this.tmp.loadingOpd = true
-      this.getPegawaiByOpd({ id_opd: this.surat_keluar.id_opd })
+      this.getPegawaiByOpd({ id_opd: this.surat_keluar.pilih_opd })
         .then(data => {
           this.items.datas = isEmpty(data, [])
           const collectEsselon = []
@@ -854,12 +945,10 @@ export default {
       const formData = new FormData()
 
       /* Add the form data we need to submit */
-      const penerimaSurat = this.surat_keluar.penerima_surat.map(data => {
-        return data.kode_jabatan
-      })
 
       formData.append('penerima_surat',
-        new Blob([JSON.stringify(penerimaSurat)], { type: 'application/json' }))
+        new Blob([JSON.stringify(this.surat_keluar.penerima_surat)],
+          { type: 'application/json' }))
 
       Object.keys(this.surat_keluar).forEach(d => {
         if (!(['penerima_surat'].includes(d))) {
@@ -880,7 +969,7 @@ export default {
           this.showDC = false
           this.dcdisabledNegativeBtn = false
           this.dcdisabledPositiveBtn = false
-          this.$router.push({ name: 'surat_keluar' })
+          // this.$router.push({ name: 'surat_keluar' })
           this.dcMessages = 'Simpan Perubahan Sekarang?'
         }, 1500)
       })
@@ -895,5 +984,21 @@ export default {
 }
 .theme--light.v-data-table.v-data-table--fixed-header thead th {
   background-color: #eee !important;
+}
+
+.vue-treeselect__control {
+  min-height: 56px !important;
+  border-radius: 12px;
+  border-color: #9e9e9e !important;
+}
+.vue-treeselect__placeholder, .vue-treeselect__single-value{
+  top:10px !important;
+}
+.vue-treeselect__control-arrow {
+  color: #757575 !important;
+  margin-right: 25px;
+}
+.vue-treeselect__x-container{
+  color: #757575 !important;
 }
 </style>

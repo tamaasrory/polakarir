@@ -9,18 +9,20 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.4.0",
         "ext-curl": "*",
         "ext-imagick": "*",
         "ext-json": "*",
         "barryvdh/laravel-dompdf": "^0.8.6",
         "endroid/qr-code": "^4.1",
         "firebase/php-jwt": "^5.2",
+        "illuminate/redis": "^8.49",
         "intervention/image": "^2.5",
         "laravel/legacy-factories": "^1.1",
         "laravel/lumen-framework": "^8.0",
         "league/flysystem": "^1.0",
         "phpoffice/phpword": "^0.18.2",
+        "predis/predis": "^1.1",
         "spatie/laravel-permission": "^4.0",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "yajra/laravel-datatables": "^1.5"
@@ -68,9 +70,14 @@
             "@php artisan key:generate",
             "@php artisan jwt:secret"
         ],
-
         "serve": [
             "@php artisan serve"
+        ],
+        "db:rebuild": [
+            "@composer dump-autoload",
+            "@php artisan db:wipe",
+            "@php artisan migrate",
+            "@php artisan db:seed"
         ]
     }
 }

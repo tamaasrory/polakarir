@@ -1,0 +1,15 @@
+###Template Surat
+POST http://localhost:7000/api/v1/template-surat/baru
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjYyMTM1MTE4NDg3NCIsImtkaiI6Ii0ifSwiaWF0IjoxNjI1MTgyODM3fQ.dO3gORadzwfKLfTnkhE_X19D6EpASJMqYwG0L57HBYw
+
+
+###Template Surat
+GET http://localhost:7000/api/v1/template-surat/create
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjYyMTM1MTE4NDg3NCIsImtkaiI6Ii0ifSwiaWF0IjoxNjI1MTgyODM3fQ.dO3gORadzwfKLfTnkhE_X19D6EpASJMqYwG0L57HBYw
+
+###Template Surat
+GET http://localhost:7000/api/v1/template-surat/all
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIyMTA2MjYyMTM1MTE4NDg3NCIsImtkaiI6Ii0ifSwiaWF0IjoxNjI1MTgyODM3fQ.dO3gORadzwfKLfTnkhE_X19D6EpASJMqYwG0L57HBYw

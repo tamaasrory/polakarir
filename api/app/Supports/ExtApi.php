@@ -20,8 +20,7 @@ class ExtApi
         if (!isset($tmp['error']) && isset($tmp['result'])) {
             if ($tmp['result'] === 'verified') {
 
-                $request->request->add(['nip' => $tmp['nip']]);
-                $pegawai = self::getPegawaiByNip($request);
+                $pegawai = self::getPegawaiByNip($tmp['nip']);
 
                 if ($pegawai['result']) {
                     $tmp['nama_pegawai'] = $pegawai['nama_pegawai'];
@@ -55,14 +54,14 @@ class ExtApi
     /**
      * Get OPD by id OPD
      *
-     * @param Request $request
+     * @param $id_opd
      * @return array|bool|mixed|string
      */
-    public static function getOpdById(Request $request)
+    public static function getOpdById($id_opd)
     {
         $curl = new Curl();
         $tmp = $curl->get('api_opd',
-            ['id_opd' => $request->input('id_opd')]
+            ['id_opd' => $id_opd]
         );
 
         if (!isset($tmp['error']) && is_array($tmp)) {
@@ -74,12 +73,11 @@ class ExtApi
     /**
      * Get List Pegawai by id OPD
      *
-     * @param Request $request
+     * @param $id_opd
      * @return array|bool|mixed|string
      */
-    public static function listPegawaiByOpd(Request $request)
+    public static function listPegawaiByOpd($id_opd)
     {
-        $id_opd = $request->input('id_opd');
         $curl = new Curl();
         $tmp = $curl->get('api_pegawai',
             ['id_opd' => $id_opd > 0 ? $id_opd : 'all']
@@ -94,14 +92,14 @@ class ExtApi
     /**
      * Get Pegawai by NIP
      *
-     * @param Request $request
+     * @param string $nip
      * @return array|bool|mixed|string
      */
-    public static function getPegawaiByNip(Request $request)
+    public static function getPegawaiByNip($nip)
     {
         $curl = new Curl();
         $tmp = $curl->get('api_pegawai',
-            ['nip' => $request->input('nip')]
+            ['nip' => $nip]
         );
 
         if (!isset($tmp['error']) && !isset($tmp['result'])) {
@@ -115,14 +113,14 @@ class ExtApi
     /**
      * Get Pegawai by Kode Jabatan
      *
-     * @param Request $request
+     * @param $kode_jabatan
      * @return array|bool|mixed|string
      */
-    public static function getPegawaiByKodeJabatan(Request $request)
+    public static function getPegawaiByKodeJabatan($kode_jabatan)
     {
         $curl = new Curl();
         $tmp = $curl->get('api_pegawai',
-            ['kode_jabatan' => $request->input('kj')]
+            ['kode_jabatan' => $kode_jabatan]
         );
 
         if (!isset($tmp['error']) && !isset($tmp['result'])) {

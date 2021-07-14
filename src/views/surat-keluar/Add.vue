@@ -27,7 +27,54 @@
         <v-col
           md="8"
         >
-          <v-row class="pt-6 pt-md-8 pb-md-0 px-2">
+          <v-row class="pt-6 pt-md-8 pb-md-8 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Klasifikasi Surat
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <vue-treeselect
+                v-model="surat_keluar.kode_klasifikasi"
+                :options="items.kode_klasifikasi"
+                :required="true"
+                placeholder="Pilih Klasifikasi Surat"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                OPD Bidang
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-autocomplete
+                v-model="surat_keluar.opd_bidang"
+                :items="items.opd_bidang"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row class="pt-0 pt-md-0 px-2">
             <v-col
               cols="12"
               md="4"
@@ -51,6 +98,75 @@
               />
             </v-col>
           </v-row>
+          <v-slide-y-transition>
+            <v-row
+              v-show="surat_keluar.kategori_surat !=='eksternal'"
+              class="pt-0 pt-md-0 px-2"
+            >
+              <v-col
+                cols="12"
+                md="4"
+                class="py-0"
+              >
+                <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                  Tujuan Surat
+                </h4>
+              </v-col>
+              <v-col
+                cols="12"
+                md="5"
+                class="py-0"
+              >
+                <v-text-field
+                  v-model="showTujuanSurat"
+                  readonly
+                  outlined
+                  class="bpp-input-md bpp-rounded-12"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
+                class="py-0"
+              >
+                <v-btn
+                  color="#2d62ed"
+                  dark
+                  block
+                  large
+                  min-height="50"
+                  class="bpp-rounded-12"
+                  @click="tmp.showDialogTujuan=true"
+                >
+                  Pilih Tujuan
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-slide-y-transition>
+          <v-row class="pt-6 pt-md-0 px-2">
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
+                Kepada
+              </h4>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+              class="py-0"
+            >
+              <v-select
+                v-model="surat_keluar.kepada"
+                outlined
+                class="bpp-input-md bpp-rounded-12"
+                :items="items.kepada"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
           <v-row class="pt-0 pt-md-0 px-2">
             <v-col
               cols="12"
@@ -58,37 +174,20 @@
               class="py-0"
             >
               <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Tujuan Surat
+                Perihal Surat
               </h4>
             </v-col>
             <v-col
               cols="12"
-              md="5"
+              md="8"
               class="py-0"
             >
               <v-text-field
-                v-model="showTujuanSurat"
-                readonly
+                v-model="surat_keluar.perihal_surat"
                 outlined
                 class="bpp-input-md bpp-rounded-12"
+                :rules="[rules.required]"
               />
-            </v-col>
-            <v-col
-              cols="12"
-              md="3"
-              class="py-0"
-            >
-              <v-btn
-                color="#2d62ed"
-                dark
-                block
-                large
-                min-height="50"
-                class="bpp-rounded-12"
-                @click="tmp.showDialogTujuan=true"
-              >
-                Pilih Tujuan
-              </v-btn>
             </v-col>
           </v-row>
           <v-row class="pt-6 pt-md-0 px-2">
@@ -218,27 +317,6 @@
             </v-col>
           </v-row>
           <v-row class="pt-0 pt-md-0 px-2">
-            <v-col
-              cols="12"
-              md="4"
-              class="py-0"
-            >
-              <h4 class="bpp-label mt-0 mb-2 mt-md-3 mb-md-4">
-                Perihal Surat
-              </h4>
-            </v-col>
-            <v-col
-              cols="12"
-              md="8"
-              class="py-0"
-            >
-              <v-text-field
-                v-model="surat_keluar.perihal_surat"
-                outlined
-                class="bpp-input-md bpp-rounded-12"
-                :rules="[rules.required]"
-              />
-            </v-col>
             <v-col
               cols="12"
               md="4"
@@ -573,16 +651,22 @@
 import { mapActions } from 'vuex'
 import Dialog from '@/components/Dialog'
 import { inputValidator, isEmpty } from '@/plugins/supports'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
   components: {
-    'dialog-confirm': Dialog
+    'dialog-confirm': Dialog,
+    'vue-treeselect': Treeselect
   },
   data () {
     return {
       loadingData: true,
       surat_keluar: {
         id_opd: 0,
+        kepada: null,
+        kode_klasifikasi: null,
+        opd_bidang: null,
         id_jenis_surat: null,
         penerima_surat: [],
         kategori_surat: null,
@@ -601,13 +685,26 @@ export default {
         loadingOpd: false,
         showDialogTujuan: false
       },
-      items: { jenis_surat: [], opd: [], jabatan: [], esselon: [], pegawai: [], datas: [] },
+      items: {
+        jenis_surat: [],
+        opd: [],
+        jabatan: [],
+        esselon: [],
+        pegawai: [],
+        datas: [],
+        kepada: [],
+        kode_klasifikasi: [],
+        opd_bidang: []
+      },
       colSize: { col: 12, sm: 12, md: 4, show: 1, expand: false },
 
       schema: {
+        kode_klasifikasi: 'required',
+        opd_bidang: 'required',
         id_jenis_surat: 'required',
         id_opd: 'required',
         kategori_surat: 'required',
+        kepada: 'required',
         penerima_surat: 'required',
         karakteristik_surat: 'required',
         derajat_surat: 'required',
@@ -707,6 +804,9 @@ export default {
     this.createSuratKeluar().then(data => {
       this.items.jenis_surat = isEmpty(data.jenis_surat, [])
       this.items.opd = isEmpty(data.opd, [])
+      this.items.opd_bidang = isEmpty(data.opd_bidang, [])
+      this.items.kode_klasifikasi = isEmpty(data.kode_klasifikasi, [])
+      this.items.kepada = isEmpty(data.kepada, [])
     })
   },
   methods: {
@@ -841,18 +941,28 @@ export default {
       const formData = new FormData()
 
       /* Add the form data we need to submit */
-      const penerimaSurat = this.surat_keluar.penerima_surat.map(data => {
-        return data.kode_jabatan
-      })
+      // let penerimaSurat = {}
 
-      formData.append('penerima_surat',
-        new Blob([JSON.stringify(penerimaSurat)], { type: 'application/json' }))
+      // this.surat_keluar.penerima_surat.forEach(data => {
+      //   const opd = data.kode_jabatan.substring(0, 2)
+      //   if (typeof penerimaSurat[opd] !== 'undefined') {
+      //     penerimaSurat[opd].tujuan.push(data.kode_jabatan)
+      //   } else {
+      //     penerimaSurat[opd] = { id_opd: opd, tujuan: [data.kode_jabatan] }
+      //   }
+      // })
+
+      // penerimaSurat = Object.values(penerimaSurat)
 
       Object.keys(this.surat_keluar).forEach(d => {
-        if (!(['penerima_surat'].includes(d))) {
+        if (!(['penerima_surat', 'kepada'].includes(d))) {
           // masukkan ke formData dibawah ini kecuali penerima_surat
           // karena sudah di tambahkan di atas
           formData.append(d, this.surat_keluar[d])
+        } else {
+          formData.append(d,
+            new Blob([JSON.stringify(this.surat_keluar[d])],
+              { type: 'application/json' }))
         }
       })
 
@@ -879,5 +989,21 @@ export default {
 <style>
 .theme--light.v-data-table.v-data-table--fixed-header thead th {
   background-color: #eee !important;
+}
+
+.vue-treeselect__control {
+  min-height: 56px !important;
+  border-radius: 12px;
+  border-color: #9e9e9e !important;
+}
+.vue-treeselect__placeholder, .vue-treeselect__single-value{
+  top:10px !important;
+}
+.vue-treeselect__control-arrow {
+  color: #757575 !important;
+  margin-right: 25px;
+}
+.vue-treeselect__x-container{
+  color: #757575 !important;
 }
 </style>

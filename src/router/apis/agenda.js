@@ -2,7 +2,53 @@ import $axios from '@/router/server'
 
 const Agenda = {
   // START Agenda API
-  getAgenda ({ commit }, payload) {
+  getAgendaToCalender ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      const { from, to } = payload
+      let query = {
+        from: from || '',
+        to: to || ''
+      }
+      query = new URLSearchParams(query).toString()
+      $axios.get(`/dashborad/index?${query}`)
+        .then((response) => {
+          if (response.status === 200) {
+            const items = response.data.agenda
+            const suratKeluarActive = response.data.surat_keluar_active
+            const suratMasukActive = response.data.surat_masuk_active
+            resolve({ items, suratKeluarActive, suratMasukActive })
+          } else {
+            resolve({ items: [], suratKeluarActive: 0, suratMasukActive: 0 })
+          }
+        }).catch((error) => {
+          console.log(error)
+          resolve({ items: [], suratKeluarActive: 0, suratMasukActive: 0 })
+        })
+    })
+  },
+  getAgendaToCalenderAll ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      const { from, to } = payload
+      let query = {
+        from: from || '',
+        to: to || ''
+      }
+      query = new URLSearchParams(query).toString()
+      $axios.get(`/agenda/all?${query}`)
+        .then((response) => {
+          if (response.status === 200) {
+            const items = response.data.value
+            resolve({ items })
+          } else {
+            resolve({ items: [] })
+          }
+        }).catch((error) => {
+          console.log(error)
+          resolve({ items: [] })
+        })
+    })
+  },
+  getAgendaAll ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {

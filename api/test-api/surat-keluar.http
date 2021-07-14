@@ -7,7 +7,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd
 ### validasi surat
 PUT http://localhost:7000/api/v1/surat-keluar/validasi-surat
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTc2MDMyODIwMDYwNDEwMDQiLCJrZGoiOiIwNS4wMS4wOS4ifSwiaWF0IjoxNjI0NzEyMzY2fQ.ac6HLLqWbWrwY27M5NUbLzGdPRzLHllCkbzD3aUelek
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI1NDk1OTg3fQ.pwTJFHZbN2b1mslpaFQHW-8fFrqFDvXjq0kksH191TE
 
 {
     "id_surat_keluar": "1",
@@ -15,3 +15,9 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd
     "ket": "Disetujui",
     "catatan": ""
 }
+
+### get data atasan
+GET http://localhost:7000/api/v1/surat-keluar/get-atasan
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI1NDk1OTg3fQ.pwTJFHZbN2b1mslpaFQHW-8fFrqFDvXjq0kksH191TE
+

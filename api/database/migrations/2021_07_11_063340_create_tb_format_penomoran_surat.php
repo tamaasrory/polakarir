@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTbKlasifikasiTable extends Migration
+class CreateTbFormatPenomoranSurat extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTbKlasifikasiTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_klasifikasi', function (Blueprint $table) {
-            $table->id('id_klasifikasi');
-            $table->string('kode_klasifikasi',50);
-            $table->string('nama_klasifikasi',200);
-            $table->string('parent_kode',50)->nullable();
+        Schema::create('tb_format_penomoran_surat', function (Blueprint $table) {
+            $table->id('id_format_penomoran');
+            $table->bigInteger('id_opd');
+            $table->string('format_penomoran',200);
+            $table->bigInteger('nomor_urut_terakhir');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateTbKlasifikasiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_klasifikasi');
+        Schema::dropIfExists('tb_format_penomoran_surat');
     }
 }

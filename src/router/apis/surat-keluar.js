@@ -133,6 +133,58 @@ const SuratKeluar = {
           resolve([])
         })
     })
+  },
+  validasiSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.put('/surat-keluar/validasi-surat', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            resolve(response.data)
+          }
+          resolve(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve('Sepertinya ada masalah, silahkan coba lagi')
+        })
+    })
+  },
+  tteSuratKeluar ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.post('/surat-keluar/tte', payload)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data)
+          } else {
+            resolve(response.data)
+          }
+          resolve(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve('Sepertinya ada masalah, silahkan coba lagi')
+        })
+    })
+  },
+  downloadSurat ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.get(`/surat-keluar/download/${payload}`, {
+        responseType: 'blob'
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            resolve({ result: true, data: new Blob([response.data]) })
+          } else {
+            resolve({ result: false })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve({ result: false })
+        })
+    })
   }
   // END SuratKeluar API
 }

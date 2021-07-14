@@ -1,0 +1,32 @@
+### get data format penomoran surat berdasarkan id_opd
+GET http://localhost:7000/api/v1/penomoran-surat/index
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI2MDk3NDMzfQ.xTr0mmVmFQ5ZTRScZc-xCwC1JHglTyYyxfHoKK2-xLg
+
+{
+    "id_opd": 5
+}
+
+### update nomor_urut_terakhir
+PUT http://localhost:7000/api/v1/penomoran-surat/update/5
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI2MDk3NDMzfQ.xTr0mmVmFQ5ZTRScZc-xCwC1JHglTyYyxfHoKK2-xLg
+
+{
+    "nomor_urut_terakhir": 1
+}
+
+### update format penomoran
+PUT http://localhost:7000/api/v1/penomoran-surat/update/5
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI2MDk3NDMzfQ.xTr0mmVmFQ5ZTRScZc-xCwC1JHglTyYyxfHoKK2-xLg
+
+{
+    "format_penomoran": "kode_klasifikasi,opd_bidang,nomor_urut_terakhir,tahun"
+}
+
+### getNomorSurat berdasarkan id_opd, kode klasifikasi, dan OPD bidang
+GET http://localhost:7000/api/v1/penomoran-surat/get-nomor/5/071/BPP-Inotek
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOnsiaWQiOiIxOTgwMTIxMDIwMDYwNDIwMTgiLCJrZGoiOiIwNS4wMS4wMi4wMS4ifSwiaWF0IjoxNjI2MDkzMDE1fQ.CWdFlRUJwLOMv4YXoImKWEVEk85tHuMIoM3pScEhBlM
+###

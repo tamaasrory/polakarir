@@ -132,12 +132,15 @@ export default {
   watch: {
     $route (to, from) {
       this.toolbarTitle = to.meta.title
-      this.authRefresh().then(data => {
-        this.setupMenu(data || [])
-      })
+      // if (!isEmpty(this.user)) {
+      //   this.authRefresh().then(data => {
+      //     this.setupMenu(data || [])
+      //   })
+      // }
     }
   },
   created () {
+    this.setupMenu(this.user.perm)
   },
   methods: {
     ...mapActions(['logout', 'authRefresh']),

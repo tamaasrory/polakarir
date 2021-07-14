@@ -184,12 +184,15 @@
 
 <script>
 
-import Account from "@/components/default/Account";
+import Account from '@/components/default/Account'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Home',
-  components: {Account},
+  datas: [],
+  components: { Account },
   data: () => ({
+    queryTask: [],
     focus: '',
     type: 'month',
     typeToLabel: {
@@ -198,50 +201,43 @@ export default {
       day: 'Day',
       '4day': '4 Days'
     },
+    options: {},
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [],
-    colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-    names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
+    events: []
+    // colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
+    // names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
   }),
 
-  mounted() {
+  mounted () {
     this.$refs.calendar.checkChange()
-  }
-  ,
+  },
   methods: {
-
-    viewDay({date}) {
+    ...mapActions(['getAgendaToCalenderAll']),
+    viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
-    }
-    ,
-    _add() {
-      this.$router.push({name: 'agenda_add'})
-    }
-    ,
-    profil() {
-      this.$router.push({name: 'profil'})
-    }
-    ,
-    getEventColor(event) {
+    },
+    _add () {
+      this.$router.push({ name: 'agenda_add' })
+    },
+    profil () {
+      this.$router.push({ name: 'profil' })
+    },
+    getEventColor (event) {
       return event.color
-    }
-    ,
-    setToday() {
+    },
+    setToday () {
       this.focus = ''
-    }
-    ,
-    prev() {
+    },
+    prev () {
       this.$refs.calendar.prev()
-    }
-    ,
-    next() {
+    },
+    next () {
       this.$refs.calendar.next()
-    }
-    ,
-    showEvent({nativeEvent, event}) {
+    },
+    showEvent ({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -256,36 +252,39 @@ export default {
       }
 
       nativeEvent.stopPropagation()
-    }
-    ,
-    updateRange({start, end}) {
-      const events = []
+    },
+    updateRange ({ start, end }) {
+      this.options.from = `${start.date}`
+      this.options.to = `${end.date}`
+      this.getAgendaToCalenderAll({ add: this.queryTask, ...this.options }).then((data) => {
+        this.datas = data.items
+        const events = []
 
-      const min = new Date(`${start.date}T00:00:00`)
-      const max = new Date(`${end.date}T23:59:59`)
-      const days = (max.getTime() - min.getTime()) / 86400000
-      const eventCount = this.rnd(days, days + 20)
+        // const min = new Date(`${start.date}T00:00:00`)
+        // const max = new Date(`${end.date}T23:59:59`)
+        // const days = (max.getTime() - min.getTime()) / 86400000
+        // const eventCount = this.rnd(days, days + 20)
 
-      for (let i = 0; i < eventCount; i++) {
-        const allDay = this.rnd(0, 3) === 0
-        const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-        const second = new Date(first.getTime() + secondTimestamp)
+        for (let i = 0; i < this.datas.length; i++) {
+          const allDay = this.rnd(0, 3) === 0
+          // const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+          // const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+          // const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+          // const second = new Date(first.getTime() + secondTimestamp)
+          events.push({
+            name: this.datas[i].nama_kegiatan,
+            details: this.datas[i].deskripsi_kegiatan,
+            start: this.datas[i].waktu_mulai,
+            end: this.datas[i].waktu_akhir,
+            color: this.datas[i].color,
+            timed: !allDay
+          })
+        }
 
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !allDay
-        })
-      }
-
-      this.events = events
-    }
-    ,
-    rnd(a, b) {
+        this.events = events
+      })
+    },
+    rnd (a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a
     }
   }

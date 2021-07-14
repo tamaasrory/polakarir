@@ -12,6 +12,7 @@ import SuratKeluar from '@/router/apis/surat-keluar'
 import Agenda from '@/router/apis/agenda'
 import Profil from '@/router/apis/profil'
 import TemplateSurat from '@/router/apis/template-surat'
+import Dashboard from '@/router/apis/dashboard'
 import ArsipSurat from '@/router/apis/arsip-surat'
 import JenisSurat from '@/router/apis/jenis-surat'
 import Sinergi from '@/router/apis/sinergi'
@@ -26,6 +27,7 @@ const $api = {
   ...SuratKeluar,
   ...Agenda,
   ...TemplateSurat,
+  ...Dashboard,
   ...ArsipSurat,
   ...JenisSurat,
   ...Sinergi,
