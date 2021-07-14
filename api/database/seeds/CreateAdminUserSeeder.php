@@ -478,7 +478,6 @@ class CreateAdminUserSeeder extends Seeder
         // atur permission yang akan diberikan
         $permissions = Permission::whereIn('name', [
             "home",
-            "agenda-list",
             "surat-keluar-list",
             "surat-keluar-edit",
             "surat-masuk-list",

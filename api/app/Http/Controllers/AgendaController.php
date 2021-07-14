@@ -29,36 +29,30 @@ class AgendaController extends Controller {
     {
         $auth=$dataUser = $request->auth;
         $dataUser = $request->auth['sinergi'];
+        $from =$request->input('from');
+        $to =$request->input('to');
         $data =null;
 
-        //role kasubag
-        if (in_array("Kasubag",$auth['role'])){
-            //data surat keluar berdasarkan opd
-            $data = Agenda::where('id_opd',$dataUser['id_opd']);
+        //agenda berdasarkan nip
+        if ($from != $to) {
+            $data = Agenda::where('id_opd', $dataUser['id_opd'])
+                    ->where(function ($query) use ($from,$to){
+                        $query->whereBetween('waktu_mulai', [$from, $to])
+                            ->orWhereBetween('waktu_akhir', [$from, $to]);
+                        })->get();
 
-            //role super admin
-        }elseif (in_array("Super Admin",$auth['role'])){
-            //seluruh surat keluar
-
-
-            //role staf/sekre/kabid/pimpinan
-        }else {
-            //data berdasarkan terusan atau nip author dalam suatu opd
-            $data = Agenda::where('id_opd',$dataUser['id_opd'])
-                ->where('nip_pegawai',$dataUser['nip']);
-
-
-
-
+        }else{
+            $data = Agenda::where('id_opd', $dataUser['id_opd'])
+                ->WhereDate('waktu_mulai','<=',$from)
+                ->WhereDate('waktu_akhir','>=',$to)->get();
         }
 
-        $data=Searchable::simplePaginate($request,$data,new Agenda());
+        //$data=Searchable::simplePaginate($request,$data,new Agenda());
 
 
 
         if ($data) {
             return [
-                'role' => $auth['role'],
                 'value' => $data,
                 'msg' => "Data {$this->title} Ditemukan"
             ];

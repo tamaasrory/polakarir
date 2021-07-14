@@ -51,18 +51,21 @@ class DashboardController extends Controller
         if ($from != $to) {
             $data = Agenda::where('id_opd', $dataUser['id_opd'])
                 ->where('nip_pegawai', $dataUser['nip'])
-                ->whereBetween('waktu_mulai', [$from, $to])
-                ->orWhereBetween('waktu_akhir', [$from, $to])->get();
+                ->where(function ($query) use ($from,$to){
+                    $query->whereBetween('waktu_mulai', [$from, $to])
+                        ->orWhereBetween('waktu_akhir', [$from, $to]);
+                })->get();
+//
         }else{
             $data = Agenda::where('id_opd', $dataUser['id_opd'])
-                ->where('nip_pegawai', $dataUser['nip'])
+                ->where('nip_pegawai','=', $dataUser['nip'])
                 ->WhereDate('waktu_mulai','<=',$from)
                 ->WhereDate('waktu_akhir','>=',$to)->get();
         }
 
 
         return [
-
+            'nip' => $dataUser['nip'],
             'surat_keluar_active' => ($suratKeluar)->count(),
             'surat_masuk_active' => 0,
             'agenda' => $data,
