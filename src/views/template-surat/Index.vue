@@ -22,9 +22,9 @@
     </v-app-bar>
     <v-container class="px-10 pb-10">
       <h1 class="my-2">
-        Template Surat
+        Pergerakan Karir
       </h1>
-      <v-card>
+<!--      <v-card>
         <v-row dense v-if="(user.sinergi)">
           <v-col>
             <v-tabs centered slider-size="5">
@@ -173,8 +173,8 @@
             </v-tooltip>
           </template>
         </v-data-table>
-      </v-card>
-      <div
+      </v-card>-->
+<!--      <div
         class="row align-center pb-3"
       >
         <div class="col-md-6 col-12 order-md-0 order-1 pt-0 pt-md-4">
@@ -197,7 +197,7 @@
             circle
           />
         </div>
-      </div>
+      </div>-->
     </v-container>
     <download-dialog-confirm
       :show-dialog="showDW"

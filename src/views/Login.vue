@@ -5,7 +5,7 @@
 
 <template>
   <div
-    style=" background-size: cover;height: 100%;width: 100%"
+    style=" background-size: cover;height: 105%;width: 100%"
     :style="`background-image: url(${require('../assets/bg-login.svg')});`"
   >
     <v-container
@@ -28,11 +28,13 @@
           class="mr-5"
           @click="$emit('toggle-drawer')"
         >
-        <v-app-bar-title class="font-weight-bold">
-          E-Office
+        <v-app-bar-title class="font-weight-bold black--text">
+          e-Karir
         </v-app-bar-title>
         <v-spacer />
+        <div class="black--text">
         {{ timeNow }}
+        </div>
         <v-spacer />
       </v-app-bar>
       <v-layout
@@ -46,19 +48,19 @@
           md8
         >
           <div class="mb-5">
-            <div class="display-2 white--text">
-              Selamat Datang di<br> E-Office Kota Pekanbaru
+            <div class="display-2 black--text">
+              Selamat Datang di<br> e-Karir Kota Pekanbaru
             </div>
             <div
-              class="white--text mt-2"
+              class="grey--text darken-4 mt-2"
               style="font-size: 17px"
             >
-              Sistem Informasi Manajemen Arsip dan Persuratan
+              Sistem Informasi Pola Karir
             </div>
           </div>
           <v-card
             color="#fff"
-            elevation="4"
+            elevation="0"
             class="px-3"
             style="border-radius: 15px;"
           >
@@ -113,9 +115,8 @@
                   <v-btn
                     :loading="loading"
                     :disabled="isComplate"
-                    color="#3ACCE1"
+                    color="#054fbf"
                     class="pl-5 pr-5"
-                    rounded
                     large
                     :dark="!isComplate"
                     block
@@ -141,14 +142,14 @@
               >
                 <img
                   :src="require('@/assets/img-surat-login.png')"
-                  style="position: absolute;transform: translate(0%,-25%);width: 60%;"
+                  style="position: absolute;transform: translate(25%,-5%);width: 40%;"
                 >
               </v-flex>
             </v-layout>
           </v-card>
-          <v-card
+<!--          <v-card
             color="#fff"
-            elevation="4"
+            elevation="0"
             class="px-3 mx-12"
             style="border-radius: 15px;transform: translateY(-30px)"
           >
@@ -178,7 +179,7 @@
                 <v-icon>mdi-earth</v-icon>
               </v-btn>
             </v-card-text>
-          </v-card>
+          </v-card>-->
         </v-flex>
       </v-layout>
     </v-container>

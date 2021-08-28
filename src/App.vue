@@ -8,7 +8,7 @@
     <v-navigation-drawer
       v-if="isAuth"
       v-model="drawer"
-      color="#2D62ED"
+      color="#232f51"
       fixed
       app
       left
@@ -17,7 +17,7 @@
       <v-list-item>
         <v-list-item-action>
           <img
-            :src="require('@/assets/ic-nav-vertical.svg')"
+            :src="require('@/assets/ic-nav.svg')"
             alt="W"
             height="30"
             width="40"
@@ -27,7 +27,7 @@
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title class="title">
-            E-Office
+            e-Karir
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>

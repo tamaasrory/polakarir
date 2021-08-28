@@ -17,7 +17,7 @@
         @click="$emit('toggle-drawer')"
         v-text="'mdi-menu'"
       />
-      <v-toolbar-title>Surat Keluar</v-toolbar-title>
+      <v-toolbar-title>Standar Kompetensi</v-toolbar-title>
       <v-spacer />
       <v-btn
         v-if="can(['surat-keluar-create'])"
@@ -41,7 +41,7 @@
         <v-icon>mdi-reload</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-container fluid>
+<!--    <v-container fluid>
       <v-data-table
         :loading="isLoading"
         :headers="headerData"
@@ -143,7 +143,7 @@
           />
         </div>
       </div>
-    </v-container>
+    </v-container>-->
     <delete-dialog-confirm
       :show-dialog="showDC"
       :negative-button="dcNegativeBtn"

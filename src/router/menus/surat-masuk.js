@@ -2,7 +2,7 @@ const path = '/surat-masuk'
 const permission = 'surat-masuk-'
 const routeName = 'surat_masuk'
 const folder = 'surat-masuk'
-const title = 'Surat Masuk'
+const title = 'Pola Karir'
 const SuratMasuk = [
   {
     path: path,
@@ -10,7 +10,7 @@ const SuratMasuk = [
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
       title: title,
-      icon: 'mdi-email-receive',
+      icon: 'mdi-lock-pattern',
       // subheader: '-',
       requiresAuth: true,
       requirePermission: permission + 'list'

@@ -22,8 +22,8 @@ module.exports = {
     }
   },
   pwa: {
-    name: 'e-Office',
-    themeColor: '#0288D1',
+    name: 'e-Karir',
+    themeColor: '#1DA1F2',
     msTileColor: '#FFFFFF',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'default',

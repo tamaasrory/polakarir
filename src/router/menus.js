@@ -18,7 +18,7 @@ const menus = [
     name: 'home',
     component: () => import(/* webpackChunkName: "about.chunk" */ '@/views/Home'),
     meta: {
-      title: 'Home',
+      title: 'Dashboard',
       icon: 'mdi-home',
       requirePermission: 'home',
       requiresAuth: true
@@ -51,5 +51,5 @@ export default menus.concat(
   Agenda,
   Profil,
   TemplateSurat,
-  ArsipSurat,
+
 )

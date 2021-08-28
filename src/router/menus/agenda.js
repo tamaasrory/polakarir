@@ -2,7 +2,7 @@ const path = '/agenda'
 const permission = 'agenda-'
 const routeName = 'agenda'
 const folder = 'agenda'
-const title = 'Agenda'
+const title = 'Sasaran Karir'
 const Agenda = [
   {
     path: path,
@@ -10,7 +10,7 @@ const Agenda = [
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
       title: title,
-      icon: 'mdi-calendar-month-outline',
+      icon: 'mdi-bullseye-arrow',
       // subheader: '-',
       requiresAuth: true,
       requirePermission: permission + 'list'

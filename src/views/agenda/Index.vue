@@ -23,9 +23,9 @@
 
     <v-container class="px-10 pb-10">
       <h1 class="my-2">
-        Agenda
+        Sasaran Karir
       </h1>
-      <v-card
+<!--      <v-card
         color="#fff"
         elevation="2"
         class="px-0 pa-3"
@@ -107,11 +107,11 @@
                         <v-btn value="left" class="text-capitalize" color="primary" @click="type = 'month'">
                           Bulan
                         </v-btn>
-                        <v-btn value="center" class="text-capitalize" color="buttons white--text"
+                        <v-btn value="center" class="text-capitalize" color="buttons white&#45;&#45;text"
                                @click="type = 'week'">
                           Minggu
                         </v-btn>
-                        <v-btn value="right" class="text-capitalize" color="buttons white--text" @click="type = 'day'">
+                        <v-btn value="right" class="text-capitalize" color="buttons white&#45;&#45;text" @click="type = 'day'">
                           Hari
                         </v-btn>
                       </v-btn-toggle>
@@ -177,7 +177,7 @@
             </v-col>
           </v-row>
         </template>
-      </v-card>
+      </v-card>-->
     </v-container>
   </div>
 </template>

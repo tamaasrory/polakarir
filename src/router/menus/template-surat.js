@@ -2,7 +2,7 @@ const path = '/template-surat'
 const permission = 'template-surat-'
 const routeName = 'template_surat'
 const folder = 'template-surat'
-const title = 'Template Surat'
+const title = 'Pergerakan Karir'
 const TemplateSurat = [
   {
     path: path,
@@ -10,7 +10,7 @@ const TemplateSurat = [
     component: () => import(/* webpackChunkName: "[request].chunk" */ `@/views/${folder}/Index`),
     meta: {
       title: title,
-      icon: 'mdi-text-box-multiple',
+      icon: 'mdi-cogs',
       // subheader: '-',
       requiresAuth: true,
       requirePermission: permission + 'list'
