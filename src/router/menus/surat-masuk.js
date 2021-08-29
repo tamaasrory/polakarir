@@ -1,4 +1,4 @@
-const path = '/surat-masuk'
+const path = '/pola-karir'
 const permission = 'surat-masuk-'
 const routeName = 'surat_masuk'
 const folder = 'surat-masuk'

@@ -41,108 +41,70 @@
         <v-icon>mdi-reload</v-icon>
       </v-btn>
     </v-app-bar>
-<!--    <v-container fluid>
-      <v-data-table
-        :loading="isLoading"
-        :headers="headerData"
-        :search="searchQuery"
-        :items="datas"
-        :sort-by.sync="config.table.sortBy"
-        :sort-desc.sync="config.table.sortDesc"
-        :items-per-page="config.table.itemsPerPage"
-        :page.sync="config.table.page"
-        :server-items-length="serverLength"
-        :options.sync="options"
-        height="350pt"
-        item-key="id_surat_masuk"
-        class="elevation-2"
-        multi-sort
-        hide-default-footer
-        fixed-header
-        @page-count="config.table.pageCount = $event"
-        @pagination="pagination=$event"
-      >
-        <template #item.updated_at="{item}">
-          {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
-        </template>
-        <template #item.aksi="{item}">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                @click="_edit(item)"
-                v-on="on"
-              >
-                <v-icon
-                  color="blue"
-                >
-                  mdi-circle-edit-outline
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Ubah</span>
-          </v-tooltip>
-          <v-tooltip
-            v-if="can(['surat-masuk-delete'])"
-            bottom
-          >
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                icon
-                @click="_delete(item)"
-                v-on="on"
-              >
-                <v-icon color="pink">
-                  mdi-delete
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Hapus</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                icon
-                @click="_detail(item)"
-                v-on="on"
-              >
-                <v-icon color="green">
-                  mdi-file-find
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Detail</span>
-          </v-tooltip>
-        </template>
-      </v-data-table>
-      <div
-        class="row align-center pb-3"
-      >
-        <div class="col-md-6 col-12 order-md-0 order-1 pt-0 pt-md-4">
-          <v-data-footer
-            class="float-left"
-            :pagination="pagination"
-            :prev-icon="null"
-            :next-icon="null"
-            :first-icon="null"
-            :last-icon="null"
-            :items-per-page-options="[10,15,50,100,-1]"
-            :options.sync="options"
-          />
-        </div>
-        <div class="col-md-6 col-12 order-md-1 order-0 mt-4 pb-0 pb-md-4">
-          <v-pagination
-            v-model="config.table.page"
-            :length="config.table.pageCount"
-            total-visible="7"
-            circle
-          />
-        </div>
+    <v-container fluid>
+      <h1 class="my-2">
+        Pilih Alur Karir
+      </h1>
+      <div class="mt-lg-10">
+      <v-row>
+        <v-col cols="3">
+          <v-subheader
+            class="font-weight-black black--text"
+          >Teknis/Non Teknis</v-subheader>
+        </v-col>
+        <v-col cols="5">
+          <v-text-field
+            class="outline yellow--text"
+            outlined
+          ></v-text-field>
+        </v-col>
+      </v-row>
+        <v-row>
+          <v-col cols="3">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Status Jabatan</v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="3">
+            <v-subheader
+              class="font-weight-black black--text"
+            >Jenis Jabatan</v-subheader>
+          </v-col>
+          <v-col cols="5">
+            <v-text-field
+              class="outline yellow--text"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </div>
-    </v-container>-->
+      <h1 class="my-2">
+        View Jalur
+      </h1>
+      <v-container class="mb-15">
+        <v-row justify="space-around">
+      <v-card >
+        <v-img
+          :src="require('@/assets/bkpsdm-administrator.png')"
+          lazy-src="https://picsum.photos/id/11/10/6"
+          max-height="650"
+          max-width="698"
+        >
+
+        </v-img>
+      </v-card>
+        </v-row>
+      </v-container>
+    </v-container>
+
     <delete-dialog-confirm
       :show-dialog="showDC"
       :negative-button="dcNegativeBtn"

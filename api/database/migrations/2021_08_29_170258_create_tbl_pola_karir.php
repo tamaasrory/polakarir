@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTbFormatPenomoranSurat extends Migration
+class CreateTblPolaKarir extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateTbFormatPenomoranSurat extends Migration
      */
     public function up()
     {
-        Schema::create('tb_format_penomoran_surat', function (Blueprint $table) {
-            $table->id('id_format_penomoran');
-            $table->bigInteger('id_opd');
-            $table->string('format_penomoran',200);
-            $table->bigInteger('nomor_urut_terakhir');
+        Schema::create('tbl_pola_karir', function (Blueprint $table) {
+            $table->id('id_pola_karir');
+            $table->text('url');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateTbFormatPenomoranSurat extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_format_penomoran_surat');
+        Schema::dropIfExists('tbl_pola_karir');
     }
 }

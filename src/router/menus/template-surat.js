@@ -1,4 +1,4 @@
-const path = '/template-surat'
+const path = '/pergerakan-karir'
 const permission = 'template-surat-'
 const routeName = 'template_surat'
 const folder = 'template-surat'

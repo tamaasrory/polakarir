@@ -1,4 +1,4 @@
-const path = '/surat-keluar'
+const path = '/standar-kompetensi'
 const permission = 'surat-keluar-'
 const routeName = 'surat_keluar'
 const folder = 'surat-keluar'

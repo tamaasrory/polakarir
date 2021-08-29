@@ -1,4 +1,4 @@
-const path = '/agenda'
+const path = '/sasaran'
 const permission = 'agenda-'
 const routeName = 'agenda'
 const folder = 'agenda'

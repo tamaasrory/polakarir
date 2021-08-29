@@ -45,7 +45,6 @@ const menus = [
 export default menus.concat(
   User,
   Roles,
-  JenisSurat,
   SuratMasuk,
   SuratKeluar,
   Agenda,
