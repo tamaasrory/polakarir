@@ -215,7 +215,8 @@ export default {
   }
 
   .theme--light.v-application {
-    background: #ffffff !important;
+    /*background: #ffffff !important;*/
+    background: #f8f9fa !important;
     color: rgba(0, 0, 0, 0.87);
   }
 </style>

@@ -41,68 +41,116 @@
         <v-icon>mdi-reload</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-container fluid>
-      <h1 class="my-2">
-        Pilih Alur Karir
-      </h1>
-      <div class="mt-lg-10">
-      <v-row>
-        <v-col cols="3">
-          <v-subheader
-            class="font-weight-black black--text"
-          >Teknis/Non Teknis</v-subheader>
+    <v-container
+      fluid
+      class="mt-15 mb-15"
+    >
+      <v-row justify="space-around">
+        <v-col cols="8">
+          <v-card
+            color="#fff"
+            elevation="0"
+            class="px-3 py-4"
+            style="border-radius: 15px;"
+          >
+            <h3 class="pb-4 text-center">
+              View Jalur
+            </h3>
+            <v-img
+              :src="require('@/assets/bkpsdm-administrator.png')"
+              lazy-src="https://picsum.photos/id/11/10/6"
+              max-height="650"
+              max-width="698"
+            />
+          </v-card>
         </v-col>
-        <v-col cols="5">
-          <v-text-field
-            class="outline yellow--text"
-            outlined
-          ></v-text-field>
+        <v-col cols="4">
+          <v-card
+            color="#fff"
+            elevation="0"
+            class="px-7 py-4"
+            style="border-radius: 15px;"
+          >
+            <h3 class="pb-4 text-center">
+              Pilih Alur Karir
+            </h3>
+            <v-row>
+              <v-select
+                :items="items"
+                class="outline yellow--text"
+                solo
+                style="border-radius: 15px;"
+                label="Teknis/Non Teknis"
+              />
+            </v-row>
+            <v-row>
+              <v-select
+                :items="items"
+                class="outline yellow--text"
+                solo
+                style="border-radius: 15px;"
+                label="Status Jabatan"
+              />
+            </v-row>
+            <v-row>
+              <v-select
+                :items="items"
+                class="outline yellow--text"
+                solo
+                style="border-radius: 15px;"
+                label="Jenis Jabatan"
+              />
+            </v-row>
+          </v-card>
+          <v-card
+            outlinedcolor="#fff"
+            elevation="0"
+            class="px-7 py-4 mt-10"
+            style="border-radius: 15px;"
+          >
+            <h3 class="pb-4 text-center">
+              Keterangan
+            </h3>
+            <div class="">
+              <v-row class="row--dense align-center caption">
+                <v-col cols="2">
+                  <h1>━</h1>
+                </v-col>
+                <v-col cols="10">
+                  <p>Horizontal : (Mutasi)</p>
+                </v-col>
+              </v-row>
+              <v-row class="row--dense caption">
+                <v-col cols="2">
+                  <h1>/</h1>
+                </v-col>
+                <v-col cols="10">
+                  <p>Diagonal : (Promosi/Mutasi)</p>
+                </v-col>
+              </v-row>
+              <v-row class="row--dense caption">
+                <v-col cols="2">
+                  <h1>▏</h1>
+                </v-col>
+                <v-col cols="10">
+                  <p>Vertikal : (Promosi/Kenaikan Jenjang)</p>
+                </v-col>
+              </v-row>
+              <v-row class="row--dense caption">
+                <v-col cols="3">
+                  <h1>----</h1>
+                </v-col>
+                <v-col cols="9">
+                  <p>Sekolah Kader : Fast Track</p>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card>
         </v-col>
       </v-row>
-        <v-row>
-          <v-col cols="3">
-            <v-subheader
-              class="font-weight-black black--text"
-            >Status Jabatan</v-subheader>
-          </v-col>
-          <v-col cols="5">
-            <v-text-field
-              class="outline yellow--text"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="3">
-            <v-subheader
-              class="font-weight-black black--text"
-            >Jenis Jabatan</v-subheader>
-          </v-col>
-          <v-col cols="5">
-            <v-text-field
-              class="outline yellow--text"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </div>
-      <h1 class="my-2">
-        View Jalur
-      </h1>
-      <v-container class="mb-15">
-        <v-row justify="space-around">
-      <v-card >
-        <v-img
-          :src="require('@/assets/bkpsdm-administrator.png')"
-          lazy-src="https://picsum.photos/id/11/10/6"
-          max-height="650"
-          max-width="698"
-        >
-
-        </v-img>
       </v-card>
-        </v-row>
-      </v-container>
+      </v-col>
+      </v-row>
     </v-container>
 
     <delete-dialog-confirm
