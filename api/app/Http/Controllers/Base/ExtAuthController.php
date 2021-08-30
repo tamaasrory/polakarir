@@ -100,6 +100,9 @@ class ExtAuthController extends BaseController
                 $userData = new User();
                 $userData->id = $login['nip'];
                 $userData->name = $login['nama_pegawai'];
+                $userData->esselon = $login['esselon'];
+                $userData->fungsional = $login['fungsional'];
+                $userData->kode_jabatan = $login['kode_jabatan'];
             }
 
             $detail['lastAccess'] = date('Y-m-d H:i:s');

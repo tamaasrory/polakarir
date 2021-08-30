@@ -5,12 +5,12 @@ const Dashboard = {
 
   getDashboard({commit}, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/dashboard/index/${payload}`)
+      $axios.get(`/pola-karir/detail/`)
         .then((response) => {
           if (response.status === 200) {
-            resolve(response.data.value)
+            resolve(response.data)
           } else {
-            resolve(response.data.value)
+            resolve(response.data)
           }
         })
         .catch((error) => {

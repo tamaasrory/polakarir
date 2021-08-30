@@ -6,13 +6,15 @@ use App\Models\Base\SelfModel;
 use App\Traits\Searchable;
 
 /**
- * @property integer $id_opd_bidang
- * @property integer $id_opd
- * @property string $nama_opd_bidang
+ * @property integer $id_pola_karir
+ * @property string $esselon
+ * @property string $fungsional
+ * @property string $kode_jabatan
+ * @property string $url
  * @property string $created_at
  * @property string $updated_at
  */
-class OPDBidang extends SelfModel
+class PolaKarir extends SelfModel
 {
     use Searchable;
 
@@ -21,20 +23,20 @@ class OPDBidang extends SelfModel
      * 
      * @var string
      */
-    protected $table = 'tb_opd_bidang';
+    protected $table = 'tbl_pola_karir';
 
     /**
      * The attributes that are mass assignable.
      * 
      * @var array
      */
-    protected $fillable = ['id_opd', 'nama_opd_bidang', 'created_at', 'updated_at'];
+    protected $fillable = ['esselon', 'fungsional', 'kode_jabatan', 'url', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
      * 
      * @var array
      */
-    public $searchable = ['id_opd', 'nama_opd_bidang', 'created_at', 'updated_at'];
+    public $searchable = ['esselon', 'fungsional', 'kode_jabatan', 'url', 'created_at', 'updated_at'];
 
 }
