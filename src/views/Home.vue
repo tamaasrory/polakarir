@@ -26,28 +26,27 @@
           Dashboard
         </h1>
         <h1 class="my-2">
-          Nama : {{pegawai.nama_pegawai}}
+          Nama : {{ pegawai.nama_pegawai }}
         </h1>
         <h1 class="my-2">
-          Esselon : {{datas.esselon}}
+          Esselon : {{ datas.esselon }}
         </h1>
         <h1 class="my-2">
-          Jenis_Jabatan : {{datas.kode_jabatan}}
-        </h1>
-         <h1 class="my-2">
-          Fungsional : {{datas.fungsional}}
+          Jenis_Jabatan : {{ datas.kode_jabatan }}
         </h1>
         <h1 class="my-2">
-          URL : {{datas.url}}
+          Fungsional : {{ datas.fungsional }}
+        </h1>
+        <h1 class="my-2">
+          URL : {{ datas.url }}
         </h1>
       </div>
       <v-row>
         <v-col>
           <v-card>
             <v-img
-            :src="baseURL + datas.uri">
-
-            </v-img>
+              :src="imgUrl"
+            />
           </v-card>
         </v-col>
       </v-row>
@@ -57,27 +56,30 @@
 
 <script>
 import Account from '@/components/default/Account'
-import {baseURL} from '../router/Path';
+import { baseURL } from '@/router/Path'
 import { mapActions } from 'vuex'
 export default {
   name: 'Home',
   components: { Account },
   data: () => ({
     queryTask: [],
-    datas: [],
+    datas: {},
     pegawai: [],
+    imgUrl: null
   }),
   created () {
     this.getDashboard()
-            .then(data => {
-              this.datas = data.value || {}
-              this.pegawai = data.pegawai || {}
-              this.loadingData = false
-            })
-            .catch((error) => {
-              this.datas = {}
-              console.log('Error : ' + error)
-            })
+      .then(data => {
+        this.datas = data.value || {}
+        this.pegawai = data.pegawai || {}
+        this.loadingData = false
+        // begini cara pakai Base URL, nggak bisa langsung di panggil ke UI
+        this.imgUrl = baseURL + this.datas.url
+      })
+      .catch((error) => {
+        this.datas = {}
+        console.log('Error : ' + error)
+      })
   },
   methods: {
     ...mapActions(['getDashboard']),

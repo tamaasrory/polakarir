@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "start-backend": "cd ./api && php artisan serve",
+    "start-frontend-dev": "vue-cli-service serve",
+    "start-frontend-production": "cd ./dist && serve -p 8087",
+    "build-production": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "HOST=localhost vue-cli-service serve --port 9000",
-    "vueui": "vue ui",
-    "postinstall": "node tools/copy-webviewer-files.js"
+    "postinstall": "node tools/copy-webviewer-files.js",
+    "postbuild-production": "node tools/copy-fcm-files.js"
   },
   "dependencies": {
     "@mdi/font": "^5.9.55",

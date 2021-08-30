@@ -25,7 +25,7 @@ class PolaKarirController extends Controller {
      */
     public function index(Request $request)
     {
-        $data = PolaKarirController::search($request,new PolaKarirController());
+        $data = PolaKarir::search($request,new PolaKarir());
 
         if ($data) {
             return [
@@ -60,9 +60,7 @@ class PolaKarirController extends Controller {
      */
     public function store(Request $request)
     {
-        $data = new PolaKarirController();
-
-        
+        $data = new PolaKarir();
 
         if ($data->save()) {
             return [
@@ -85,7 +83,7 @@ class PolaKarirController extends Controller {
      */
     public function show(Request $request)
     {
-        /** @var PolaKarirController $data */
+        /** @var PolaKarir $data */
         $dataSinergi = $request->auth['sinergi'];
         $data = PolaKarir::where('kode_jabatan','=',$dataSinergi['jenis_jabatan'])
             ->where('esselon','=',$dataSinergi['esselon'])
@@ -114,8 +112,8 @@ class PolaKarirController extends Controller {
      */
     public function edit($id)
     {
-        /** @var PolaKarirController $data */
-        $data = PolaKarirController::find($id);
+        /** @var PolaKarir $data */
+        $data = PolaKarir::find($id);
 
         if ($data) {
             return [
@@ -139,10 +137,10 @@ class PolaKarirController extends Controller {
     public function update(Request $request)
     {
         $id = $request->input('_id');
-        /** @var PolaKarirController $data */
-        $data = PolaKarirController::find($id);
+        /** @var PolaKarir $data */
+        $data = PolaKarir::find($id);
 
-        
+
 
         if ($data->save()) {
             return [
@@ -165,8 +163,8 @@ class PolaKarirController extends Controller {
      */
     public function destroy($id)
     {
-        /** @var PolaKarirController $data */
-        $data = PolaKarirController::find($id);
+        /** @var PolaKarir $data */
+        $data = PolaKarir::find($id);
 
         if ($data->delete()) {
             return [
