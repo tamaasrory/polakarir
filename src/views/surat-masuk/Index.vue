@@ -33,13 +33,13 @@
       >
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn
+      <!--      <v-btn
         title="Perbarui Data"
         icon
         @click="_loadData(true)"
       >
         <v-icon>mdi-reload</v-icon>
-      </v-btn>
+      </v-btn>-->
     </v-app-bar>
     <v-container
       fluid
@@ -72,7 +72,7 @@
             style="border-radius: 15px;"
           >
             <h3 class="pb-4 text-center">
-              Alur Karir
+              Alur Karir {{pegawai.nama_pegawai}}
             </h3>
             <v-row>
               <v-select
@@ -214,12 +214,12 @@
         >
           Bersihkan filter
         </v-btn>
-        <v-btn
+        <!--        <v-btn
           color="success"
           @click="_loadData(true)"
         >
           Terapkan
-        </v-btn>
+        </v-btn>-->
       </div>
     </v-navigation-drawer>
   </div>
@@ -241,6 +241,7 @@ export default {
       toggleFp: false,
       isLoading: true,
       datas: [],
+      pegawai: [],
 
       options: {},
       pagination: {},
@@ -267,88 +268,39 @@ export default {
     }
   },
   computed: {
-    headerData () {
-      return [
-        {
-          text: 'Nomor',
-          align: 'left',
-          value: 'id_surat_masuk'
-        },
-        { text: 'Perihal', value: 'perihal_surat' },
-        { text: 'Jenis Surat', value: 'jenis_surat' },
-        { text: 'Pengirim', value: 'pengirim_surat' },
-        { text: 'Tanggal Surat', value: 'tanggal_surat' },
-        { text: 'Urgensi', value: 'derajat_surat' },
-        { text: 'Status', value: 'status' }
-      ]
-    }
   },
   watch: {
     options (a, b) {
-      this._loadData(true)
+      // this._loadData(true)
     }
+  },
+  created () {
+    this.getDashboard()
+      .then(data => {
+        this.datas = data.value || {}
+        this.pegawai = data.pegawai || {}
+        this.loadingData = false
+      })
+      .catch((error) => {
+        this.datas = {}
+        console.log('Error : ' + error)
+      })
   },
   mounted () {
-    this._loadData(false) // loading data form server
+    // this._loadData(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getSuratMasuk', 'deleteSuratMasuk']),
-    can,
-    _detail (value) {
-      this.$router.push({ name: 'surat_masuk_view', params: { id: value.id_surat_masuk } })
-    },
-    _add () {
-      this.$router.push({ name: 'surat_masuk_add' })
-    },
-    _edit (value) {
-      this.$router.push({ name: 'surat_masuk_edit', params: { id: value.id_surat_masuk } })
-    },
-    _delete (value) {
-      if (value === true) {
-        this.dcProgress = true
-        this.dcdisabledNegativeBtn = true
-        this.dcdisabledPositiveBtn = true
-        this.dcMessages = 'Sedang menghapus surat masuk'
-        this.deleteSuratMasuk(this.deleteId).then(res => {
-          this._loadData(true)
-          this.dcProgress = false
-          this.dcMessages = 'Berhasil Menghapus Surat Masuk'
-          setTimeout(() => {
-            this.deleteId = ''
-            this.showDC = false
-            this.dcdisabledNegativeBtn = false
-            this.dcdisabledPositiveBtn = false
-          }, 1500)
-        }).catch(err => {
-          console.log(err)
-          this.dcdisabledNegativeBtn = false
-          this.dcdisabledPositiveBtn = false
-        })
-      } else {
-        this.deleteId = value.id_surat_masuk
-        this.dcMessages = `Hapus surat masuk <span class="pink--text">#${this.deleteId}</span> ?`
-        this.showDC = true
-      }
-    },
-    _clearFilter () {
-      this.searchQuery = null
-      this._loadData(true)
-    },
-    _loadData (abort) {
-      if (this.datas.length === 0 || abort) {
-        this.isLoading = true
-        this.getSuratMasuk({ search: this.searchQuery, ...this.options })
-          .then((data) => {
-            this.datas = data.items || []
-            this.serverLength = data.total || 0
-            this.isLoading = false
-          })
-      } else {
-        this.isLoading = false
-      }
-    }
+    ...mapActions(['getDashboard']),
+    can
+
+  },
+  _clearFilter () {
+    this.searchQuery = null
+    this._loadData(true)
   }
+
 }
+
 </script>
 <style>
 .v-data-footer__icons-before,.v-data-footer__icons-after{
