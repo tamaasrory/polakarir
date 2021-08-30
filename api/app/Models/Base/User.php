@@ -19,6 +19,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @package App
  * @property string $id
  * @property string $name
+ * @property string $esselon
+ * @property string $fungsional
+ * @property string $kode_jabatan
  * @property string $no_hp
  * @property array $role
  * @property string $email
@@ -50,6 +53,9 @@ class User extends SelfModel implements AuthenticatableContract, AuthorizableCon
         'email',
         'password',
         'detail',
+        'esselon',
+        'fungsional',
+        'kode_jabatan',
     ];
 
     /**

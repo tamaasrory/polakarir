@@ -20,10 +20,8 @@ class DatabaseSeeder extends Seeder
         // $this->call('UsersTableSeeder');
         $this->call('PermissionTableSeeder');
         $this->call('CreateAdminUserSeeder');
-        $this->call(\Database\Seeders\JenisSuratTableSeeder::class);
-        $this->call(\Database\Seeders\TemplateSuratTableSeeder::class);
-        $this->call(\Database\Seeders\KlasifikasiSuratTebleSeeder::class);
-        $this->call(\Database\Seeders\FormatPenomoranSuratSeeder::class);
+        $this->call(\Database\Seeders\PolaKarirSeeder::class);
+
         Model::reguard();
     }
 }
