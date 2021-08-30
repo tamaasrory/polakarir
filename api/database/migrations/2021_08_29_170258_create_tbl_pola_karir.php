@@ -15,6 +15,9 @@ class CreateTblPolaKarir extends Migration
     {
         Schema::create('tbl_pola_karir', function (Blueprint $table) {
             $table->id('id_pola_karir');
+            $table->text('esselon');
+            $table->text('fungsional');
+            $table->text('kode_jabatan');
             $table->text('url');
             $table->timestamps();
         });

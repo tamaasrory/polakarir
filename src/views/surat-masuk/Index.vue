@@ -72,7 +72,7 @@
             style="border-radius: 15px;"
           >
             <h3 class="pb-4 text-center">
-              Pilih Alur Karir
+              Alur Karir
             </h3>
             <v-row>
               <v-select
