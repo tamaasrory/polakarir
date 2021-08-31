@@ -20,7 +20,6 @@
       <v-toolbar-title>Pola Karir</v-toolbar-title>
       <v-spacer />
       <v-btn
-        v-if="can(['surat-masuk-create'])"
         title="Tambah Surat Masuk"
         icon
         @click="_add()"
@@ -56,6 +55,23 @@
             <h3 class="pb-4 text-center">
               View Jalur
             </h3>
+            <h1 class="my-2">
+              Nama : {{pegawai.nama_pegawai}}
+            </h1>
+            <h1 class="my-2">
+              Esselon : {{datas.esselon}}
+            </h1>
+            <h1 class="my-2">
+              Jenis_Jabatan : {{datas.kode_jabatan}}
+            </h1>
+            <h1 class="my-2">
+              Fungsional : {{datas.fungsional}}
+            </h1>
+            <h1 class="my-2">
+              URL : {{datas.url}}
+            </h1>
+
+
             <v-img
               :src="require('@/assets/bkpsdm-administrator.png')"
               lazy-src="https://picsum.photos/id/11/10/6"
@@ -153,16 +169,6 @@
       </v-row>
     </v-container>
 
-    <delete-dialog-confirm
-      :show-dialog="showDC"
-      :negative-button="dcNegativeBtn"
-      :positive-button="dcPositiveBtn"
-      :disabled-negative-btn="dcdisabledNegativeBtn"
-      :disabled-positive-btn="dcdisabledPositiveBtn"
-      :progress="dcProgress"
-      :title="'Hapus'"
-      :message="dcMessages"
-    />
     <v-navigation-drawer
       v-model="toggleFp"
       fixed
@@ -232,120 +238,28 @@ import { can } from '@/plugins/supports'
 
 export default {
   name: 'SuratMasuk',
-  components: {
-    'delete-dialog-confirm': Dialog
-  },
   data () {
     return {
-      searchQuery: '',
-      toggleFp: false,
-      isLoading: true,
       datas: [],
-
-      options: {},
-      pagination: {},
-      serverLength: 0,
-      config: {
-        table: {
-          page: 1,
-          pageCount: 0,
-          sortBy: ['id_surat_masuk'],
-          sortDesc: [true],
-          itemsPerPage: 10,
-          itemKey: 'id_surat_masuk'
-        }
-      },
-
-      showDC: false,
-      deleteId: '',
-      dcMessages: '',
-      dcProgress: false,
-      dcdisabledNegativeBtn: false,
-      dcdisabledPositiveBtn: false,
-      dcNegativeBtn: () => { this.showDC = false },
-      dcPositiveBtn: () => this._delete(true)
+      pegawai: []
     }
   },
-  computed: {
-    headerData () {
-      return [
-        {
-          text: 'Nomor',
-          align: 'left',
-          value: 'id_surat_masuk'
-        },
-        { text: 'Perihal', value: 'perihal_surat' },
-        { text: 'Jenis Surat', value: 'jenis_surat' },
-        { text: 'Pengirim', value: 'pengirim_surat' },
-        { text: 'Tanggal Surat', value: 'tanggal_surat' },
-        { text: 'Urgensi', value: 'derajat_surat' },
-        { text: 'Status', value: 'status' }
-      ]
-    }
-  },
-  watch: {
-    options (a, b) {
-      this._loadData(true)
-    }
-  },
-  mounted () {
-    this._loadData(false) // loading data form server
+  created () {
+    this.getDashboard()
+            .then(data => {
+              this.datas = data.value || {}
+              this.pegawai = data.pegawai || {}
+              this.loadingData = false
+            })
+            .catch((error) => {
+              this.datas = {}
+              console.log('Error : ' + error)
+            })
   },
   methods: {
-    ...mapActions(['getSuratMasuk', 'deleteSuratMasuk']),
-    can,
-    _detail (value) {
-      this.$router.push({ name: 'surat_masuk_view', params: { id: value.id_surat_masuk } })
-    },
-    _add () {
-      this.$router.push({ name: 'surat_masuk_add' })
-    },
-    _edit (value) {
-      this.$router.push({ name: 'surat_masuk_edit', params: { id: value.id_surat_masuk } })
-    },
-    _delete (value) {
-      if (value === true) {
-        this.dcProgress = true
-        this.dcdisabledNegativeBtn = true
-        this.dcdisabledPositiveBtn = true
-        this.dcMessages = 'Sedang menghapus surat masuk'
-        this.deleteSuratMasuk(this.deleteId).then(res => {
-          this._loadData(true)
-          this.dcProgress = false
-          this.dcMessages = 'Berhasil Menghapus Surat Masuk'
-          setTimeout(() => {
-            this.deleteId = ''
-            this.showDC = false
-            this.dcdisabledNegativeBtn = false
-            this.dcdisabledPositiveBtn = false
-          }, 1500)
-        }).catch(err => {
-          console.log(err)
-          this.dcdisabledNegativeBtn = false
-          this.dcdisabledPositiveBtn = false
-        })
-      } else {
-        this.deleteId = value.id_surat_masuk
-        this.dcMessages = `Hapus surat masuk <span class="pink--text">#${this.deleteId}</span> ?`
-        this.showDC = true
-      }
-    },
-    _clearFilter () {
-      this.searchQuery = null
-      this._loadData(true)
-    },
-    _loadData (abort) {
-      if (this.datas.length === 0 || abort) {
-        this.isLoading = true
-        this.getSuratMasuk({ search: this.searchQuery, ...this.options })
-          .then((data) => {
-            this.datas = data.items || []
-            this.serverLength = data.total || 0
-            this.isLoading = false
-          })
-      } else {
-        this.isLoading = false
-      }
+    ...mapActions(['getDashboard']),
+    backButton () {
+      this.$router.push({ name: 'surat_masuk' })
     }
   }
 }
