@@ -20,7 +20,6 @@
       <v-toolbar-title>Pola Karir</v-toolbar-title>
       <v-spacer />
       <v-btn
-        v-if="can(['surat-masuk-create'])"
         title="Tambah Surat Masuk"
         icon
         @click="_add()"
@@ -56,6 +55,23 @@
             <h3 class="pb-4 text-center">
               View Jalur
             </h3>
+            <h1 class="my-2">
+              Nama : {{pegawai.nama_pegawai}}
+            </h1>
+            <h1 class="my-2">
+              Esselon : {{datas.esselon}}
+            </h1>
+            <h1 class="my-2">
+              Jenis_Jabatan : {{datas.kode_jabatan}}
+            </h1>
+            <h1 class="my-2">
+              Fungsional : {{datas.fungsional}}
+            </h1>
+            <h1 class="my-2">
+              URL : {{datas.url}}
+            </h1>
+
+
             <v-img
               :src="require('@/assets/bkpsdm-administrator.png')"
               lazy-src="https://picsum.photos/id/11/10/6"
@@ -153,16 +169,6 @@
       </v-row>
     </v-container>
 
-    <delete-dialog-confirm
-      :show-dialog="showDC"
-      :negative-button="dcNegativeBtn"
-      :positive-button="dcPositiveBtn"
-      :disabled-negative-btn="dcdisabledNegativeBtn"
-      :disabled-positive-btn="dcdisabledPositiveBtn"
-      :progress="dcProgress"
-      :title="'Hapus'"
-      :message="dcMessages"
-    />
     <v-navigation-drawer
       v-model="toggleFp"
       fixed
@@ -232,73 +238,31 @@ import { can } from '@/plugins/supports'
 
 export default {
   name: 'SuratMasuk',
-  components: {
-    'delete-dialog-confirm': Dialog
-  },
   data () {
     return {
-      searchQuery: '',
-      toggleFp: false,
-      isLoading: true,
       datas: [],
-      pegawai: [],
-
-      options: {},
-      pagination: {},
-      serverLength: 0,
-      config: {
-        table: {
-          page: 1,
-          pageCount: 0,
-          sortBy: ['id_surat_masuk'],
-          sortDesc: [true],
-          itemsPerPage: 10,
-          itemKey: 'id_surat_masuk'
-        }
-      },
-
-      showDC: false,
-      deleteId: '',
-      dcMessages: '',
-      dcProgress: false,
-      dcdisabledNegativeBtn: false,
-      dcdisabledPositiveBtn: false,
-      dcNegativeBtn: () => { this.showDC = false },
-      dcPositiveBtn: () => this._delete(true)
+      pegawai: []
     }
   },
-  computed: {
-  },
-  watch: {
-    options (a, b) {
-      // this._loadData(true)
-    }
-  },
+  
   created () {
     this.getDashboard()
-      .then(data => {
-        this.datas = data.value || {}
-        this.pegawai = data.pegawai || {}
-        this.loadingData = false
-      })
-      .catch((error) => {
-        this.datas = {}
-        console.log('Error : ' + error)
-      })
-  },
-  mounted () {
-    // this._loadData(false) // loading data form server
+            .then(data => {
+              this.datas = data.value || {}
+              this.pegawai = data.pegawai || {}
+              this.loadingData = false
+            })
+            .catch((error) => {
+              this.datas = {}
+              console.log('Error : ' + error)
+            })
   },
   methods: {
     ...mapActions(['getDashboard']),
-    can
-
-  },
-  _clearFilter () {
-    this.searchQuery = null
-    this._loadData(true)
+    backButton () {
+      this.$router.push({ name: 'surat_masuk' })
+    }
   }
-
 }
 
 </script>
