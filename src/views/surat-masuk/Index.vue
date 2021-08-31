@@ -32,13 +32,13 @@
       >
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn
+      <!--      <v-btn
         title="Perbarui Data"
         icon
         @click="_loadData(true)"
       >
         <v-icon>mdi-reload</v-icon>
-      </v-btn>
+      </v-btn>-->
     </v-app-bar>
     <v-container
       fluid
@@ -88,7 +88,7 @@
             style="border-radius: 15px;"
           >
             <h3 class="pb-4 text-center">
-              Alur Karir
+              Alur Karir {{pegawai.nama_pegawai}}
             </h3>
             <v-row>
               <v-select
@@ -220,12 +220,12 @@
         >
           Bersihkan filter
         </v-btn>
-        <v-btn
+        <!--        <v-btn
           color="success"
           @click="_loadData(true)"
         >
           Terapkan
-        </v-btn>
+        </v-btn>-->
       </div>
     </v-navigation-drawer>
   </div>
@@ -244,6 +244,7 @@ export default {
       pegawai: []
     }
   },
+  
   created () {
     this.getDashboard()
             .then(data => {
@@ -263,6 +264,7 @@ export default {
     }
   }
 }
+
 </script>
 <style>
 .v-data-footer__icons-before,.v-data-footer__icons-after{

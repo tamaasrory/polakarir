@@ -41,12 +41,23 @@
           URL : {{datas.url}}
         </h1>
       </div>
+      <v-row>
+        <v-col>
+          <v-card>
+            <v-img
+            :src="baseURL + datas.uri">
+
+            </v-img>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
 import Account from '@/components/default/Account'
+import {baseURL} from '../router/Path';
 import { mapActions } from 'vuex'
 export default {
   name: 'Home',
