@@ -1,11 +1,11 @@
-import $axios from "@/router/server";
-import TemplateSurat from "@/router/apis/template-surat";
+import $axios from '@/router/server'
+import TemplateSurat from '@/router/apis/template-surat'
 
 const Dashboard = {
 
-  getDashboard({commit}, payload) {
+  getDashboard ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/pola-karir/detail/`)
+      $axios.get('/pola-karir/detail')
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data)
@@ -18,7 +18,7 @@ const Dashboard = {
           resolve([])
         })
     })
-  },
+  }
 
 }
 
