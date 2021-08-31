@@ -87,7 +87,8 @@ class PolaKarirController extends Controller {
         $dataSinergi = $request->auth['sinergi'];
         $data = PolaKarir::where('kode_jabatan','=',$dataSinergi['jenis_jabatan'])
             ->where('esselon','=',$dataSinergi['esselon'])
-            ->where('fungsional','=',$dataSinergi['fungsional'])->first();
+            ->where('fungsional','=',$dataSinergi['fungsional'])
+            ->whereJsonContains('id_opd',(string)$dataSinergi['id_opd'])->first();
 
         if ($data) {
             return [

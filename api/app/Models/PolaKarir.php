@@ -13,6 +13,7 @@ use App\Traits\Searchable;
  * @property string $url
  * @property string $created_at
  * @property string $updated_at
+ * @property array $id_opd
  */
 class PolaKarir extends SelfModel
 {
@@ -30,14 +31,18 @@ class PolaKarir extends SelfModel
      * 
      * @var array
      */
-    protected $fillable = ['esselon', 'fungsional', 'kode_jabatan', 'url', 'created_at', 'updated_at'];
+    protected $fillable = ['esselon', 'fungsional', 'kode_jabatan', 'url','id_opd', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
      * 
      * @var array
      */
-    public $searchable = ['esselon', 'fungsional', 'kode_jabatan', 'url', 'created_at', 'updated_at'];
+    public $searchable = ['esselon', 'fungsional', 'kode_jabatan', 'url','id_opd', 'created_at', 'updated_at'];
+
+    protected $casts = [
+        'id_opd' => 'json'
+    ];
 
     public function getNamaFungsionalAttribute()
     {
