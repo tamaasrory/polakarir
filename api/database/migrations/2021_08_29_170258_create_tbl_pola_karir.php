@@ -18,6 +18,7 @@ class CreateTblPolaKarir extends Migration
             $table->text('esselon');
             $table->text('fungsional');
             $table->text('kode_jabatan');
+            $table->json('id_opd');
             $table->text('url');
             $table->timestamps();
         });
