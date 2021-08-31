@@ -55,29 +55,15 @@
             <h3 class="pb-4 text-center">
               View Jalur
             </h3>
-            <h1 class="my-2">
-              Nama : {{pegawai.nama_pegawai}}
-            </h1>
-            <h1 class="my-2">
-              Esselon : {{datas.esselon}}
-            </h1>
-            <h1 class="my-2">
-              Jenis_Jabatan : {{datas.kode_jabatan}}
-            </h1>
-            <h1 class="my-2">
-              Fungsional : {{datas.fungsional}}
-            </h1>
-            <h1 class="my-2">
-              URL : {{datas.url}}
-            </h1>
-
-
-            <v-img
-              :src="require('@/assets/bkpsdm-administrator.png')"
-              lazy-src="https://picsum.photos/id/11/10/6"
-              max-height="650"
-              max-width="698"
-            />
+            <v-row>
+              <v-col>
+                <v-card>
+                  <v-img
+                          :src="imgUrl"
+                  />
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
         <v-col cols="4">
@@ -91,26 +77,32 @@
               Alur Karir {{pegawai.nama_pegawai}}
             </h3>
             <v-row>
+              <h3 class="pt-2 pb-2">Jenis Jabatan</h3>
               <v-select
-                :items="items"
+                v-model="datas.nama_jenis_jabatan"
+                :items="datas.nama_jenis_jabatan"
                 class="outline yellow--text"
                 solo
                 style="border-radius: 15px;"
-                label="Teknis/Non Teknis"
+                label="Jenis Jabatan"
               />
             </v-row>
             <v-row>
+              <h3 class="pb-2">Esselon</h3>
               <v-select
-                :items="items"
+                 v-model="datas.nama_esselon"
+                :items="datas.nama_esselon"
                 class="outline yellow--text"
                 solo
                 style="border-radius: 15px;"
-                label="Status Jabatan"
+                label="Esselon"
               />
             </v-row>
             <v-row>
+              <h3 class="pb-2">Fungsional</h3>
               <v-select
-                :items="items"
+                v-model="datas.nama_fungsional"
+                :items="datas.nama_fungsional"
                 class="outline yellow--text"
                 solo
                 style="border-radius: 15px;"
@@ -233,6 +225,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { baseURL } from '@/router/Path'
 import Dialog from '@/components/Dialog'
 import { can } from '@/plugins/supports'
 
@@ -241,7 +234,8 @@ export default {
   data () {
     return {
       datas: [],
-      pegawai: []
+      pegawai: [],
+      imgUrl: null
     }
   },
   
@@ -250,6 +244,7 @@ export default {
             .then(data => {
               this.datas = data.value || {}
               this.pegawai = data.pegawai || {}
+              this.imgUrl = baseURL + this.datas.url
               this.loadingData = false
             })
             .catch((error) => {
