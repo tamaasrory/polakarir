@@ -25,21 +25,6 @@
         <h1 class="my-2">
           Dashboard
         </h1>
-        <h1 class="my-2">
-          Nama : {{ pegawai.nama_pegawai }}
-        </h1>
-        <h1 class="my-2">
-          Esselon : {{ datas.esselon }}
-        </h1>
-        <h1 class="my-2">
-          Jenis_Jabatan : {{ datas.kode_jabatan }}
-        </h1>
-        <h1 class="my-2">
-          Fungsional : {{ datas.fungsional }}
-        </h1>
-        <h1 class="my-2">
-          URL : {{ datas.url }}
-        </h1>
       </div>
       <v-row>
         <v-col>

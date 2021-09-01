@@ -80,6 +80,7 @@
               <h3 class="pt-2 pb-2">
                 Jenis Jabatan
               </h3>
+              /
               <v-select
                 v-model="datas.nama_jenis_jabatan"
                 :items="datas.nama_jenis_jabatan"
