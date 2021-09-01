@@ -44,10 +44,13 @@ class PolaKarir extends SelfModel
         'id_opd' => 'json'
     ];
 
+    public $appends = ['nama_fungsional','nama_esselon','nama_jenis_jabatan'];
+
     public function getNamaFungsionalAttribute()
     {
-        return $this->belongsTo(Fungsional::class,'fungsional',
-            'id_fungsional')->first();
+//        return $this->belongsTo(Fungsional::class,'fungsional',
+//            'id_fungsional')->first()->nama_fungsional;
+        return '-';
     }
 
     public function getNamaEsselonAttribute()
@@ -63,9 +66,5 @@ class PolaKarir extends SelfModel
             'kode_jabatan',
             'id_jenis_jabatan')->first('nama_jenis_jabatan')->nama_jenis_jabatan;
     }
-
-
-
-    public $appends = ['nama_fungsional','nama_esselon','nama_jenis_jabatan'];
 
 }
