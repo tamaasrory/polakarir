@@ -19,29 +19,19 @@ class Fungsional extends SelfModel
      * @var string
      */
     protected $table = 'tb_fungsional';
-    protected $primaryKey = 'id_fungsional';
+    // protected $primaryKey = 'id_fungsional';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'id_fungsional',
-        'nama_fungsional',
-        'created_at',
-        'updated_at',
-    ];
+    protected $fillable = ['nama_fungsional'];
 
     /**
      * The attributes that are searchable.
      *
      * @var array
      */
-    public $searchable = [
-        'id_fungsional',
-        'nama_fungsional',
-        'created_at',
-        'updated_at',
-    ];
+    public $searchable = ['nama_fungsional'];
 
 }
