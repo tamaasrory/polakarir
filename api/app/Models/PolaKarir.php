@@ -21,21 +21,21 @@ class PolaKarir extends SelfModel
 
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'tbl_pola_karir';
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = ['esselon', 'fungsional', 'kode_jabatan', 'url','id_opd', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
-     * 
+     *
      * @var array
      */
     public $searchable = ['esselon', 'fungsional', 'kode_jabatan', 'url','id_opd', 'created_at', 'updated_at'];
@@ -44,10 +44,11 @@ class PolaKarir extends SelfModel
         'id_opd' => 'json'
     ];
 
+    public $appends = ['nama_fungsional','nama_esselon','nama_jenis_jabatan'];
+
     public function getNamaFungsionalAttribute()
     {
-        return $this->belongsTo(Fungsional::class,
-            'fungsional',
+        return $this->belongsTo(Fungsional::class,'fungsional',
             'id_fungsional')->first('nama_fungsional')->nama_fungsional;
     }
 
@@ -64,9 +65,5 @@ class PolaKarir extends SelfModel
             'kode_jabatan',
             'id_jenis_jabatan')->first('nama_jenis_jabatan')->nama_jenis_jabatan;
     }
-
-
-
-    public $appends = ['nama_fungsional','nama_esselon','nama_jenis_jabatan'];
 
 }

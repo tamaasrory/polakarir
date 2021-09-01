@@ -8,8 +8,7 @@
     "start-frontend-production": "cd ./dist && serve -p 8087",
     "build-production": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "postinstall": "node tools/copy-webviewer-files.js",
-    "postbuild-production": "node tools/copy-fcm-files.js"
+    "postinstall": "node tools/copy-webviewer-files.js"
   },
   "dependencies": {
     "@mdi/font": "^5.9.55",
