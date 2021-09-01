@@ -59,7 +59,7 @@
               <v-col>
                 <v-card>
                   <v-img
-                          :src="imgUrl"
+                    :src="imgUrl"
                   />
                 </v-card>
               </v-col>
@@ -74,10 +74,12 @@
             style="border-radius: 15px;"
           >
             <h3 class="pb-4 text-center">
-              Alur Karir {{pegawai.nama_pegawai}}
+              Alur Karir {{ pegawai.nama_pegawai }}
             </h3>
             <v-row>
-              <h3 class="pt-2 pb-2">Jenis Jabatan</h3>
+              <h3 class="pt-2 pb-2">
+                Jenis Jabatan
+              </h3>
               <v-select
                 v-model="datas.nama_jenis_jabatan"
                 :items="datas.nama_jenis_jabatan"
@@ -88,9 +90,11 @@
               />
             </v-row>
             <v-row>
-              <h3 class="pb-2">Esselon</h3>
+              <h3 class="pb-2">
+                Esselon
+              </h3>
               <v-select
-                 v-model="datas.nama_esselon"
+                v-model="datas.nama_esselon"
                 :items="datas.nama_esselon"
                 class="outline yellow--text"
                 solo
@@ -99,7 +103,9 @@
               />
             </v-row>
             <v-row>
-              <h3 class="pb-2">Fungsional</h3>
+              <h3 class="pb-2">
+                Fungsional
+              </h3>
               <v-select
                 v-model="datas.nama_fungsional"
                 :items="datas.nama_fungsional"
@@ -238,19 +244,19 @@ export default {
       imgUrl: null
     }
   },
-  
+
   created () {
     this.getDashboard()
-            .then(data => {
-              this.datas = data.value || {}
-              this.pegawai = data.pegawai || {}
-              this.imgUrl = baseURL + this.datas.url
-              this.loadingData = false
-            })
-            .catch((error) => {
-              this.datas = {}
-              console.log('Error : ' + error)
-            })
+      .then(data => {
+        this.datas = data.value || {}
+        this.pegawai = data.pegawai || {}
+        this.imgUrl = baseURL + this.datas.url
+        this.loadingData = false
+      })
+      .catch((error) => {
+        this.datas = {}
+        console.log('Error : ' + error)
+      })
   },
   methods: {
     ...mapActions(['getDashboard']),

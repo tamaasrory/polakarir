@@ -1,9 +1,9 @@
 const path = '/pola-karir'
 const permission = 'surat-masuk-'
 const routeName = 'surat_masuk'
-const folder = 'surat-masuk'
+const folder = 'pola-karir'
 const title = 'Pola Karir'
-const SuratMasuk = [
+const PolaKarir = [
   {
     path: path,
     name: routeName,
@@ -50,4 +50,4 @@ const SuratMasuk = [
   }
 ]
 
-export default SuratMasuk
+export default PolaKarir

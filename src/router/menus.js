@@ -2,7 +2,6 @@
  * Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
-import SuratMasuk from '@/router/menus/surat-masuk'
 import SuratKeluar from '@/router/menus/surat-keluar'
 import Agenda from '@/router/menus/agenda'
 import TemplateSurat from '@/router/menus/template-surat'
@@ -11,6 +10,7 @@ import Profil from '@/router/menus/profil'
 import JenisSurat from '@/router/menus/jenis-surat'
 import User from '@/router/menus/user'
 import Roles from '@/router/menus/roles'
+import PolaKarir from "./menus/pola-karir";
 
 const menus = [
   {
@@ -45,7 +45,7 @@ const menus = [
 export default menus.concat(
   User,
   Roles,
-  SuratMasuk,
+  PolaKarir,
   SuratKeluar,
   Agenda,
   Profil,
