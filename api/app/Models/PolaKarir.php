@@ -48,9 +48,8 @@ class PolaKarir extends SelfModel
 
     public function getNamaFungsionalAttribute()
     {
-//        return $this->belongsTo(Fungsional::class,'fungsional',
-//            'id_fungsional')->first()->nama_fungsional;
-        return '-';
+        return $this->belongsTo(Fungsional::class,'fungsional',
+            'id_fungsional')->first('nama_fungsional')->nama_fungsional;
     }
 
     public function getNamaEsselonAttribute()
