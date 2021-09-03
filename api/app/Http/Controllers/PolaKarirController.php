@@ -1,11 +1,17 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\Controller;
+use App\Models\Base\User;
+use App\Models\Esesslon;
+use App\Models\Fungsional;
+use App\Models\JenisJabatan;
 use App\Models\PolaKarir;
 use Illuminate\Http\Request;
 
-class PolaKarirController extends Controller {
+class PolaKarirController extends Controller
+{
 
     public $title = 'PolaKarirController';
 
@@ -25,7 +31,7 @@ class PolaKarirController extends Controller {
      */
     public function index(Request $request)
     {
-        $data = PolaKarir::search($request,new PolaKarir());
+        $data = PolaKarir::search($request, new PolaKarir());
 
         if ($data) {
             return [
@@ -75,6 +81,28 @@ class PolaKarirController extends Controller {
         ];
     }
 
+    public function filter(Request $request)
+    {
+        $auth = $request->auth['user'];
+        if (
+            $request->has('jenis_jabatan') &&
+            $request->has('esselon') &&
+            $request->has('fungsional')) {
+            $dataUser = $request->all();
+        } else {
+            $dataUser = $request->auth['sinergi'];
+        }
+        $filtered = PolaKarir::where('kode_jabatan', '=', $dataUser['jenis_jabatan'])
+            ->where('esselon', '=', $dataUser['esselon'])
+            ->where('fungsional', '=', $dataUser['fungsional'])
+            // ->whereJsonContains('id_opd', (string)$dataUser['id_opd'])
+            ->first();
+        return [
+            'value' => $filtered,
+            'msg' => 'filtered',
+        ];
+    }
+
     /**
      * Display the specified resource.
      *
@@ -83,17 +111,19 @@ class PolaKarirController extends Controller {
      */
     public function show(Request $request)
     {
-        /** @var PolaKarir $data */
         $dataSinergi = $request->auth['sinergi'];
-        $data = PolaKarir::where('kode_jabatan','=',$dataSinergi['jenis_jabatan'])
-            ->where('esselon','=',$dataSinergi['esselon'])
-            ->where('fungsional','=',$dataSinergi['fungsional'])
-            ->whereJsonContains('id_opd',(string)$dataSinergi['id_opd'])->first();
+        $items = [
+            'jenis_jabatan' => JenisJabatan::select(['id_jenis_jabatan as value', 'nama_jenis_jabatan as text',])->get(),
+            'esselon' => Esesslon::select(['id_esselon as value', 'nama_esselon as text',])->get(),
+            'fungsional' => Fungsional::select(['id_fungsional as value', 'nama_fungsional as text',])->get(),
+        ];
 
-        if ($data) {
+        if ($dataSinergi) {
             return [
-                'value' => $data,
-                'pegawai' => $dataSinergi,
+                'value' => [
+                    'pegawai' => $dataSinergi,
+                    'items' => $items
+                ],
                 'msg' => "{$this->title} # ditemukan"
             ];
         }
@@ -140,7 +170,6 @@ class PolaKarirController extends Controller {
         $id = $request->input('_id');
         /** @var PolaKarir $data */
         $data = PolaKarir::find($id);
-
 
 
         if ($data->save()) {

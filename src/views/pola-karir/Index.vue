@@ -19,123 +19,10 @@
       />
       <v-toolbar-title>Pola Karir</v-toolbar-title>
       <v-spacer />
-      <v-btn
-        v-if="can(['surat-keluar-create'])"
-        title="Tambah Surat Keluar"
-        icon
-        @click="_add()"
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click="booltmp.fp = !booltmp.fp"
-      >
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <v-btn
-        title="Perbarui Data"
-        icon
-        @click="_loadData(true)"
-      >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
     </v-app-bar>
-    <v-navigation-drawer
-      v-model="booltmp.fp"
-      fixed
-      width="350"
-      temporary
-      right
-    >
-      <v-list-item class="grey lighten-4">
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-icon>mdi-magnify</v-icon> Filter Pola Karir
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-icon>
-          <v-btn
-            icon
-            @click="booltmp.fp=!booltmp.fp"
-          >
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-row class="px-4 py-4">
-        <v-col
-          cols="12"
-        >
-<!--          <v-text-field
-            v-model="filterQuery.search"
-            placeholder="ketikkan sesuatu"
-            label="Pencarian"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />-->
-          <v-select
-            v-model="filterQuery.nomor_surat"
-            placeholder="ketikkan nomor surat"
-            :items="jabatan"
-            label="Jenis Jabatan"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />
-          <v-select
-            v-model="filterQuery.penerima"
-            placeholder="ketikkan nama penerima"
-            :items="esselon"
-            label="Esselon"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />
-          <v-select
-            v-model="filterQuery.penerima"
-            placeholder="ketikkan nama penerima"
-            :items="fungsional"
-            label="Fungsional"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />
-        </v-col>
-      </v-row>
-      <div
-        class="text-right px-4 py-4"
-        style="position: absolute;bottom: 0;right: 0"
-      >
-        <v-btn
-          v-show="isClearSearch"
-          text
-          color="primary"
-          @click="_clearFilter()"
-        >
-          Bersihkan filter
-        </v-btn>
-        <v-btn
-          color="success"
-          @click="_loadData(true)"
-        >
-          Terapkan
-        </v-btn>
-      </div>
-    </v-navigation-drawer>
     <v-container
       fluid
-      class="mt-15 mb-15"
+      class="mt-4 mb-15"
     >
       <v-row justify="space-around">
         <v-col cols="8">
@@ -146,14 +33,46 @@
             style="border-radius: 15px;"
           >
             <h3 class="pb-4 text-center">
-              View Jalur
+              Lihat Jalur
             </h3>
+            <v-alert
+              border="top"
+              colored-border
+              type="info"
+              elevation="2"
+            >
+              {{ pesan }}
+            </v-alert>
             <v-row>
               <v-col>
                 <v-card>
-                  <v-img
+                  <div
+                    v-if="loadingData"
+                    style="height: 300px;display: flex;align-items: center;justify-content: center"
+                  >
+                    <v-progress-circular
+                      :size="80"
+                      :width="5"
+                      color="grey"
+                      indeterminate
+                    />
+                  </div>
+                  <img
+                    v-if="imgUrl"
+                    v-show="!loadingData"
+                    width="auto"
+                    height="auto"
                     :src="imgUrl"
-                  />
+                    style="width: 100%"
+                  >
+                  <img
+                    v-if="!imgUrl"
+                    v-show="!loadingData"
+                    width="auto"
+                    height="auto"
+                    :src="require('@/assets/image404.svg')"
+                    style="width: 100%"
+                  >
                 </v-card>
               </v-col>
             </v-row>
@@ -162,105 +81,73 @@
         <v-col cols="4">
           <v-card
             color="#fff"
-            elevation="0"
+            elevation="3"
             class="px-7 py-4"
             style="border-radius: 15px;"
           >
             <h3 class="pb-4 text-center">
               Alur Karir {{ pegawai.nama_pegawai }}
             </h3>
-            <v-row>
-              <h3 class="pt-2 pb-2">
-                Jenis Jabatan
-              </h3>
+            <div>
+              <div>
+                <h3 class="pt-2 pb-2">
+                  Jenis Jabatan
+                </h3>
+              </div>
               <v-select
-                v-model="datas.nama_jenis_jabatan"
-                :items="datas.nama_jenis_jabatan"
+                v-model="filter.jenis_jabatan"
+                :items="items.jenis_jabatan"
                 class="outline yellow--text"
                 solo
                 style="border-radius: 15px;"
                 label="Jenis Jabatan"
               />
-            </v-row>
-            <v-row>
-              <h3 class="pb-2">
-                Esselon
-              </h3>
+            </div>
+            <div>
+              <div>
+                <h3 class="pb-2">
+                  Esselon
+                </h3>
+              </div>
               <v-select
-                v-model="datas.nama_esselon"
-                :items="datas.nama_esselon"
+                v-model="filter.esselon"
+                :items="items.esselon"
                 class="outline yellow--text"
                 solo
                 style="border-radius: 15px;"
                 label="Esselon"
               />
-            </v-row>
-            <v-row>
-              <h3 class="pb-2">
-                Fungsional
-              </h3>
+            </div>
+            <div>
+              <div>
+                <h3 class="pb-2">
+                  Fungsional
+                </h3>
+              </div>
               <v-select
-                v-model="datas.nama_fungsional"
-                :items="datas.nama_fungsional"
+                v-model="filter.fungsional"
+                :items="items.fungsional"
                 class="outline yellow--text"
                 solo
                 style="border-radius: 15px;"
                 label="Jenis Jabatan"
               />
-            </v-row>
-          </v-card>
-          <v-card
-            color="#fff"
-            elevation="0"
-            class="px-7 py-4"
-            style="border-radius: 15px;"
-          >
-            <h3 class="pb-4 text-center">
-              Alur Karir {{ pegawai.nama_pegawai }}
-            </h3>
-            <v-row>
-              <h3 class="pt-2 pb-2">
-                Jenis Jabatan
-              </h3>
-              <v-select
-                v-model="datas.nama_jenis_jabatan"
-                :items="datas.nama_jenis_jabatan"
-                class="outline yellow--text"
-                solo
-                style="border-radius: 15px;"
-                label="Jenis Jabatan"
-              />
-            </v-row>
-            <v-row>
-              <h3 class="pb-2">
-                Esselon
-              </h3>
-              <v-select
-                v-model="datas.nama_esselon"
-                :items="datas.nama_esselon"
-                class="outline yellow--text"
-                solo
-                style="border-radius: 15px;"
-                label="Esselon"
-              />
-            </v-row>
-            <v-row>
-              <h3 class="pb-2">
-                Fungsional
-              </h3>
-              <v-select
-                v-model="datas.nama_fungsional"
-                :items="datas.nama_fungsional"
-                class="outline yellow--text"
-                solo
-                style="border-radius: 15px;"
-                label="Jenis Jabatan"
-              />
-            </v-row>
+            </div>
+            <div>
+              <v-btn
+                color="primary"
+                rounded
+                large
+                block
+                @click="filterButton"
+              >
+                Terapkan
+              </v-btn>
+            </div>
           </v-card>
           <v-card
             outlinedcolor="#fff"
-            elevation="0"
+            elevation="3"
             class="px-7 py-4 mt-10"
             style="border-radius: 15px;"
           >
@@ -304,158 +191,88 @@
           </v-card>
         </v-col>
       </v-row>
-      </v-card>
-      </v-col>
-      </v-row>
     </v-container>
-
-    <v-navigation-drawer
-      v-model="booltmp.fp"
-      fixed
-      width="350"
-      temporary
-      right
-    >
-      <v-list-item class="grey lighten-4">
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-icon>mdi-filter-outline</v-icon> Filter
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-icon>
-          <v-btn
-            icon
-            @click="booltmp.fp=!booltmp.fp"
-          >
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-row class="px-4 py-4">
-        <v-col
-          cols="12"
-        >
-          <v-text-field
-            v-model="searchQuery"
-            placeholder="ketikkan sesuatu untuk mencari"
-            label="Pencarian"
-            light
-            clearable
-            hide-details
-            outlined
-            class="mb-4"
-          />
-        </v-col>
-      </v-row>
-      <div
-        class="text-right px-4 py-4"
-        style="position: absolute;bottom: 0;right: 0"
-      >
-        <v-btn
-          v-show="searchQuery"
-          text
-          color="primary"
-          @click="_clearFilter()"
-        >
-          Bersihkan filter
-        </v-btn>
-        <!--        <v-btn
-          color="success"
-          @click="_loadData(true)"
-        >
-          Terapkan
-        </v-btn>-->
-      </div>
-    </v-navigation-drawer>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import { baseURL } from '@/router/Path'
-import Dialog from '@/components/Dialog'
-import { can, isEmpty } from '@/plugins/supports'
 
 export default {
-  name: 'SuratMasuk',
+  name: 'PolaKarir',
   data () {
     return {
-      filterQuery: {
-        nomor_surat: null,
-        penerima: null,
-        tgl: null
-      },
-      booltmp: {
-        fp: false,
-        ft: false
-      },
-      jabatan: ['Struktural', 'Fungsional', 'Pelaksana'],
-      esselon: ['2A', '2B','3A','3B','4A','4B'],
-      fungsional: ['Pemula', 'Terampil','Mahir','Penyelia','Ahli Pertama','Ahli Muda','Ahli Madya','Ahli Utama'],
       datas: [],
       pegawai: [],
-      imgUrl: null
+      items: {
+        jenis_jabatan: [],
+        esselon: [],
+        fungsional: []
+      },
+      filter: {
+        jenis_jabatan: null,
+        esselon: null,
+        fungsional: null
+      },
+      imgUrl: null,
+      loadingData: false,
+      pesan: 'Tunggu Sebentar, Sendang Mencari...'
     }
   },
-  watch: {
-    options (a, b) {
-      this._loadData(true)
-    }
-  },
-  mounted() {
-    this._loadData(false) // loading data form server
-  },
+
   created () {
-    this.getDashboard()
+    this.loadingData = true
+    this.viewKarir()
       .then(data => {
-        this.datas = data.value || {}
         this.pegawai = data.pegawai || {}
-        this.imgUrl = baseURL + this.datas.url
+        this.filter = {
+          jenis_jabatan: this.pegawai.jenis_jabatan,
+          esselon: this.pegawai.esselon,
+          fungsional: this.pegawai.fungsional
+        }
+        this.items.jenis_jabatan = data.items.jenis_jabatan || []
+        this.items.esselon = data.items.esselon || []
+        this.items.fungsional = data.items.fungsional || []
+        this.pesan = 'Tunggu Sebentar, Sendang Mencari...'
+        this.filterKarir(this.filter)
+          .then(d => {
+            this.loadingData = false
+            if (d.data) {
+              console.log(d)
+              this.pesan = 'Berikut data yang ditemukan'
+              this.imgUrl = baseURL + d.data.url
+            } else {
+              this.pesan = 'Data yang sesuai tidak ditemukan!'
+              this.imgUrl = false
+            }
+          })
         this.loadingData = false
       })
       .catch((error) => {
-        this.datas = {}
         console.log('Error : ' + error)
       })
   },
-  computed: {
-    isClearSearch () {
-      for (const filterTaskKey in this.filterQuery) {
-        if (!isEmpty(this.filterQuery[filterTaskKey])) {
-          return true
-        }
-      }
-      return false
-    }
-  },
   methods: {
-    ...mapActions(['getDashboard', 'getPolaKarir']),
-    can,
+    ...mapActions(['viewKarir', 'filterKarir']),
     backButton () {
       this.$router.push({ name: 'surat_masuk' })
     },
-    _clearFilter () {
-      this.filterQuery = {
-        nomor_surat: null,
-        penerima: null,
-        tgl: null,
-        search: null
-      }
-      this._loadData(true)
-    },
-    _loadData (abort) {
-      if (this.datas.length === 0 || abort) {
-        this.isLoading = true
-        this.getPolaKarir({ add: this.filterQuery, ...this.options })
-          .then((data) => {
-            this.datas = data.items || []
-            this.serverLength = data.total || 0
-            this.isLoading = false
-          })
-      } else {
-        this.isLoading = false
-      }
+    filterButton () {
+      this.loadingData = true
+      this.pesan = 'Tunggu Sebentar, Sendang Mencari...'
+      this.filterKarir(this.filter)
+        .then(d => {
+          this.loadingData = false
+          if (d.data) {
+            console.log(d)
+            this.pesan = 'Berikut data yang ditemukan'
+            this.imgUrl = baseURL + d.data.url
+          } else {
+            this.pesan = 'Data yang sesuai tidak ditemukan!'
+            this.imgUrl = false
+          }
+        })
     }
   }
 }

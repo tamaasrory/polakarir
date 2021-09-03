@@ -32,7 +32,8 @@ const $api = {
   ...ArsipSurat,
   ...JenisSurat,
   ...Sinergi,
-  ...Profil
+  ...Profil,
+  ...PolaKarir
 }
 
 export default $api

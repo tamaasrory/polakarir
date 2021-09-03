@@ -44,26 +44,26 @@ class PolaKarir extends SelfModel
         'id_opd' => 'json'
     ];
 
-    public $appends = ['nama_fungsional','nama_esselon','nama_jenis_jabatan'];
-
-    public function getNamaFungsionalAttribute()
-    {
-        return $this->belongsTo(Fungsional::class,'fungsional',
-            'id_fungsional')->first('nama_fungsional')->nama_fungsional;
-    }
-
-    public function getNamaEsselonAttribute()
-    {
-        return $this->belongsTo(Esesslon::class,
-            'esselon',
-            'id_esselon')->first('nama_esselon')->nama_esselon;
-    }
-
-    public function getNamaJenisJabatanAttribute()
-    {
-        return $this->belongsTo(JenisJabatan::class,
-            'kode_jabatan',
-            'id_jenis_jabatan')->first('nama_jenis_jabatan')->nama_jenis_jabatan;
-    }
+//    public $appends = ['nama_fungsional','nama_esselon','nama_jenis_jabatan'];
+//
+//    public function getNamaFungsionalAttribute()
+//    {
+//        return $this->belongsTo(Fungsional::class,'fungsional',
+//            'id_fungsional')->first('nama_fungsional')->nama_fungsional;
+//    }
+//
+//    public function getNamaEsselonAttribute()
+//    {
+//        return $this->belongsTo(Esesslon::class,
+//            'esselon',
+//            'id_esselon')->first('nama_esselon')->nama_esselon;
+//    }
+//
+//    public function getNamaJenisJabatanAttribute()
+//    {
+//        return $this->belongsTo(JenisJabatan::class,
+//            'kode_jabatan',
+//            'id_jenis_jabatan')->first('nama_jenis_jabatan')->nama_jenis_jabatan;
+//    }
 
 }
