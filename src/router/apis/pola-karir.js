@@ -1,23 +1,6 @@
 import $axios from '@/router/server'
 
-const Dashboard = {
-
-  getDashboard ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.get('/pola-karir/detail')
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data)
-          } else {
-            resolve(response.data)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
+const PolaKarir = {
 
   getPolaKarir ({ commit }, payload) {
     return new Promise((resolve, reject) => {
@@ -45,8 +28,41 @@ const Dashboard = {
           resolve({ items: [], total: 0 })
         })
     })
-  }
+  },
+
+  getPolaKarirById ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.get(`/pola-karir/detail/${payload.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          reject(error)
+        })
+    })
+  },
+  deletePolaKarir ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      $axios.delete(`/pola-karir/delete/${payload}`)
+        .then((response) => {
+          if (response.status === 200) {
+            resolve(response.data.value)
+          } else {
+            resolve(response.data.value)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve([])
+        })
+    })
+  },
 
 }
 
-export default Dashboard
+export default PolaKarir

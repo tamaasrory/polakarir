@@ -16,7 +16,7 @@ import Dashboard from '@/router/apis/dashboard'
 import ArsipSurat from '@/router/apis/arsip-surat'
 import JenisSurat from '@/router/apis/jenis-surat'
 import Sinergi from '@/router/apis/sinergi'
-
+import PolaKarir from '@/router/apis/pola-karir'
 
 const $api = {
   ...auth,
@@ -28,6 +28,7 @@ const $api = {
   ...Agenda,
   ...TemplateSurat,
   ...Dashboard,
+  ...PolaKarir,
   ...ArsipSurat,
   ...JenisSurat,
   ...Sinergi,

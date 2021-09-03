@@ -24,7 +24,7 @@
       <h1 class="my-2">
         Pergerakan Karir
       </h1>
-<!--      <v-card>
+      <v-card>
         <v-row dense v-if="(user.sinergi)">
           <v-col>
             <v-tabs centered slider-size="5">
@@ -173,8 +173,8 @@
             </v-tooltip>
           </template>
         </v-data-table>
-      </v-card>-->
-<!--      <div
+      </v-card>
+      <div
         class="row align-center pb-3"
       >
         <div class="col-md-6 col-12 order-md-0 order-1 pt-0 pt-md-4">
@@ -197,7 +197,7 @@
             circle
           />
         </div>
-      </div>-->
+      </div>
     </v-container>
     <download-dialog-confirm
       :show-dialog="showDW"
@@ -348,20 +348,17 @@ export default {
     headerData () {
       if (this.user.sinergi) {
         return [
-          { text: 'Nama Template', value: 'nama_template'},
-          {text: 'Jenis Surat', value: 'jenis_surat'},
-          {text: 'Sumber Hukum', value: 'sumber_hukum'},
-          {text: 'Status', value: 'status'},
-          {text: 'Aksi', value: 'aksi'}
+          {text: 'Nama Template', value: 'esselon'},
+          {text: 'Jenis Surat', value: 'fungsional'},
+          {text: 'Sumber Hukum', value: 'jabatan'},
+          {text: 'Status', value: 'url'},
         ]
       } else {
         return [
-          {text: 'Nama Template', value: 'nama_template'},
-          {text: 'Jenis Surat', value: 'jenis_surat'},
-          {text: 'Sumber Hukum', value: 'sumber_hukum'},
-          {text: 'Status', value: 'status'},
-          {text: 'opd', value: 'id_opd'},
-          {text: 'Aksi', value: 'aksi'}
+          {text: 'Nama Template', value: 'esselon'},
+          {text: 'Jenis Surat', value: 'fungsional'},
+          {text: 'Sumber Hukum', value: 'jabatan'},
+          {text: 'Status', value: 'url'},
         ]
       }
     }
@@ -375,7 +372,7 @@ export default {
     this._loadData(false, this.id_opd_active) // loading data form server
   },
   methods: {
-    ...mapActions(['getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat','updateTemplateSurat']),
+    ...mapActions(['getPolaKarir','getTemplateSurat', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat','updateTemplateSurat']),
     can,
     _detail(value) {
       this.$router.push({name: 'material_view', params: {id: value.id}})
@@ -453,7 +450,7 @@ export default {
       }
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
-        this.getTemplateSurat({ add: this.filterTask, ...this.options })
+        this.getPolaKarir({ add: this.filterTask, ...this.options })
           .then((data) => {
             this.datas = data.items || []
             this.serverLength = data.total || 0

@@ -1,6 +1,6 @@
 const path = '/pola-karir'
-const permission = 'surat-masuk-'
-const routeName = 'surat_masuk'
+const permission = 'pola-karir-'
+const routeName = 'pola_karir'
 const folder = 'pola-karir'
 const title = 'Pola Karir'
 const PolaKarir = [
