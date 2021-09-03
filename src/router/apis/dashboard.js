@@ -1,5 +1,4 @@
 import $axios from '@/router/server'
-import TemplateSurat from '@/router/apis/template-surat'
 
 const Dashboard = {
 
