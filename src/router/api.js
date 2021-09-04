@@ -9,7 +9,7 @@ import user from '@/router/apis/user'
 import app from '@/router/apis/app'
 import SuratMasuk from '@/router/apis/surat-masuk'
 import SuratKeluar from '@/router/apis/surat-keluar'
-import Agenda from '@/router/apis/agenda'
+import SyaratJabatan from '@/router/apis/syarat-jabatan'
 import Profil from '@/router/apis/profil'
 import TemplateSurat from '@/router/apis/template-surat'
 import Dashboard from '@/router/apis/dashboard'
@@ -26,7 +26,6 @@ const $api = {
   ...app,
   ...SuratMasuk,
   ...SuratKeluar,
-  ...Agenda,
   ...TemplateSurat,
   ...Dashboard,
   ...PolaKarir,
@@ -35,7 +34,8 @@ const $api = {
   ...Sinergi,
   ...Profil,
   ...PolaKarir,
-  ...StandarKompetensi
+  ...StandarKompetensi,
+  ...SyaratJabatan
 }
 
 export default $api

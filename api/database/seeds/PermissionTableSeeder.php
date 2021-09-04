@@ -20,6 +20,7 @@ class PermissionTableSeeder extends Seeder
             'surat-masuk',
             'pola-karir',
             'standar-kompetensi',
+            'syarat-jabatan',
             'template-surat',
             'arsip-surat',
             'jenis-surat',

@@ -1,6 +1,6 @@
 import $axios from '@/router/server'
 
-const Agenda = {
+const SyaratJabatan = {
   // START Agenda API
   getAgendaToCalender ({ commit }, payload) {
     return new Promise((resolve, reject) => {
@@ -143,4 +143,4 @@ const Agenda = {
   // END Agenda API
 }
 
-export default Agenda
+export default SyaratJabatan

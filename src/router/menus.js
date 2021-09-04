@@ -2,13 +2,13 @@
  * Copyright (c) 2020. dibuat Oleh Tama Asrory Ridhana, S.T, MTA.
  * Lisensi ini hanya diberikan dan tidak dapat di perjual belikan kembali tanpa izin pembuat
  */
-import Agenda from '@/router/menus/agenda'
 import TemplateSurat from '@/router/menus/template-surat'
 import Profil from '@/router/menus/profil'
 import User from '@/router/menus/user'
 import Roles from '@/router/menus/roles'
 import PolaKarir from './menus/pola-karir'
-import StandarKompetensi from './menus/standar-kompetensi';
+import StandarKompetensi from './menus/standar-kompetensi'
+import SyaratJabatan from './menus/syarat-jabatan'
 
 const menus = [
   {
@@ -45,8 +45,8 @@ export default menus.concat(
   Roles,
   PolaKarir,
   StandarKompetensi,
-  Agenda,
   Profil,
-  TemplateSurat
+  TemplateSurat,
+  SyaratJabatan
 
 )

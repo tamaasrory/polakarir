@@ -1,9 +1,9 @@
-const path = '/sasaran'
-const permission = 'agenda-'
-const routeName = 'agenda'
-const folder = 'agenda'
+const path = '/syarat-jabatan'
+const permission = 'syarat-jabatan-'
+const routeName = 'syarat_jabatan'
+const folder = 'syarat-jabatan'
 const title = 'Syarat Jabatan'
-const Agenda = [
+const SyaratJabatan = [
   {
     path: path,
     name: routeName,
@@ -60,4 +60,4 @@ const Agenda = [
   }
 ]
 
-export default Agenda
+export default SyaratJabatan

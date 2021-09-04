@@ -103,7 +103,8 @@ class CreateAdminUserSeeder extends Seeder
             "agenda-delete",
             "home",
             "pola-karir-list",
-            "standar-kompetensi-list"
+            "standar-kompetensi-list",
+            "syarat-jabatan-list"
         ])->pluck('id', 'id')->all();
         // sinkronisasi role + permission
         $role->syncPermissions($permissions);
@@ -169,7 +170,8 @@ class CreateAdminUserSeeder extends Seeder
             "agenda-list",
             "home",
             "pola-karir-list",
-            "standar-kompetensi-list"
+            "standar-kompetensi-list",
+            "syarat-jabatan-list"
         ])->pluck('id', 'id')->all();
         // sinkronisasi role + permission
         $role->syncPermissions($permissions);
@@ -247,7 +249,8 @@ class CreateAdminUserSeeder extends Seeder
             "agenda-delete",
             "home",
             "pola-karir-list",
-            "standar-kompetensi-list"
+            "standar-kompetensi-list",
+            "syarat-jabatan-list"
         ])
             ->pluck('id', 'id')->all();
         // sinkronisasi role + permission
@@ -474,7 +477,8 @@ class CreateAdminUserSeeder extends Seeder
             "surat-masuk-edit",
             "template-surat-list",
             "pola-karir-list",
-            "standar-kompetensi-list"
+            "standar-kompetensi-list",
+            "syarat-jabatan-list"
         ])->pluck('id', 'id')->all();
         // sinkronisasi role + permission
         $role->syncPermissions($permissions);
@@ -493,7 +497,8 @@ class CreateAdminUserSeeder extends Seeder
             "surat-masuk-edit",
             "template-surat-list",
             "standar-kompetensi-list",
-            "pola-karir-list"
+            "pola-karir-list",
+            "syarat-jabatan-list"
         ])->pluck('id', 'id')->all();
         // sinkronisasi role + permission
         $role->syncPermissions($permissions);

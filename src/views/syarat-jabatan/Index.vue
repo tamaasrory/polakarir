@@ -35,7 +35,7 @@
         <v-row dense
                elevation="5">
           <v-col>
-            <h3 class=" px-3 font-weight-light">Agenda / Informasi Dinas</h3>
+            <h3 class=" px-3 font-weight-light">SyaratJabatan / Informasi Dinas</h3>
           </v-col>
           <v-col lg="8" align="right">
             <v-btn
