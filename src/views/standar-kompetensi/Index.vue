@@ -433,7 +433,7 @@ export default {
     this._loadData(false, this.id_opd_active) // loading data form server
   },
   methods: {
-    ...mapActions(['getSKJ', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat', 'updateTemplateSurat']),
+    ...mapActions(['getSKJ', 'deleteTemplateSurat', 'downloadSKJ', 'downloadTemplateSurat', 'updateTemplateSurat']),
     can,
     goToSuratAjukan () {
       this.$router.push({ name: 'template_surat_ajukan' })
@@ -445,7 +445,7 @@ export default {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },
     _add () {
-      this.$router.push({ name: 'template_surat_add' })
+      this.$router.push({ name: 'standar_kompetensi_add' })
     },
     _download: function (value) {
       if (value === true) {
@@ -453,7 +453,7 @@ export default {
         // this.dwdisabledNegativeBtn = true
         // this.dwdisabledPositiveBtn = true
         // this.dwMessages = `Sedang mendownload template surat`
-        this.downloadTemplateSurat({ nama: this.namaTemplate, id: this.downloadId }).then(res => {
+        this.downloadSKJ({ nama: this.namaTemplate, id: this.downloadId }).then(res => {
           // this._loadData(true)
           // this.dwProgress = false
           // this.dwMessages = 'Berhasil mendownload template surat'
@@ -469,11 +469,10 @@ export default {
           this.dwdisabledPositiveBtn = false
         })
       } else {
-        this.downloadId = value.id_template_surat
-        this.namaTemplate = value.nama_template
+        this.downloadId = value.id
+        this.namaTemplate = value.nama_jabatan
         this.dwTitle = 'Download '
-        this.dwMessages = `Download ${this.namaTemplate} <br /><br />
- Mohon untuk tidak merubah atau menghapus teks <span class="red--text">\${nomorsurat}\, \${tanggal}\, \${nip}\, \${ttdelektronik}\, \${namalengkap}\, \${pangkat}\ dan \${catatan_tte}\ </span> pada template surat !`
+        this.dwMessages = `Download SKJ ${this.namaTemplate}`
         this.showDW = true
       }
     },

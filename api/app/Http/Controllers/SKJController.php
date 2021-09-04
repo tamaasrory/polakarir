@@ -50,23 +50,33 @@ class SKJController extends Controller
      *
      * @return \Illuminate\Http\Response|array
      */
-    /*public function store(Request $request)
+    public function store(Request $request)
     {
         $data = new SKJ();
-        $data->fill(request()->all());
-        $jenis_surat = $data->jenis_surat;
 
+        $data->fill(request()->all());
+        $jenis_opd = $data->id_opd;
+        if ($jenis_opd == 'Dinas') {
+            $data->id_opd = 1;
+        }elseif($jenis_opd =='Badan'){
+            $data->id_opd = 2;
+        }elseif($jenis_opd =='Inspektorat'){
+            $data->id_opd = 3;
+        }elseif($jenis_opd =='Kecamatan'){
+            $data->id_opd = 4;
+        }
+        $data->jenis_jabatan = '-';
 
         if ($request->hasFile('draf')) {
             $original_filename = $request->file('draf')->getClientOriginalName();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
-            $destination_path = '/template/' . $this->name_folder_draf($jenis_surat) . '/';
-            $nama_template = 'draf-' . time() . '.' . $file_ext;
+            $destination_path = '/skj/' . $this->name_folder_byopd($jenis_opd) . '/';
+            $nama_skj = 'draf-' . time() . '.' . $file_ext;
 
-            if ($request->file('draf')->move('.' . $destination_path, $nama_template)) {
+            if ($request->file('draf')->move('.' . $destination_path, $nama_skj)) {
 
-                $data->url_berkas = $destination_path . '' . $nama_template;
+                $data->url_berkas = $destination_path . '' . $nama_skj;
 
                 if ($data->save()) {
                     return [
@@ -82,7 +92,7 @@ class SKJController extends Controller
             'value' => [],
             'msg' => "{$this->title} baru gagal disimpan"
         ];
-    }*/
+    }
 
     /**
      * Display the specified resource.
@@ -238,17 +248,17 @@ class SKJController extends Controller
 
     }
 
-    /*function name_folder_draf($jenis_surat)
+    function name_folder_byopd($jenis_opd)
     {
         $pattern = array(
             '/([^a-zA-Z\+\s])/',
             '/(\+|\s)+/'
         );
         $replacement = array('', '');
-        $nama_folder = preg_replace($pattern, $replacement, $jenis_surat);
+        $nama_folder = preg_replace($pattern, $replacement, $jenis_opd);
 
         return $nama_folder;
-    }*/
+    }
 
     /**
      * Show the form for creating a new resource.
