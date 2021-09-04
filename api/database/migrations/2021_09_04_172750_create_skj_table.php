@@ -18,7 +18,7 @@ class CreateSkjTable extends Migration
             $table->string('nama_jabatan');
             $table->string('kelompok_jabatan');
             $table->string('urusan_pemerintah');
-            $table->string('kode_jabatan');
+            $table->string('jenis_jabatan');
             $table->string('id_opd');
             $table->text('url_berkas');
             $table->timestamps();

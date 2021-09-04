@@ -16,7 +16,7 @@ class CreateTblSyaratJabatan extends Migration
         Schema::create('tbl_syarat_jabatan', function (Blueprint $table) {
             $table->id('id_syarat_jabatan');
             $table->string('nama_syarat');
-            $table->string('kode_jabatan');
+            $table->string('jenis_jabatan');
             $table->text('url_berkas');
             $table->timestamps();
         });
