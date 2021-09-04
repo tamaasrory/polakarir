@@ -14,6 +14,7 @@ use App\Http\Controllers\SyaratJabatanController;
 $router->group(['prefix' => 'pola-karir'], function () use ($router) {
     $router->get('all', [PolaKarirController::class, 'index']);
     $router->post('filter', [PolaKarirController::class, 'filter']);
+    $router->get('my-karir', [PolaKarirController::class, 'myKarir']);
     $router->get('detail', [PolaKarirController::class, 'show']);
     $router->get('create', [PolaKarirController::class, 'create']);
     $router->post('baru', [PolaKarirController::class, 'store']);

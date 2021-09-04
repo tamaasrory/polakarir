@@ -101,9 +101,10 @@
                 solo
                 style="border-radius: 15px;"
                 label="Jenis Jabatan"
+                @change="onChangeJenisJabatan"
               />
             </div>
-            <div>
+            <div v-show="filter.jenis_jabatan===1">
               <div>
                 <h3 class="pb-2">
                   Esselon
@@ -118,7 +119,7 @@
                 label="Esselon"
               />
             </div>
-            <div>
+            <div v-show="filter.jenis_jabatan===2">
               <div>
                 <h3 class="pb-2">
                   Fungsional
@@ -273,6 +274,16 @@ export default {
             this.imgUrl = false
           }
         })
+    },
+    onChangeJenisJabatan (e) {
+      if (e === 1) {
+        this.filter.fungsional = 0
+      } else if (e === 2) {
+        this.filter.esselon = 0
+      } else {
+        this.filter.fungsional = 0
+        this.filter.esselon = 0
+      }
     }
   }
 }

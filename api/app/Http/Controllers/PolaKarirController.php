@@ -83,23 +83,42 @@ class PolaKarirController extends Controller
 
     public function filter(Request $request)
     {
-        $auth = $request->auth['user'];
-        if (
-            $request->has('jenis_jabatan') &&
-            $request->has('esselon') &&
-            $request->has('fungsional')) {
+        $auth = $request->auth['sinergi'];
+        if ($request->has('jenis_jabatan')) {
             $dataUser = $request->all();
         } else {
-            $dataUser = $request->auth['sinergi'];
+            $dataUser = $auth;
         }
-        $filtered = PolaKarir::where('kode_jabatan', '=', $dataUser['jenis_jabatan'])
-            ->where('esselon', '=', $dataUser['esselon'])
-            ->where('fungsional', '=', $dataUser['fungsional'])
-            // ->whereJsonContains('id_opd', (string)$dataUser['id_opd'])
-            ->first();
+
+        $filtered = PolaKarir::whereJsonContains('id_opd', (string)$auth['id_opd']);
+
+        foreach ($dataUser as $key => $value) {
+            if ($value) {
+                $filtered->where($key, $value);
+            }
+        }
+
+        $filtered = $filtered->first();
+
         return [
             'value' => $filtered,
             'msg' => 'filtered',
+        ];
+    }
+
+    public function myKarir(Request $request)
+    {
+        $dataUser = $request->auth['sinergi'];
+
+        $filtered = PolaKarir::where('jenis_jabatan', '=', $dataUser['jenis_jabatan'])
+            ->where('esselon', '=', $dataUser['esselon'])
+            ->where('fungsional', '=', $dataUser['fungsional'])
+            ->whereJsonContains('id_opd', (string)$dataUser['id_opd'])
+            ->first();
+
+        return [
+            'value' => $filtered,
+            'msg' => 'my karir',
         ];
     }
 
@@ -112,11 +131,22 @@ class PolaKarirController extends Controller
     public function show(Request $request)
     {
         $dataSinergi = $request->auth['sinergi'];
-        $items = [
-            'jenis_jabatan' => JenisJabatan::select(['id_jenis_jabatan as value', 'nama_jenis_jabatan as text',])->get(),
-            'esselon' => Esesslon::select(['id_esselon as value', 'nama_esselon as text',])->get(),
-            'fungsional' => Fungsional::select(['id_fungsional as value', 'nama_fungsional as text',])->get(),
-        ];
+        $filtered = PolaKarir::whereJsonContains('id_opd', (string)$dataSinergi['id_opd'])
+            ->get();
+
+        $jenis_jabatan = JenisJabatan::select(['id_jenis_jabatan as value', 'nama_jenis_jabatan as text',])
+            ->whereIn('id_jenis_jabatan', $filtered->pluck('jenis_jabatan'))
+            ->get();
+
+        $esselon = Esesslon::select(['id_esselon as value', 'nama_esselon as text',])
+            ->whereIn('id_esselon', $filtered->pluck('esselon'))
+            ->get();
+
+        $fungsional = Fungsional::select(['id_fungsional as value', 'nama_fungsional as text',])
+            ->whereIn('id_fungsional', $filtered->pluck('fungsional'))
+            ->get();
+
+        $items = compact('jenis_jabatan', 'esselon', 'fungsional');
 
         if ($dataSinergi) {
             return [

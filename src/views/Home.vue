@@ -25,42 +25,51 @@
           Dashboard
         </h1>
       </div>
+      <div
+        v-if="loadingData"
+        style="height: 300px;display: flex;align-items: center;justify-content: center"
+      >
+        <v-progress-circular
+          :size="80"
+          :width="5"
+          color="grey"
+          indeterminate
+        />
+      </div>
+      <img
+        :src="imgUrl"
+        style="width: 100%"
+        alt=""
+      >
     </v-container>
   </div>
 </template>
 
 <script>
-import Account from '@/components/default/Account'
 import { baseURL } from '@/router/Path'
 import { mapActions } from 'vuex'
+
 export default {
   name: 'Home',
-  components: { Account },
   data: () => ({
-    queryTask: [],
-    datas: {},
-    pegawai: [],
-    imgUrl: null
+    pegawai: {},
+    imgUrl: null,
+    loadingData: false
   }),
   created () {
+    this.loadingData = true
     this.getDashboard()
       .then(data => {
-        this.datas = data.value || {}
-        this.pegawai = data.pegawai || {}
+        this.pegawai = data || {}
         this.loadingData = false
-        // begini cara pakai Base URL, nggak bisa langsung di panggil ke UI
-        this.imgUrl = baseURL + this.datas.url
+        this.imgUrl = baseURL + this.pegawai.url
       })
-      .catch((error) => {
-        this.datas = {}
-        console.log('Error : ' + error)
+      .catch(() => {
+        this.pegawai = {}
       })
   },
   methods: {
-    ...mapActions(['getDashboard']),
-    backButton () {
-      this.$router.push({ name: 'surat_masuk' })
-    }
+    ...mapActions(['getDashboard'])
   }
 }
 </script>
