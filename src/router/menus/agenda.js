@@ -2,7 +2,7 @@ const path = '/sasaran'
 const permission = 'agenda-'
 const routeName = 'agenda'
 const folder = 'agenda'
-const title = 'Sasaran Karir'
+const title = 'Syarat Jabatan'
 const Agenda = [
   {
     path: path,

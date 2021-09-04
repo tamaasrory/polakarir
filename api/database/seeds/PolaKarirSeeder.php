@@ -96,6 +96,17 @@ class PolaKarirSeeder extends Seeder
             ['esselon' => '0','fungsional' => '0','kode_jabatan' => '3','url' => '/pola_karir/KECAMATAN-Pelaksana.png','id_opd' => ["31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"]],
             ];
 
+        $skj_collection = [
+
+            ['nama_jabatan' => 'Kepala Dinas','kelompok_jabatan' => 'Jabatan Pimpinan Tinggi','urusan_pemerintah' => 'Bidang Pendidikan','kode_jabatan' => '-','id_opd' => '1','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_jabatan' => 'Kepala Dinas','kelompok_jabatan' => 'Jabatan Pimpinan Tinggi','urusan_pemerintah' => 'Bidang Pendidikan','kode_jabatan' => '-','id_opd' => '2','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_jabatan' => 'Kepala Dinas','kelompok_jabatan' => 'Jabatan Pimpinan Tinggi','urusan_pemerintah' => 'Bidang Pendidikan','kode_jabatan' => '-','id_opd' => '3','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_jabatan' => 'Kepala Dinas','kelompok_jabatan' => 'Jabatan Pimpinan Tinggi','urusan_pemerintah' => 'Bidang Pendidikan','kode_jabatan' => '-','id_opd' => '4','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+
+
+
+        ];
+
 
         foreach ($jenis_jabatan_collection as $item){
             \App\Models\JenisJabatan::create($item);
@@ -109,6 +120,9 @@ class PolaKarirSeeder extends Seeder
 
         foreach ($pola_collection as $item){
             \App\Models\PolaKarir::create($item);
+        }
+        foreach ($skj_collection as $item){
+            \App\Models\SKJ::create($item);
         }
     }
 }

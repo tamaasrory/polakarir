@@ -17,6 +17,7 @@ import ArsipSurat from '@/router/apis/arsip-surat'
 import JenisSurat from '@/router/apis/jenis-surat'
 import Sinergi from '@/router/apis/sinergi'
 import PolaKarir from '@/router/apis/pola-karir'
+import StandarKompetensi from '@/router/apis/standar-kompetensi'
 
 const $api = {
   ...auth,
@@ -33,7 +34,8 @@ const $api = {
   ...JenisSurat,
   ...Sinergi,
   ...Profil,
-  ...PolaKarir
+  ...PolaKarir,
+  ...StandarKompetensi
 }
 
 export default $api

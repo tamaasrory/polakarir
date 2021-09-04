@@ -19,7 +19,7 @@ class PermissionTableSeeder extends Seeder
         $models = [
             'surat-masuk',
             'pola-karir',
-            'surat-keluar',
+            'standar-kompetensi',
             'template-surat',
             'arsip-surat',
             'jenis-surat',

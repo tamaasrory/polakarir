@@ -1,9 +1,9 @@
 const path = '/standar-kompetensi'
-const permission = 'surat-keluar-'
-const routeName = 'surat_keluar'
-const folder = 'surat-keluar'
+const permission = 'standar-kompetensi-'
+const routeName = 'standar_kompetensi'
+const folder = 'standar-kompetensi'
 const title = 'Standar Kompentensi'
-const SuratKeluar = [
+const StandarKompetensi = [
   {
     path: path,
     name: routeName,
@@ -50,4 +50,4 @@ const SuratKeluar = [
   }
 ]
 
-export default SuratKeluar
+export default StandarKompetensi

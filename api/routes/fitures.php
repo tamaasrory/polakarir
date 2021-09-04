@@ -7,6 +7,7 @@
  */
 
 use App\Http\Controllers\PolaKarirController;
+use App\Http\Controllers\SKJController;
 
 
 $router->group(['prefix' => 'pola-karir'], function () use ($router) {
@@ -20,4 +21,14 @@ $router->group(['prefix' => 'pola-karir'], function () use ($router) {
     $router->delete('delete/{id}', [PolaKarirController::class, 'destroy']);
 });
 
+$router->group(['prefix' => 'standar-kompetensi'], function () use ($router) {
+    $router->get('all', [SKJController::class, 'index']);
+    $router->get('detail/{id}', [SKJController::class, 'show']);
+    $router->get('create', [SKJController::class, 'create']);
+    $router->post('baru', [SKJController::class, 'store']);
+    $router->get('edit/{id}', [SKJController::class, 'edit']);
+    $router->post('update/{id}', [SKJController::class, 'update']);
+    $router->delete('delete/{id}', [SKJController::class, 'destroy']);
+    $router->get('download/{id}', [SKJController::class, 'download_template']);
+});
 
