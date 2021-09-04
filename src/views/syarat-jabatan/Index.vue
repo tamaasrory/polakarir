@@ -59,9 +59,9 @@
         <v-row dense>
           <v-col>
             <v-tabs centered v-if="(user.sinergi)" slider-size="5">
-              <v-tab dense @click="_loadData(true,-1)"><p class="font-weight-bold mb-n2 text-capitalize">Struktural</p>
+              <v-tab dense @click="_loadData(true,1)"><p class="font-weight-bold mb-n2 text-capitalize">Struktural</p>
               </v-tab>
-              <v-tab dense @click="_loadData(true,user.sinergi.id_opd)"><p class="font-weight-bold mb-n2 text-capitalize">Fungsional</p></v-tab>
+              <v-tab dense @click="_loadData(true,2)"><p class="font-weight-bold mb-n2 text-capitalize">Fungsional</p></v-tab>
             </v-tabs>
             <v-divider class="mt-2"/>
           </v-col>
@@ -345,10 +345,10 @@ export default {
         table: {
           page: 1,
           pageCount: 0,
-          sortBy: ['id'],
+          sortBy: ['id_syarat_jabatan'],
           sortDesc: [false],
           itemsPerPage: 10,
-          itemKey: 'id'
+          itemKey: 'id_syarat_jabatan'
         }
       },
 
@@ -384,7 +384,7 @@ export default {
       if (this.user.sinergi) {
         return [
           { text: 'Syarat Jabatan', value: 'nama_syarat'},
-          {text: 'Jenis Jabatan', value: 'kode_jabatan'},
+          {text: 'Jenis Jabatan', value: 'jenis_jabatan'},
           {text: 'Aksi', value: 'aksi'}
         ]
       }
@@ -498,7 +498,7 @@ export default {
     _loadData(abort, opd) {
       if (this.user.sinergi) {
         this.id_opd_active = opd
-        this.options.search = `id_opd:${this.id_opd_active}`
+        this.options.search = `kode_jabatan:${this.id_opd_active}`
       }
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
