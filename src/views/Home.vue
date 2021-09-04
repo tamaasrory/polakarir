@@ -18,7 +18,6 @@
         v-text="'mdi-menu'"
       />
       <v-spacer />
-      <Account />
     </v-app-bar>
     <v-container class="px-10 pb-10">
       <div class="mb-3">
@@ -26,15 +25,6 @@
           Dashboard
         </h1>
       </div>
-      <v-row>
-        <v-col>
-          <v-card>
-            <v-img
-              :src="imgUrl"
-            />
-          </v-card>
-        </v-col>
-      </v-row>
     </v-container>
   </div>
 </template>

@@ -178,6 +178,11 @@ class PolaKarirSeeder extends Seeder
         $syarat_jabatan_collection = [
             ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.a)','kode_jabatan' => 'Struktural','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
             ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.b)','kode_jabatan' => 'Struktural','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN FUNGSIONAL KATEGORI AHLI','kode_jabatan' => 'Fungsional','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN FUNGSIONAL KATEGORI TERAMPIL','kode_jabatan' => 'Fungsional','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN PENGAWAS (SETARA ESELON IV.a)','kode_jabatan' => 'Fungsional','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN PENGAWAS (SETARA ESELON IV.b)','kode_jabatan' => 'Fungsional','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN PIMPINAN TINGGI PRATAMA (1)','kode_jabatan' => 'Fungsional','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
 
             ];
 
