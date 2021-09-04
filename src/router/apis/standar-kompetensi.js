@@ -4,12 +4,13 @@ const SKJ = {
   // START SuratKeluar API
   getSKJ ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      const { page, itemsPerPage, sortBy, sortDesc } = payload
+      const { page, itemsPerPage, sortBy, sortDesc, search } = payload
       let query = {
         page: page || 1,
         per_page: itemsPerPage || 5,
         sortBy: sortBy.length ? JSON.stringify(sortBy) : '',
         sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : '',
+        search: search,
         ...payload.add
       }
       query = new URLSearchParams(query).toString()

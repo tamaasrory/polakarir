@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblPolaKarir extends Migration
+class CreateTblSyaratJabatan extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateTblPolaKarir extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_pola_karir', function (Blueprint $table) {
-            $table->id('id_pola_karir');
-            $table->text('esselon');
-            $table->text('fungsional');
-            $table->text('jenis_jabatan');
-            $table->json('id_opd');
-            $table->text('url');
+        Schema::create('tbl_syarat_jabatan', function (Blueprint $table) {
+            $table->id('id_syarat_jabatan');
+            $table->string('nama_syarat');
+            $table->string('jenis_jabatan');
+            $table->text('url_berkas');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateTblPolaKarir extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_pola_karir');
+        Schema::dropIfExists('tbl_syarat_jabatan');
     }
 }

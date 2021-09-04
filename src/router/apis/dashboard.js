@@ -4,17 +4,17 @@ const Dashboard = {
 
   getDashboard ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get('/pola-karir/detail')
+      $axios.get('/pola-karir/my-karir')
         .then((response) => {
           if (response.status === 200) {
-            resolve(response.data)
+            resolve(response.data.value)
           } else {
-            resolve(response.data)
+            resolve({})
           }
         })
         .catch((error) => {
           console.log(error)
-          resolve([])
+          resolve({})
         })
     })
   },
