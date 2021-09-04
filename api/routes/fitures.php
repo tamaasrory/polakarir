@@ -8,6 +8,7 @@
 
 use App\Http\Controllers\PolaKarirController;
 use App\Http\Controllers\SKJController;
+use App\Http\Controllers\SyaratJabatanController;
 
 
 $router->group(['prefix' => 'pola-karir'], function () use ($router) {
@@ -30,5 +31,16 @@ $router->group(['prefix' => 'standar-kompetensi'], function () use ($router) {
     $router->post('update/{id}', [SKJController::class, 'update']);
     $router->delete('delete/{id}', [SKJController::class, 'destroy']);
     $router->get('download/{id}', [SKJController::class, 'download_template']);
+});
+
+$router->group(['prefix' => 'syarat-jabatan'], function () use ($router) {
+    $router->get('all', [SyaratJabatanController::class, 'index']);
+    $router->get('detail/{id}', [SyaratJabatanController::class, 'show']);
+    $router->get('create', [SyaratJabatanController::class, 'create']);
+    $router->post('baru', [SyaratJabatanController::class, 'store']);
+    $router->get('edit/{id}', [SyaratJabatanController::class, 'edit']);
+    $router->post('update/{id}', [SyaratJabatanController::class, 'update']);
+    $router->delete('delete/{id}', [SyaratJabatanController::class, 'destroy']);
+    $router->get('download/{id}', [SyaratJabatanController::class, 'download_template']);
 });
 

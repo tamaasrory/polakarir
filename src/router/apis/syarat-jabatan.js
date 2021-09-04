@@ -2,64 +2,19 @@ import $axios from '@/router/server'
 
 const SyaratJabatan = {
   // START Agenda API
-  getAgendaToCalender ({ commit }, payload) {
+
+  getSyaratJabatan ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      const { from, to } = payload
+      const { page, itemsPerPage, sortBy, sortDesc } = payload
       let query = {
-        from: from || '',
-        to: to || ''
-      }
-      query = new URLSearchParams(query).toString()
-      $axios.get(`/dashborad/index?${query}`)
-        .then((response) => {
-          if (response.status === 200) {
-            const items = response.data.agenda
-            const suratKeluarActive = response.data.surat_keluar_active
-            const suratMasukActive = response.data.surat_masuk_active
-            resolve({ items, suratKeluarActive, suratMasukActive })
-          } else {
-            resolve({ items: [], suratKeluarActive: 0, suratMasukActive: 0 })
-          }
-        }).catch((error) => {
-          console.log(error)
-          resolve({ items: [], suratKeluarActive: 0, suratMasukActive: 0 })
-        })
-    })
-  },
-  getAgendaToCalenderAll ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      const { from, to } = payload
-      let query = {
-        from: from || '',
-        to: to || ''
-      }
-      query = new URLSearchParams(query).toString()
-      $axios.get(`/agenda/all?${query}`)
-        .then((response) => {
-          if (response.status === 200) {
-            const items = response.data.value
-            resolve({ items })
-          } else {
-            resolve({ items: [] })
-          }
-        }).catch((error) => {
-          console.log(error)
-          resolve({ items: [] })
-        })
-    })
-  },
-  getAgendaAll ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      const { page, itemsPerPage, sortBy, sortDesc, search } = payload
-      let query = {
-        search: search || '',
         page: page || 1,
         per_page: itemsPerPage || 5,
         sortBy: sortBy.length ? JSON.stringify(sortBy) : '',
-        sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : ''
+        sortDesc: sortDesc.length ? JSON.stringify(sortDesc) : '',
+        ...payload.add
       }
       query = new URLSearchParams(query).toString()
-      $axios.get(`/agenda/all?${query}`)
+      $axios.get(`/syarat-jabatan/all?${query}`)
         .then((response) => {
           if (response.status === 200) {
             const items = response.data.value.data
@@ -75,9 +30,9 @@ const SyaratJabatan = {
         })
     })
   },
-  getAgendaById ({ commit }, payload) {
+  getSyaratJabatanById ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.get(`/agenda/detail/${payload.id}`)
+      $axios.get(`/syarat-jabatan/detail/${payload.id}`)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)

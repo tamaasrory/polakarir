@@ -175,6 +175,13 @@ class PolaKarirSeeder extends Seeder
 
         ];
 
+        $syarat_jabatan_collection = [
+            ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.a)','kode_jabatan' => 'Struktural','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.b)','kode_jabatan' => 'Struktural','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+
+            ];
+
+
 
         foreach ($jenis_jabatan_collection as $item){
             \App\Models\JenisJabatan::create($item);
@@ -191,6 +198,9 @@ class PolaKarirSeeder extends Seeder
         }
         foreach ($skj_collection as $item){
             \App\Models\SKJ::create($item);
+        }
+        foreach ($syarat_jabatan_collection as $item){
+            \App\Models\SyaratJabatan::create($item);
         }
     }
 }
