@@ -19,47 +19,8 @@
       />
       <v-toolbar-title>Standar Kompetensi Jabatan</v-toolbar-title>
       <v-spacer />
-      <!--      <account/>-->
     </v-app-bar>
     <v-container class="px-10 pb-10">
-      <v-alert
-        v-if="can(['template-surat-create'])"
-        prominent
-        type="info"
-      >
-        <v-row align="center">
-          <v-col class="grow">
-            Tersedia 3 Permintaan Pengajuan Template, Periksa Sekarang!
-          </v-col>
-          <v-col class="shrink">
-            <v-btn
-              class="primary"
-              @click="goToSuratAjukanView()"
-            >
-              Daftar Pengajuan
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-alert>
-      <v-alert
-        v-if="can(['pengajuan-create',])&&(user.sinergi)"
-        prominent
-        type="info"
-      >
-        <v-row align="center">
-          <v-col class="grow">
-            Ajukan revisi template yang telah ada atau template khusus untuk OPD Anda
-          </v-col>
-          <v-col class="shrink">
-            <v-btn
-              class="primary"
-              @click="goToSuratAjukan()"
-            >
-              Ajukan Template
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-alert>
       <v-card>
         <v-row dense>
           <v-col>
@@ -551,9 +512,9 @@ export default {
       this._loadData(true, this.id_opd_active)
     },
     _loadData (abort, opd) {
-      if (this.user.sinergi) {
+      if (opd) {
         this.id_opd_active = opd
-        this.options.search = `id_opd:${this.id_opd_active}`
+        this.searchQuery = `id_opd:${this.id_opd_active}`
       }
       if (this.datas.length === 0 || abort) {
         this.isLoading = true
