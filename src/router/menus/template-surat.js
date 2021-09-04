@@ -1,6 +1,6 @@
 const path = '/pergerakan-karir'
 const permission = 'template-surat-'
-const routeName = 'template_surat'
+const routeName = 'skj'
 const folder = 'template-surat'
 const title = 'Pergerakan Karir'
 const TemplateSurat = [

@@ -26,7 +26,7 @@ class SKJ extends SelfModel
      * @var string
      */
     protected $table = 'tbl_skj';
-    protected $primaryKey = 'id_skj';
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
