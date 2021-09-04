@@ -17,7 +17,7 @@ class CreateTblPolaKarir extends Migration
             $table->id('id_pola_karir');
             $table->text('esselon');
             $table->text('fungsional');
-            $table->text('kode_jabatan');
+            $table->text('jenis_jabatan');
             $table->json('id_opd');
             $table->text('url');
             $table->timestamps();
