@@ -45,8 +45,8 @@ export default menus.concat(
   Roles,
   PolaKarir,
   StandarKompetensi,
+  SyaratJabatan,
   Profil,
-  TemplateSurat,
-  SyaratJabatan
+  TemplateSurat
 
 )
