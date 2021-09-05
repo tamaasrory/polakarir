@@ -50,23 +50,30 @@ class SyaratJabatanController extends Controller
      *
      * @return \Illuminate\Http\Response|array
      */
-    /*public function store(Request $request)
+    public function store(Request $request)
     {
-        $data = new SKJ();
+        $data = new SyaratJabatan();
         $data->fill(request()->all());
-        $jenis_surat = $data->jenis_surat;
+        $jenis_jabatan = $data->kode_jabatan;
+        if ($jenis_jabatan == 'Struktural') {
+            $data->kode_jabatan = 1;
+        }elseif($jenis_jabatan =='Fungsional'){
+            $data->kode_jabatan = 2;
+        }
+
+        //$jenis_surat = $data->jenis_surat;
 
 
         if ($request->hasFile('draf')) {
             $original_filename = $request->file('draf')->getClientOriginalName();
             $original_filename_arr = explode('.', $original_filename);
             $file_ext = end($original_filename_arr);
-            $destination_path = '/template/' . $this->name_folder_draf($jenis_surat) . '/';
-            $nama_template = 'draf-' . time() . '.' . $file_ext;
+            $destination_path = '/sj/' . $this->name_folder_byjabatan($jenis_jabatan) . '/';
+            $nama_sj = 'draf-' . time() . '.' . $file_ext;
 
-            if ($request->file('draf')->move('.' . $destination_path, $nama_template)) {
+            if ($request->file('draf')->move('.' . $destination_path, $nama_sj)) {
 
-                $data->url_berkas = $destination_path . '' . $nama_template;
+                $data->url_berkas = $destination_path . '' . $nama_sj;
 
                 if ($data->save()) {
                     return [
@@ -82,7 +89,7 @@ class SyaratJabatanController extends Controller
             'value' => [],
             'msg' => "{$this->title} baru gagal disimpan"
         ];
-    }*/
+    }
 
     /**
      * Display the specified resource.
@@ -238,7 +245,7 @@ class SyaratJabatanController extends Controller
 
     }
 
-    /*function name_folder_draf($jenis_surat)
+    function name_folder_byjabatan($jenis_surat)
     {
         $pattern = array(
             '/([^a-zA-Z\+\s])/',
@@ -248,7 +255,7 @@ class SyaratJabatanController extends Controller
         $nama_folder = preg_replace($pattern, $replacement, $jenis_surat);
 
         return $nama_folder;
-    }*/
+    }
 
     /**
      * Show the form for creating a new resource.

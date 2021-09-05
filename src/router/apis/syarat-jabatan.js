@@ -63,9 +63,9 @@ const SyaratJabatan = {
         })
     })
   },
-  addAgenda ({ commit }, payload) {
+  addSyaratJabatan ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.post('/agenda/baru', payload)
+      $axios.post('/syarat-jabatan/baru', payload)
         .then((response) => {
           if (response.status === 200) {
             resolve(response.data.value)
