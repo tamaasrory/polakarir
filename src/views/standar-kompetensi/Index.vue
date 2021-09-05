@@ -87,6 +87,7 @@
             class="align-self-center"
           >
             <v-text-field
+                    v-if="false"
               v-model="searchQuery"
               append-icon="mdi-magnify"
               label="Search"
