@@ -31,7 +31,7 @@
             >
               <v-tab
                 dense
-                @click="_loadData(true,1)"
+                @click="_loadData(true,2)"
               >
                 <p class="font-weight-bold mb-n2 text-capitalize">
                   Badan
@@ -39,7 +39,7 @@
               </v-tab>
               <v-tab
                 dense
-                @click="_loadData(true,2)"
+                @click="_loadData(true,1)"
               >
                 <p class="font-weight-bold mb-n2 text-capitalize">
                   Dinas
@@ -347,7 +347,7 @@ export default {
   },
   data () {
     return {
-      id_opd_active: 1,
+      id_opd_active: 2,
       id_instansi: 1,
       template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
