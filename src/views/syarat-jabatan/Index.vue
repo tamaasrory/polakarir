@@ -331,7 +331,7 @@ export default {
   },
   data() {
     return {
-      id_opd_active: -1,
+      id_opd_active: 1,
       template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
       toggleFp: false,
@@ -416,7 +416,7 @@ export default {
     this._loadPengajuan(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getSyaratJabatan', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat','updateTemplateSurat']),
+    ...mapActions(['getSyaratJabatan', 'deleteTemplateSurat', 'downloadSyaratJabatan', 'downloadTemplateSurat','updateTemplateSurat']),
     can,
     goToSuratAjukan () {
       this.$router.push({ name: 'template_surat_ajukan' })
@@ -437,7 +437,7 @@ export default {
         // this.dwdisabledNegativeBtn = true
         // this.dwdisabledPositiveBtn = true
         // this.dwMessages = `Sedang mendownload template surat`
-        this.downloadTemplateSurat({nama: this.namaTemplate, id: this.downloadId}).then(res => {
+        this.downloadSyaratJabatan({nama: this.namaTemplate, id: this.downloadId}).then(res => {
           // this._loadData(true)
           // this.dwProgress = false
           // this.dwMessages = 'Berhasil mendownload template surat'
@@ -453,11 +453,10 @@ export default {
           this.dwdisabledPositiveBtn = false
         })
       } else {
-        this.downloadId = value.id_template_surat
-        this.namaTemplate = value.nama_template
+        this.downloadId = value.id_syarat_jabatan
+        this.namaTemplate = value.nama_syarat
         this.dwTitle = `Download `
-        this.dwMessages = `Download ${this.namaTemplate} <br /><br />
- Mohon untuk tidak merubah atau menghapus teks <span class="red--text">\${nomorsurat}\, \${tanggal}\, \${nip}\, \${ttdelektronik}\, \${namalengkap}\, \${pangkat}\ dan \${catatan_tte}\ </span> pada template surat !`
+        this.dwMessages = `Download ${this.namaTemplate}`
         this.showDW = true
       }
     },
