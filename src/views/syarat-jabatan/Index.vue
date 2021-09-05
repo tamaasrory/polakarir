@@ -22,44 +22,6 @@
       <!--      <account/>-->
     </v-app-bar>
     <v-container class="px-10 pb-10">
-      <v-alert
-        v-if="can(['template-surat-create'])"
-        prominent
-        type="info"
-      >
-        <v-row align="center">
-          <v-col class="grow">
-            Tersedia 3 Permintaan Pengajuan Template, Periksa Sekarang!
-          </v-col>
-          <v-col class="shrink">
-            <v-btn
-              class="primary"
-              @click="goToSuratAjukanView()"
-            >
-              Daftar Pengajuan
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-alert>
-      <v-alert
-        v-if="can(['pengajuan-create',])&&(user.sinergi)"
-        prominent
-        type="info"
-      >
-        <v-row align="center">
-          <v-col class="grow">
-            Ajukan revisi template yang telah ada atau template khusus untuk OPD Anda
-          </v-col>
-          <v-col class="shrink">
-            <v-btn
-              class="primary"
-              @click="goToSuratAjukan()"
-            >
-              Ajukan Template
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-alert>
       <v-card>
         <v-row dense>
           <v-col>
@@ -359,16 +321,18 @@
 import { mapActions, mapState } from 'vuex'
 import Dialog from '@/components/Dialog'
 import { can } from '@/plugins/supports'
+import Account from '@/components/default/Account'
 
 export default {
   name: 'TemplateSurat',
   components: {
+    account: Account,
     'delete-dialog-confirm': Dialog,
     'download-dialog-confirm': Dialog
   },
   data () {
     return {
-      id_opd_active: 1,
+      id_opd_active: -1,
       template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
       toggleFp: false,
@@ -425,11 +389,8 @@ export default {
         ]
       } else {
         return [
-          { text: 'Nama Template', value: 'nama_template' },
-          { text: 'Jenis Surat', value: 'jenis_surat' },
-          { text: 'Sumber Hukum', value: 'sumber_hukum' },
-          { text: 'Status', value: 'status' },
-          { text: 'opd', value: 'id_opd' },
+          { text: 'Syarat Jabatan', value: 'nama_syarat' },
+          { text: 'Jenis Jabatan', value: 'jenis_jabatan' },
           { text: 'Aksi', value: 'aksi' }
         ]
       }
@@ -462,7 +423,7 @@ export default {
       this.$router.push({ name: 'material_view', params: { id: value.id } })
     },
     _add () {
-      this.$router.push({ name: 'template_surat_add' })
+      this.$router.push({ name: 'syarat_jabatan_add' })
     },
     _download: function (value) {
       if (value === true) {
@@ -489,8 +450,7 @@ export default {
         this.downloadId = value.id_template_surat
         this.namaTemplate = value.nama_template
         this.dwTitle = 'Download '
-        this.dwMessages = `Download ${this.namaTemplate} <br /><br />
- Mohon untuk tidak merubah atau menghapus teks <span class="red--text">\${nomorsurat}\, \${tanggal}\, \${nip}\, \${ttdelektronik}\, \${namalengkap}\, \${pangkat}\ dan \${catatan_tte}\ </span> pada template surat !`
+        this.dwMessages = 'Download Syarat Jabatan sekarang'
         this.showDW = true
       }
     },

@@ -8,6 +8,7 @@ use App\Traits\Searchable;
 /**
  * @property integer $id_syarat_jabatan
  * @property string $nama_syarat
+ * @property string $jenis_jabatan
  * @property string $kode_jabatan
  * @property string $url_berkas
  * @property string $created_at
@@ -30,14 +31,14 @@ class SyaratJabatan extends SelfModel
      *
      * @var array
      */
-    protected $fillable = ['nama_syarat', 'kode_jabatan','url_berkas', 'created_at', 'updated_at'];
+    protected $fillable = ['nama_syarat','jenis_jabatan', 'kode_jabatan','url_berkas', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are searchable.
      *
      * @var array
      */
-    public $searchable = ['nama_syarat', 'kode_jabatan','url_berkas', 'created_at', 'updated_at'];
+    public $searchable = ['nama_syarat','jenis_jabatan', 'kode_jabatan','url_berkas', 'created_at', 'updated_at'];
 
 
     /*public function getJenisSuratAttribute()

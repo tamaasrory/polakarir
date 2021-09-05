@@ -176,13 +176,13 @@ class PolaKarirSeeder extends Seeder
         ];
 
         $syarat_jabatan_collection = [
-            ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.a)','jenis_jabatan' => 'Struktural','kode_jabatan' => '1','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
-            ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.b)','jenis_jabatan' => 'Struktural','kode_jabatan' => '1','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
-            ['nama_syarat' => 'SYARAT JABATAN FUNGSIONAL KATEGORI AHLI','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
-            ['nama_syarat' => 'SYARAT JABATAN FUNGSIONAL KATEGORI TERAMPIL','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
-            ['nama_syarat' => 'SYARAT JABATAN PENGAWAS (SETARA ESELON IV.a)','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
-            ['nama_syarat' => 'SYARAT JABATAN PENGAWAS (SETARA ESELON IV.b)','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
-            ['nama_syarat' => 'SYARAT JABATAN PIMPINAN TINGGI PRATAMA (1)','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/template/Instruksi/draf-1626842979.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.a)','jenis_jabatan' => 'Struktural','kode_jabatan' => '1','url_berkas' => '/sj/null/draf-1630810331.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN ADMINISTRATOR (SETARA ESELON III.b)','jenis_jabatan' => 'Struktural','kode_jabatan' => '1','url_berkas' => '/sj/null/draf-1630810358.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN FUNGSIONAL KATEGORI AHLI','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/sj/null/draf-1630810377.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN FUNGSIONAL KATEGORI TERAMPIL','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/sj/null/draf-1630810393.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN PENGAWAS (SETARA ESELON IV.a)','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/sj/null/draf-1630810418.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN PENGAWAS (SETARA ESELON IV.b)','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/sj/null/draf-1630810442.docx'],
+            ['nama_syarat' => 'SYARAT JABATAN PIMPINAN TINGGI PRATAMA (1)','jenis_jabatan' => 'Fungsional','kode_jabatan' => '2','url_berkas' => '/sj/null/draf-1630810455.docx'],
 
             ];
 
