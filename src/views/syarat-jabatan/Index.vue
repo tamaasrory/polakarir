@@ -18,56 +18,81 @@
         v-text="'mdi-menu'"
       />
       <v-toolbar-title>Syarat Jabatan</v-toolbar-title>
-      <v-spacer/>
+      <v-spacer />
       <!--      <account/>-->
     </v-app-bar>
     <v-container class="px-10 pb-10">
       <v-alert
+        v-if="can(['template-surat-create'])"
         prominent
         type="info"
-        v-if="can(['template-surat-create'])"
       >
         <v-row align="center">
           <v-col class="grow">
             Tersedia 3 Permintaan Pengajuan Template, Periksa Sekarang!
           </v-col>
           <v-col class="shrink">
-            <v-btn class="primary"
-                   @click="goToSuratAjukanView()"
-            >Daftar Pengajuan</v-btn>
+            <v-btn
+              class="primary"
+              @click="goToSuratAjukanView()"
+            >
+              Daftar Pengajuan
+            </v-btn>
           </v-col>
         </v-row>
       </v-alert>
       <v-alert
+        v-if="can(['pengajuan-create',])&&(user.sinergi)"
         prominent
         type="info"
-        v-if="can(['pengajuan-create',])&&(user.sinergi)"
-
       >
         <v-row align="center">
           <v-col class="grow">
             Ajukan revisi template yang telah ada atau template khusus untuk OPD Anda
           </v-col>
           <v-col class="shrink">
-            <v-btn class="primary"
-                   @click="goToSuratAjukan()"
-            >Ajukan Template</v-btn>
+            <v-btn
+              class="primary"
+              @click="goToSuratAjukan()"
+            >
+              Ajukan Template
+            </v-btn>
           </v-col>
         </v-row>
       </v-alert>
       <v-card>
         <v-row dense>
           <v-col>
-            <v-tabs centered v-if="(user.sinergi)" slider-size="5">
-              <v-tab dense @click="_loadData(true,1)"><p class="font-weight-bold mb-n2 text-capitalize">Struktural</p>
+            <v-tabs
+              v-if="(user.sinergi)"
+              centered
+              slider-size="5"
+            >
+              <v-tab
+                dense
+                @click="_loadData(true,1)"
+              >
+                <p class="font-weight-bold mb-n2 text-capitalize">
+                  Struktural
+                </p>
               </v-tab>
-              <v-tab dense @click="_loadData(true,2)"><p class="font-weight-bold mb-n2 text-capitalize">Fungsional</p></v-tab>
+              <v-tab
+                dense
+                @click="_loadData(true,2)"
+              >
+                <p class="font-weight-bold mb-n2 text-capitalize">
+                  Fungsional
+                </p>
+              </v-tab>
             </v-tabs>
-            <v-divider class="mt-2"/>
+            <v-divider class="mt-2" />
           </v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="3" class="align-self-center mr-auto ">
+          <v-col
+            cols="3"
+            class="align-self-center mr-auto "
+          >
             <v-data-footer
               :pagination="pagination"
               :prev-icon="null"
@@ -79,10 +104,13 @@
               :options.sync="options"
             />
           </v-col>
-          <v-col lg="3" align="right" class="align-self-center">
+          <v-col
+            lg="3"
+            align="right"
+            class="align-self-center"
+          >
             <v-text-field
               v-model="searchQuery"
-              @keyup.enter.native="_loadData(true)"
               append-icon="mdi-magnify"
               label="Search"
               single-line
@@ -91,26 +119,35 @@
               class="shrink"
               outlined
               hide-details
+              @keyup.enter.native="_loadData(true)"
               @click:append="_loadData(true)"
-            ></v-text-field>
-
-          </v-col >
-
-          <v-col cols="1" class="align-self-lg-center" align="right">
-            <v-btn v-if="can(['template-surat-create'])"
-                   class="mx-2"
-                   fab
-                   align="end"
-                   x-small
-                   outlined
-                   @click="_add()"
-                   style="border-width: 3px"
-                   color="cyan"
-            >
-              <v-icon dark large> mdi-plus </v-icon>
-            </v-btn>
+            />
           </v-col>
 
+          <v-col
+            cols="1"
+            class="align-self-lg-center"
+            align="right"
+          >
+            <v-btn
+              v-if="can(['template-surat-create'])"
+              class="mx-2"
+              fab
+              align="end"
+              x-small
+              outlined
+              style="border-width: 3px"
+              color="cyan"
+              @click="_add()"
+            >
+              <v-icon
+                dark
+                large
+              >
+                mdi-plus
+              </v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
 
         <v-data-table
@@ -133,12 +170,12 @@
           @page-count="config.table.pageCount = $event"
           @pagination="pagination=$event"
         >
-          <template v-slot:item.updated_at="{item}">
+          <template #item.updated_at="{item}">
             {{ item.updated_at | moment('DD MMMM YYYY HH:mm') }}
           </template>
-          <template v-slot:item.aksi="{item}">
+          <template #item.aksi="{item}">
             <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <v-btn
                   icon
                   v-bind="attrs"
@@ -154,8 +191,11 @@
               </template>
               <span>Download</span>
             </v-tooltip>
-            <v-tooltip v-if="can(['template-surat-edit'])" bottom>
-              <template v-slot:activator="{ on, attrs }">
+            <v-tooltip
+              v-if="can(['template-surat-edit'])"
+              bottom
+            >
+              <template #activator="{ on, attrs }">
                 <v-btn
                   icon
                   v-bind="attrs"
@@ -175,7 +215,7 @@
               v-if="can(['template-surat-delete'])"
               bottom
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <v-btn
                   v-bind="attrs"
                   icon
@@ -206,7 +246,6 @@
             <!--            </v-tooltip>-->
           </template>
         </v-data-table>
-
       </v-card>
       <div
         class="row align-center pb-3"
@@ -319,19 +358,17 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import Dialog from '@/components/Dialog'
-import {can} from '@/plugins/supports'
-import Account from "@/components/default/Account";
+import { can } from '@/plugins/supports'
 
 export default {
   name: 'TemplateSurat',
   components: {
-    'account': Account,
     'delete-dialog-confirm': Dialog,
-    'download-dialog-confirm': Dialog,
+    'download-dialog-confirm': Dialog
   },
-  data() {
+  data () {
     return {
-      id_opd_active: -1,
+      id_opd_active: 1,
       template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
       toggleFp: false,
@@ -359,11 +396,10 @@ export default {
       dwProgress: false,
       dwdisabledNegativeBtn: false,
       dwdisabledPositiveBtn: false,
-      dwNegativeBtn:() => {
+      dwNegativeBtn: () => {
         this.showDW = false
       },
       dwPositiveBtn: () => this._download(true),
-
 
       showDC: false,
       dwTitle: '',
@@ -383,40 +419,38 @@ export default {
     headerData () {
       if (this.user.sinergi) {
         return [
-          { text: 'Syarat Jabatan', value: 'nama_syarat'},
-          {text: 'Jenis Jabatan', value: 'jenis_jabatan'},
-          {text: 'Aksi', value: 'aksi'}
+          { text: 'Syarat Jabatan', value: 'nama_syarat' },
+          { text: 'Jenis Jabatan', value: 'jenis_jabatan' },
+          { text: 'Aksi', value: 'aksi' }
         ]
-      }
-      else {
+      } else {
         return [
-          {text: 'Nama Template', value: 'nama_template'},
-          {text: 'Jenis Surat', value: 'jenis_surat'},
-          {text: 'Sumber Hukum', value: 'sumber_hukum'},
-          {text: 'Status', value: 'status'},
-          {text: 'opd', value: 'id_opd'},
-          {text: 'Aksi', value: 'aksi'}
+          { text: 'Nama Template', value: 'nama_template' },
+          { text: 'Jenis Surat', value: 'jenis_surat' },
+          { text: 'Sumber Hukum', value: 'sumber_hukum' },
+          { text: 'Status', value: 'status' },
+          { text: 'opd', value: 'id_opd' },
+          { text: 'Aksi', value: 'aksi' }
         ]
       }
-    },
+    }
 
   },
   watch: {
-    options(a, b) {
+    options (a, b) {
       this._loadData(true, this.id_opd_active)
     },
-    search() {
-      this.getTemplateSurat();
+    search () {
+      this.getTemplateSurat()
     }
 
-
   },
-  mounted() {
+  mounted () {
     this._loadData(false, this.id_opd_active) // loading data form server
     this._loadPengajuan(false) // loading data form server
   },
   methods: {
-    ...mapActions(['getSyaratJabatan', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat','updateTemplateSurat']),
+    ...mapActions(['getSyaratJabatan', 'deleteTemplateSurat', 'downloaTemplateSurat', 'downloadTemplateSurat', 'updateTemplateSurat']),
     can,
     goToSuratAjukan () {
       this.$router.push({ name: 'template_surat_ajukan' })
@@ -424,20 +458,19 @@ export default {
     goToSuratAjukanView () {
       this.$router.push({ name: 'template_surat_ajukan_view' })
     },
-    _detail(value) {
-      this.$router.push({name: 'material_view', params: {id: value.id}})
+    _detail (value) {
+      this.$router.push({ name: 'material_view', params: { id: value.id } })
     },
-    _add() {
-      this.$router.push({name: 'template_surat_add'})
+    _add () {
+      this.$router.push({ name: 'template_surat_add' })
     },
     _download: function (value) {
-
       if (value === true) {
         // this.dwProgress = true
         // this.dwdisabledNegativeBtn = true
         // this.dwdisabledPositiveBtn = true
         // this.dwMessages = `Sedang mendownload template surat`
-        this.downloadTemplateSurat({nama: this.namaTemplate, id: this.downloadId}).then(res => {
+        this.downloadTemplateSurat({ nama: this.namaTemplate, id: this.downloadId }).then(res => {
           // this._loadData(true)
           // this.dwProgress = false
           // this.dwMessages = 'Berhasil mendownload template surat'
@@ -455,21 +488,21 @@ export default {
       } else {
         this.downloadId = value.id_template_surat
         this.namaTemplate = value.nama_template
-        this.dwTitle = `Download `
+        this.dwTitle = 'Download '
         this.dwMessages = `Download ${this.namaTemplate} <br /><br />
  Mohon untuk tidak merubah atau menghapus teks <span class="red--text">\${nomorsurat}\, \${tanggal}\, \${nip}\, \${ttdelektronik}\, \${namalengkap}\, \${pangkat}\ dan \${catatan_tte}\ </span> pada template surat !`
         this.showDW = true
       }
     },
-    _edit(value) {
-      this.$router.push({name: 'template_surat_edit', params: {id: value.id_template_surat}})
+    _edit (value) {
+      this.$router.push({ name: 'template_surat_edit', params: { id: value.id_template_surat } })
     },
-    _delete(value) {
+    _delete (value) {
       if (value === true) {
         this.dcProgress = true
         this.dcdisabledNegativeBtn = true
         this.dcdisabledPositiveBtn = true
-        this.dcMessages = `Sedang menghapus template surat`
+        this.dcMessages = 'Sedang menghapus template surat'
         this.deleteTemplateSurat(this.deleteId).then(res => {
           this._loadData(true, this.id_opd_active)
           this.dcProgress = false
@@ -491,11 +524,11 @@ export default {
         this.showDC = true
       }
     },
-    _clearFilter() {
+    _clearFilter () {
       this.searchQuery = null
       this._loadData(true, this.id_opd_active)
     },
-    _loadData(abort, opd) {
+    _loadData (abort, opd) {
       if (this.user.sinergi) {
         this.id_opd_active = opd
         this.options.search = `kode_jabatan:${this.id_opd_active}`
@@ -511,7 +544,7 @@ export default {
       } else {
         this.isLoading = false
       }
-    },
+    }
   }
 }
 </script>
