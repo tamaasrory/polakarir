@@ -47,55 +47,27 @@ const SyaratJabatan = {
         })
     })
   },
-  deleteAgenda ({ commit }, payload) {
+  downloadSyaratJabatan ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      $axios.delete(`/agenda/delete/${payload}`)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve(response.data.value)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
-  addSyaratJabatan ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.post('/syarat-jabatan/baru', payload)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data.value)
-          } else {
-            resolve(response.data.value)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
-    })
-  },
-  updateAgenda ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      $axios.put(`/agenda/update/${payload.id}`, payload)
-        .then((response) => {
-          if (response.status === 200) {
-            resolve(response.data)
-          } else {
-            resolve(response.data)
-          }
-          resolve(response.data)
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve([])
-        })
+      $axios.get(`/syarat-jabatan/download/${payload.id}`, { method: 'GET', responseType: 'blob' }).then(response => {
+        if (response.status === 200) {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]))
+          var fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', `${payload.nama}.docx`)
+          document.body.appendChild(fileLink)
+          fileLink.click()
+          resolve(response.data.value)
+        } else {
+          resolve(response.data.value)
+        }
+      }).catch(error => {
+        console.log(error)
+        resolve([])
+      })
     })
   }
+
   // END Agenda API
 }
 

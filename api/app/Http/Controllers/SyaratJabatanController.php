@@ -223,7 +223,7 @@ class SyaratJabatanController extends Controller
     }
 
 
-    function download_template($id){
+    function download_syarat_jabatan($id){
 
         $template = SyaratJabatan::findOrFail($id);
 

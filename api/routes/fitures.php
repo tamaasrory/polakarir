@@ -42,6 +42,6 @@ $router->group(['prefix' => 'syarat-jabatan'], function () use ($router) {
     $router->get('edit/{id}', [SyaratJabatanController::class, 'edit']);
     $router->post('update/{id}', [SyaratJabatanController::class, 'update']);
     $router->delete('delete/{id}', [SyaratJabatanController::class, 'destroy']);
-    $router->get('download/{id}', [SyaratJabatanController::class, 'download_template']);
+    $router->get('download/{id}', [SyaratJabatanController::class, 'download_syarat_jabatan']);
 });
 
