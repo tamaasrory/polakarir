@@ -321,18 +321,16 @@
 import { mapActions, mapState } from 'vuex'
 import Dialog from '@/components/Dialog'
 import { can } from '@/plugins/supports'
-import Account from '@/components/default/Account'
 
 export default {
   name: 'TemplateSurat',
   components: {
-    account: Account,
     'delete-dialog-confirm': Dialog,
     'download-dialog-confirm': Dialog
   },
   data () {
     return {
-      id_opd_active: -1,
+      id_opd_active: 1,
       template_opd: 'Template Badan Penelitan dan Pengembangan',
       searchQuery: '',
       toggleFp: false,
