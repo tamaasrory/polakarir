@@ -22,7 +22,7 @@ module.exports = {
     }
   },
   pwa: {
-    name: 'e-Karir',
+    name: 'SIMPONI',
     themeColor: '#1DA1F2',
     msTileColor: '#FFFFFF',
     appleMobileWebAppCapable: 'yes',
