@@ -28,12 +28,12 @@
           class="mr-5"
           @click="$emit('toggle-drawer')"
         >
-        <v-app-bar-title class="font-weight-bold black--text">
-          e-Karir
-        </v-app-bar-title>
+        <v-toolbar-title class="font-weight-bold black--text">
+          SIMPONI
+        </v-toolbar-title>
         <v-spacer />
         <div class="black--text">
-        {{ timeNow }}
+          {{ timeNow }}
         </div>
         <v-spacer />
       </v-app-bar>
@@ -49,13 +49,13 @@
         >
           <div class="mb-5">
             <div class="display-2 black--text">
-              Selamat Datang di<br> e-Karir Kota Pekanbaru
+              Selamat Datang di<br> SIMPONI Kota Pekanbaru
             </div>
             <div
               class="grey--text darken-4 mt-2"
               style="font-size: 17px"
             >
-              Sistem Informasi Pola Karir
+              Sistem Informasi Pola Karier PNS
             </div>
           </div>
           <v-card
@@ -147,7 +147,7 @@
               </v-flex>
             </v-layout>
           </v-card>
-<!--          <v-card
+          <!--          <v-card
             color="#fff"
             elevation="0"
             class="px-3 mx-12"
