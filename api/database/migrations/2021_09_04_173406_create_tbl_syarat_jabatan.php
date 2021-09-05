@@ -17,8 +17,7 @@ class CreateTblSyaratJabatan extends Migration
             $table->id('id_syarat_jabatan');
             $table->string('nama_syarat');
             $table->string('jenis_jabatan');
-            $table->string('Struktural');
-//            $table->string('kode_jabatan');
+            $table->string('kode_jabatan');
             $table->text('url_berkas');
             $table->timestamps();
         });
